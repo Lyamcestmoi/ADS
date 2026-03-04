@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrat de Location – Stand ADS Prêles</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    input.cval {
+      border: none;
+      outline: none;
+      font-family: 'Lato', sans-serif;
+      -moz-appearance: textfield;
+    }
+
+    input.cval::-webkit-outer-spin-button,
+    input.cval::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    :root {
+      --green: #3A6B4A;
+      --green-dark: #2B5038;
+      --green-light: #EDF4EF;
+      --green-mid: #C8DDD0;
+      --accent: #6B9E5E;
+      --earth: #8B6F47;
+      --white: #FFFFFF;
+      --off-white: #F7F8F6;
+      --gray-light: #EDEEED;
+      --gray: #B8BCB9;
+      --gray-dark: #6B716D;
+      --ink: #1E2620;
+      --red: #C0392B;
+      --gold: #D4A843;
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, .06);
+      --shadow: 0 4px 16px rgba(30, 38, 32, .10);
+      --shadow-lg: 0 8px 32px rgba(30, 38, 32, .14);
+      --radius: 8px;
+      --radius-lg: 14px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--off-white);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ──────────────────────── TOP BAND ──────────────────────── */
+    .top-band {
+      background: var(--green-dark);
+      padding: 8px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .top-band-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--green-mid);
+      font-weight: 300;
+      letter-spacing: .3px;
+    }
+
+    .top-band-left strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    .top-band-right {
+      font-size: 11px;
+      color: var(--green-mid);
+      font-family: 'Lato', monospace;
+      letter-spacing: .5px;
+    }
+
+    /* ──────────────────────── HEADER ──────────────────────── */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--green);
+      box-shadow: var(--shadow);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .header-emblem {
+      width: 64px;
+      height: 64px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-emblem::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+      background: var(--green-dark);
+      clip-path: polygon(0 60%, 25% 20%, 50% 60%, 75% 20%, 100% 60%, 100% 100%, 0 100%);
+    }
+
+    .header-emblem-text {
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--gray-light);
+    }
+
+    .header-titles h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .header-titles .sub {
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 700;
+      letter-spacing: .3px;
+      margin-top: 2px;
+    }
+
+    .header-titles .sub span {
+      color: var(--gray-dark);
+      font-weight: 300;
+      margin: 0 6px;
+    }
+
+    .header-meta {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .header-meta .valid {
+      font-size: 11px;
+      color: var(--gray-dark);
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .header-meta .iban-small {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green-dark);
+      font-family: 'Lato', monospace;
+      letter-spacing: .5px;
+      margin-top: 3px;
+    }
+
+    .contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      border: 1px solid var(--green-mid);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--green-dark);
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    /* ──────────────────────── PROGRESS ──────────────────────── */
+    .progress-wrap {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-light);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .progress-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .prog-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 14px 12px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      gap: 10px;
+      position: relative;
+    }
+
+    .prog-step::after {
+      content: '›';
+      position: absolute;
+      right: -2px;
+      color: var(--gray);
+      font-size: 18px;
+      font-weight: 300;
+    }
+
+    .prog-step:last-child::after {
+      display: none;
+    }
+
+    .prog-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray);
+      flex-shrink: 0;
+      transition: all .2s;
+      background: var(--white);
+    }
+
+    .prog-step-label {
+      font-size: 12px;
+      color: var(--gray-dark);
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    .prog-step-sublabel {
+      font-size: 10px;
+      color: var(--gray);
+      display: block;
+      margin-top: 1px;
+    }
+
+    .prog-step.active {
+      border-color: var(--green);
+    }
+
+    .prog-step.active .prog-dot {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-light);
+    }
+
+    .prog-step.active .prog-step-label {
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    .prog-step.done .prog-dot {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+    }
+
+    .prog-step.done .prog-step-label {
+      color: var(--accent);
+    }
+
+    /* ──────────────────────── LAYOUT ──────────────────────── */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ──────────────────────── CARD ──────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--green);
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .card-step-badge {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, .2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: white;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .card-header p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .75);
+      margin-top: 2px;
+      font-weight: 300;
+    }
+
+    .card-body {
+      padding: 32px;
+    }
+
+    /* ──────────────────────── FORM ELEMENTS ──────────────────────── */
+    .field-group {
+      margin-bottom: 22px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gray-dark);
+      margin-bottom: 7px;
+    }
+
+    .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      background: var(--off-white);
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      padding: 11px 14px;
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--green);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(58, 107, 74, .08);
+    }
+
+    input.err {
+      border-color: var(--red);
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 5px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      display: none;
+    }
+
+    .fields-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .fields-13 {
+      display: grid;
+      grid-template-columns: 1fr 2.5fr;
+      gap: 16px;
+    }
+
+    /* ──────────────────────── DATE PICKER ──────────────────────── */
+    /* REMPLACE le bloc input[type="date"] existant par : */
+    input[type="date"] {
+      font-size: 15px;
+      padding: 13px 14px;
+      font-weight: 700;
+      color: var(--green-dark);
+      border-color: var(--green-mid);
+      background: var(--green-light);
+      cursor: pointer;
+      width: 100%;
+      display: block;
+    }
+
+    /* Force tout le champ cliquable sur WebKit/Chrome */
+    input[type="date"]::-webkit-datetime-edit {
+      cursor: pointer;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      opacity: 0;
+    }
+
+    .date-wrap {
+      position: relative;
+      display: block;
+    }
+
+    /* ──────────────────────── PERIOD CARDS ──────────────────────── */
+    .period-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pcard {
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      background: var(--off-white);
+      user-select: none;
+    }
+
+    .pcard:hover {
+      border-color: var(--green);
+      background: var(--green-light);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pcard.selected {
+      border-color: var(--green);
+      background: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(58, 107, 74, .15);
+    }
+
+    .pcard.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      background: var(--green);
+      color: white;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pcard.disabled {
+      opacity: .35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .pcard-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .pcard-hours {
+      font-size: 11px;
+      color: var(--gray-dark);
+      font-weight: 300;
+    }
+
+    .pcard-price {
+      position: absolute;
+      bottom: 13px;
+      right: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+      font-family: 'Lato', monospace;
+    }
+
+    .pcard.selected .pcard-name {
+      color: var(--green-dark);
+    }
+
+    .pcard.selected .pcard-price {
+      color: var(--green-dark);
+    }
+
+    .we-note {
+      font-size: 11px;
+      color: var(--earth);
+      background: #FDF5E6;
+      border: 1px solid #F0DCB0;
+      border-radius: 6px;
+      padding: 7px 12px;
+      margin-top: 10px;
+      font-weight: 400;
+    }
+
+    .we-note strong {
+      font-weight: 700;
+    }
+
+    /* ──────────────────────── DAY PILLS ──────────────────────── */
+    .day-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .dpill {
+      padding: 8px 12px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: 20px;
+      background: var(--off-white);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-dark);
+      cursor: pointer;
+      transition: all .18s;
+      user-select: none;
+      letter-spacing: .5px;
+    }
+
+    .dpill:hover {
+      border-color: var(--green);
+      color: var(--green-dark);
+    }
+
+    .dpill.on {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .dpill.weekend {
+      border-style: dashed;
+    }
+
+    .dpill.weekend.on {
+      background: var(--green-dark);
+      border-style: solid;
+    }
+
+    /* ──────────────────────── NB PERSONNES ──────────────────────── */
+    .counter-group {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      width: fit-content;
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .cbtn {
+      width: 40px;
+      height: 40px;
+      background: var(--off-white);
+      border: none;
+      font-size: 20px;
+      color: var(--green-dark);
+      cursor: pointer;
+      transition: background .15s;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+    }
+
+    .cbtn:hover {
+      background: var(--green-light);
+    }
+
+    .cval {
+      width: 60px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-dark);
+      border-left: 1.5px solid var(--gray-light);
+      border-right: 1.5px solid var(--gray-light);
+      padding: 8px 0;
+      background: var(--white);
+      font-family: 'Lato', sans-serif;
+    }
+
+    /* ──────────────────────── OPTIONS ──────────────────────── */
+    .opt-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all .18s;
+      user-select: none;
+      background: var(--off-white);
+    }
+
+    .opt-row:hover {
+      border-color: var(--green-mid);
+      background: var(--green-light);
+    }
+
+    .opt-row.on {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .opt-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid var(--gray-light);
+      transition: all .18s;
+    }
+
+    .opt-row.on .opt-icon {
+      background: var(--green);
+      border-color: var(--green);
+      filter: grayscale(0);
+    }
+
+    .opt-info {
+      flex: 1;
+    }
+
+    .opt-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .opt-desc {
+      font-size: 11px;
+      color: var(--gray-dark);
+      font-weight: 300;
+      margin-top: 1px;
+    }
+
+    .opt-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-dark);
+      font-family: 'Lato', monospace;
+      white-space: nowrap;
+    }
+
+    .opt-row.on .opt-price {
+      color: var(--green-dark);
+    }
+
+    .opt-toggle {
+      width: 42px;
+      height: 22px;
+      background: var(--gray);
+      border-radius: 11px;
+      position: relative;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+
+    .opt-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    }
+
+    .opt-row.on .opt-toggle {
+      background: var(--green);
+    }
+
+    .opt-row.on .opt-toggle::after {
+      transform: translateX(20px);
+    }
+
+    .member-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #EDF4EF 0%, #D6EBD9 100%);
+      border: 1.5px solid var(--green-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-bottom: 20px;
+      user-select: none;
+      transition: all .18s;
+    }
+
+    .member-banner:hover {
+      border-color: var(--green);
+    }
+
+    .member-banner.on {
+      border-color: var(--green);
+      background: linear-gradient(135deg, #D6EBD9 0%, #C0DEC5 100%);
+    }
+
+    .member-banner-icon {
+      font-size: 24px;
+    }
+
+    .member-banner-info {
+      flex: 1;
+    }
+
+    .member-banner-info strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green-dark);
+      display: block;
+    }
+
+    .member-banner-info span {
+      font-size: 12px;
+      color: var(--gray-dark);
+      font-weight: 300;
+    }
+
+    .discount-pill {
+      background: var(--green);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      letter-spacing: .5px;
+    }
+
+    /* ──────────────────────── CONDITIONS LIST ──────────────────────── */
+    .cond-list {
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .cond-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--gray-light);
+      cursor: pointer;
+      transition: background .15s;
+      user-select: none;
+    }
+
+    .cond-item:last-child {
+      border-bottom: none;
+    }
+
+    .cond-item:hover {
+      background: var(--off-white);
+    }
+
+    .cond-item.ok {
+      background: var(--green-light);
+    }
+
+    .cond-box {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gray);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      background: white;
+    }
+
+    .cond-item.ok .cond-box {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cond-item.ok .cond-box::after {
+      content: '✓';
+    }
+
+    .cond-text {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.55;
+    }
+
+    .cond-item.ok .cond-text {
+      color: var(--green-dark);
+    }
+
+    /* ──────────────────────── SIGNATURE ──────────────────────── */
+    .sig-wrap {
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .sig-bar {
+      background: var(--gray-light);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sig-bar span {
+      font-size: 12px;
+      color: var(--gray-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .sig-clear {
+      font-size: 12px;
+      color: var(--red);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-weight: 700;
+      font-family: 'Lato', sans-serif;
+      letter-spacing: .3px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background .15s;
+    }
+
+    .sig-clear:hover {
+      background: rgba(192, 57, 43, .1);
+    }
+
+    canvas#sigCanvas {
+      display: block;
+      width: 100%;
+      height: 140px;
+      cursor: crosshair;
+      background: white;
+      touch-action: none;
+    }
+
+    /* ──────────────────────── SIDEBAR ──────────────────────── */
+    .sidebar {
+      grid-column: 2;
+      grid-row: 1 / 20;
+      position: sticky;
+      top: 74px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .summary-head {
+      background: var(--green-dark);
+      padding: 20px 24px;
+    }
+
+    .summary-head h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .summary-head .summary-date {
+      font-size: 13px;
+      color: var(--green-mid);
+      font-weight: 300;
+    }
+
+    .summary-body {
+      padding: 20px 24px;
+    }
+
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .sum-key {
+      font-size: 12px;
+      color: var(--gray-dark);
+      font-weight: 400;
+    }
+
+    .sum-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: 'Lato', monospace;
+    }
+
+    .sum-val.green {
+      color: var(--green);
+    }
+
+    .sum-val.discount {
+      color: var(--accent);
+    }
+
+    .sum-sep {
+      height: 1px;
+      background: var(--gray-light);
+      margin: 12px 0;
+    }
+
+    .sum-total-row {
+      background: var(--green-light);
+      border: 1.5px solid var(--green-mid);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .sum-total-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--green-dark);
+    }
+
+    .sum-total-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+
+    .sum-total-amount .curr {
+      font-size: 13px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      margin-right: 3px;
+    }
+
+    .sum-badge {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      display: none;
+    }
+
+    .sum-badge.green {
+      background: rgba(107, 158, 94, .15);
+      color: var(--green-dark);
+      border: 1px solid var(--green-mid);
+      display: block;
+    }
+
+    .sum-badge.orange {
+      background: #FEF3E8;
+      color: #8B5E1A;
+      border: 1px solid #F0DCB0;
+      display: block;
+    }
+
+    /* Contact block in sidebar */
+    .contact-card {
+      background: var(--green-dark);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-top: 16px;
+      color: white;
+    }
+
+    .contact-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--green-mid);
+    }
+
+    .contact-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .contact-line .ico {
+      font-size: 14px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .contact-line a {
+      color: var(--green-mid);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .contact-line a:hover {
+      text-decoration: underline;
+    }
+
+    /* ──────────────────────── NAV BUTTONS ──────────────────────── */
+    .nav-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-light);
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all .15s;
+      letter-spacing: .3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+      box-shadow: 0 4px 12px rgba(58, 107, 74, .3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-dark);
+      border-color: var(--gray-light);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gray);
+      color: var(--ink);
+    }
+
+    .btn-submit {
+      background: var(--green-dark);
+      color: white;
+      border-color: var(--green-dark);
+      padding: 14px 36px;
+      font-size: 15px;
+    }
+
+    .btn-submit:hover {
+      background: var(--green);
+      box-shadow: 0 4px 20px rgba(43, 80, 56, .35);
+      transform: translateY(-1px);
+    }
+
+    /* ──────────────────────── SECTION ──────────────────────── */
+    .section {
+      display: none;
+      animation: up .3s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes up {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ──────────────────────── RECAP PAGE ──────────────────────── */
+    .recap-block {
+      border: 1.5px solid var(--gray-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .recap-block-head {
+      background: var(--gray-light);
+      padding: 10px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-dark);
+    }
+
+    .recap-block-body {
+      padding: 16px 18px;
+    }
+
+    .recap-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .recap-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .recap-row .k {
+      color: var(--gray-dark);
+      font-weight: 300;
+    }
+
+    .recap-row .v {
+      font-weight: 700;
+    }
+
+    .iban-payment-box {
+      background: var(--green-dark);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .iban-payment-box .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--green-mid);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .iban-payment-box .iban-num {
+      font-family: 'Lato', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 2px;
+    }
+
+    .warn-box {
+      background: #FEF8EE;
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5A4010;
+    }
+
+    .warn-box strong {
+      color: #7A5A00;
+    }
+
+    /* ──────────────────────── SUCCESS ──────────────────────── */
+    #successWrap {
+      display: none;
+      grid-column: 1 / -1;
+    }
+
+    #successWrap.show {
+      display: block;
+    }
+
+    .success-inner {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 60px 48px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .success-circle {
+      width: 80px;
+      height: 80px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: white;
+      margin: 0 auto 28px;
+      box-shadow: 0 8px 24px rgba(58, 107, 74, .35);
+    }
+
+    .success-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+    }
+
+    .success-inner p {
+      color: var(--gray-dark);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    /* ──────────────────────── DIVIDER ──────────────────────── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 18px;
+    }
+
+    .section-divider span {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-dark);
+      white-space: nowrap;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-light);
+    }
+
+    /* ──────────────────────── INFO CHIP ──────────────────────── */
+    .info-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      border: 1px solid var(--green-mid);
+      color: var(--green-dark);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    .info-chip strong {
+      font-weight: 700;
+    }
+
+    @media (max-width: 820px) {
+      .page-wrap {
+        grid-template-columns: 1fr;
+        padding: 20px 16px 60px;
+      }
+
+      .sidebar {
+        grid-column: 1;
+        position: static;
+      }
+
+      .header-inner {
+        padding: 16px 20px;
+        flex-wrap: wrap;
+      }
+
+      .header-meta {
+        display: none;
+      }
+
+      .progress-inner {
+        padding: 0 16px;
+        overflow-x: auto;
+      }
+
+      .prog-step-label {
+        font-size: 11px;
+      }
+
+      .top-band {
+        padding: 6px 16px;
+      }
+
+      .fields-2,
+      .fields-13 {
+        grid-template-columns: 1fr;
+      }
+
+      .period-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAND -->
+  <div class="top-band">
+    <div class="top-band-left">
+      <span>🏔</span>
+      <span><strong>Commune de Plateau de Diesse</strong> — leplateaudediesse.ch</span>
+    </div>
+    <div class="top-band-right">Valable dès le 19.04.2025</div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="header-emblem">
+        <span class="header-emblem-text">ADS</span>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-titles">
+        <h1>Contrat de Location</h1>
+        <div class="sub">Amicale du Stand<span>·</span>Stand ADS, Prêles</div>
+      </div>
+      <div class="header-meta">
+        <div class="valid">Valable dès le 01.01.2025</div>
+        <div class="iban-small">IBAN CH37 0900 0000 1711 4870 5</div>
+        <div class="contact-pill">📞 Daniela Allemann · 078 638 47 91</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-inner" id="progressBar">
+      <div class="prog-step active" onclick="goStep(0)">
+        <div class="prog-dot">1</div>
+        <div><span class="prog-step-label">Date & Période</span><span class="prog-step-sublabel">Créneau souhaité</span>
+        </div>
+      </div>
+      <div class="prog-step" onclick="goStep(1)">
+        <div class="prog-dot">2</div>
+        <div><span class="prog-step-label">Options</span><span class="prog-step-sublabel">Services
+            complémentaires</span></div>
+      </div>
+      <div class="prog-step" onclick="goStep(2)">
+        <div class="prog-dot">3</div>
+        <div><span class="prog-step-label">Coordonnées</span><span class="prog-step-sublabel">Informations
+            locataire</span></div>
+      </div>
+      <div class="prog-step" onclick="goStep(3)">
+        <div class="prog-dot">4</div>
+        <div><span class="prog-step-label">Conditions</span><span class="prog-step-sublabel">Lu & approuvé</span></div>
+      </div>
+      <div class="prog-step" onclick="goStep(4)">
+        <div class="prog-dot">5</div>
+        <div><span class="prog-step-label">Récapitulatif</span><span class="prog-step-sublabel">Confirmation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="page-wrap">
+
+    <!-- ═══════════════════ STEP 1 ═══════════════════ -->
+    <div class="section active card" id="step0">
+      <div class="card-header">
+        <div class="card-step-badge">1</div>
+        <div>
+          <h2>Date &amp; Période</h2>
+          <p>Sélectionnez la date et le type de créneau souhaité</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="field-group">
+          <label class="field-label">Date de location <span class="req">*</span></label>
+          <input type="date" id="dateField" onchange="onDateChange()">
+          <div class="field-error" id="errDate">Veuillez sélectionner une date.</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Période souhaitée <span class="req">*</span></label>
+          <div class="period-grid">
+            <div class="pcard" data-p="journee" onclick="pickPeriod(this)">
+              <div class="pcard-name">🌤 Journée</div>
+              <div class="pcard-hours">de 10h à 17h</div>
+              <span class="pcard-price" id="priceJ">90.—</span>
+            </div>
+            <div class="pcard" data-p="soiree" onclick="pickPeriod(this)">
+              <div class="pcard-name">🌙 Soirée</div>
+              <div class="pcard-hours">de 18h à 9h</div>
+              <span class="pcard-price" id="priceS">90.—</span>
+            </div>
+            <div class="pcard" data-p="complet" onclick="pickPeriod(this)">
+              <div class="pcard-name">📅 Jour complet ~23h</div>
+              <div class="pcard-hours">de 10h à 9h (lendemain)</div>
+              <span class="pcard-price" id="priceC">150.—</span>
+            </div>
+            <div class="pcard" data-p="consecutif" onclick="pickPeriod(this)">
+              <div class="pcard-name">📆 ≥ 3 jours consécutifs</div>
+              <div class="pcard-hours">Prix par jour · minimum 3 jours</div>
+              <span class="pcard-price" id="priceCons">120.—/j</span>
+            </div>
+          </div>
+          <div class="we-note"><strong>Week-end & jours fériés :</strong> journée et soirée non proposées · jour complet
+            190.— · ≥3 jours 160.—/j</div>
+          <div class="field-error" id="errPeriod">Veuillez choisir une période.</div>
+        </div>
+
+        <div class="field-group" id="grpDays" style="display:none">
+          <label class="field-label">Jours concernés</label>
+          <div class="day-pills">
+            <div class="dpill" data-d="lun" onclick="toggleDay(this)">Lun</div>
+            <div class="dpill" data-d="mar" onclick="toggleDay(this)">Mar</div>
+            <div class="dpill" data-d="mer" onclick="toggleDay(this)">Mer</div>
+            <div class="dpill" data-d="jeu" onclick="toggleDay(this)">Jeu</div>
+            <div class="dpill" data-d="ven" onclick="toggleDay(this)">Ven</div>
+            <div class="dpill weekend" data-d="sam" onclick="toggleDay(this)">Sam</div>
+            <div class="dpill weekend" data-d="dim" onclick="toggleDay(this)">Dim</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Nombre de personnes prévues <span class="req">*</span></label>
+          <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+            <div class="counter-group">
+              <button class="cbtn" onclick="changeNb(-1)">−</button>
+              <input type="number" class="cval" id="nbVal" value="20" min="1" max="70" oninput="onNbInput(this)">
+              <button class="cbtn" onclick="changeNb(1)">+</button>
+            </div>
+            <div class="info-chip">🏠 <span>Capacité max. <strong>65</strong> places assises · service
+                <strong>70</strong> pers.</span></div>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn btn-primary" onclick="next(0)">Continuer <span>→</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ STEP 2 ═══════════════════ -->
+    <div class="section card" id="step1">
+      <div class="card-header">
+        <div class="card-step-badge">2</div>
+        <div>
+          <h2>Options &amp; Services</h2>
+          <p>Personnalisez votre location selon vos besoins</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="member-banner" id="memberBanner" onclick="toggleMember()">
+          <div class="member-banner-icon">🌲</div>
+          <div class="member-banner-info">
+            <strong>Membre ADS</strong>
+            <span>Bénéficiez d'une réduction de 20% sur la location</span>
+          </div>
+          <div class="discount-pill" id="discPill" style="display:none">−20%</div>
+          <div class="opt-toggle" id="memberToggle"></div>
+        </div>
+
+        <div class="section-divider"><span>Options supplémentaires</span></div>
+
+        <div class="opt-row" id="optCaution" onclick="toggleOpt('caution')">
+          <div class="opt-icon">🔑</div>
+          <div class="opt-info">
+            <div class="opt-name">Caution – Non membre</div>
+            <div class="opt-desc">CHF 150.— remboursés via IBAN à la reddition si tout est OK</div>
+          </div>
+          <span class="opt-price">+ 150.—</span>
+          <div class="opt-toggle"></div>
+        </div>
+
+        <div class="opt-row" id="optPizza" onclick="toggleOpt('pizza')">
+          <div class="opt-icon">🍕</div>
+          <div class="opt-info">
+            <div class="opt-name">Four à pizza</div>
+            <div class="opt-desc">½ caddie de bois suppl. inclus · locataire expérimenté requis</div>
+          </div>
+          <span class="opt-price">+ 50.—</span>
+          <div class="opt-toggle"></div>
+        </div>
+
+        <div class="opt-row" id="optBois" onclick="toggleOpt('bois')">
+          <div class="opt-icon">🪵</div>
+          <div class="opt-info">
+            <div class="opt-name">Bois de chauffage supplémentaire</div>
+            <div class="opt-desc">Période hivernale · stand fermé novembre → mars</div>
+          </div>
+          <span class="opt-price">+ 30.—</span>
+          <div class="opt-toggle"></div>
+        </div>
+
+        <div class="section-divider"><span>Nettoyage</span></div>
+
+        <div class="opt-row on" id="optNettoyage" onclick="toggleOpt('nettoyage')">
+          <div class="opt-icon">🧹</div>
+          <div class="opt-info">
+            <div class="opt-name">Nettoyage assuré par le locataire</div>
+            <div class="opt-desc">Si NON → forfait de 50.—/h facturé ultérieurement par la gérance</div>
+          </div>
+          <span class="opt-price">Inclus</span>
+          <div class="opt-toggle"></div>
+        </div>
+
+        <div class="info-chip" style="margin-top:20px; display:flex;">🎁 <span><strong>Inclus de base :</strong> 1
+            caddie de bois · eau courante · électricité · cuisine équipée · cheminée intérieure · ~65 places · vaisselle
+            ~50 pers.</span></div>
+
+        <div class="nav-btns">
+          <button class="btn btn-ghost" onclick="prev(1)">← Retour</button>
+          <button class="btn btn-primary" onclick="next(1)">Continuer →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ STEP 3 ═══════════════════ -->
+    <div class="section card" id="step2">
+      <div class="card-header">
+        <div class="card-step-badge">3</div>
+        <div>
+          <h2>Coordonnées du locataire</h2>
+          <p>Informations du responsable de la location</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="fields-2">
+          <div class="field-group">
+            <label class="field-label">Prénom <span class="req">*</span></label>
+            <input type="text" id="prenom" placeholder="Marie">
+            <div class="field-error" id="errPrenom">Champ requis</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Nom <span class="req">*</span></label>
+            <input type="text" id="nom" placeholder="Dupont">
+            <div class="field-error" id="errNom">Champ requis</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Adresse <span class="req">*</span></label>
+          <input type="text" id="adresse" placeholder="Rue de la Forêt 3">
+          <div class="field-error" id="errAdresse">Champ requis</div>
+        </div>
+
+        <div class="fields-13">
+          <div class="field-group">
+            <label class="field-label">NP <span class="req">*</span></label>
+            <input type="text" id="np" placeholder="2517" maxlength="6">
+            <div class="field-error" id="errNp">Requis</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Localité <span class="req">*</span></label>
+            <input type="text" id="localite" placeholder="Diesse">
+            <div class="field-error" id="errLocalite">Champ requis</div>
+          </div>
+        </div>
+
+        <div class="fields-2">
+          <div class="field-group">
+            <label class="field-label">Téléphone / Mobile <span class="req">*</span></label>
+            <input type="tel" id="tel" placeholder="079 123 45 67">
+            <div class="field-error" id="errTel">Champ requis</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Adresse e-mail</label>
+            <input type="email" id="email" placeholder="marie@example.com">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">IBAN pour restitution de la caution</label>
+          <input type="text" id="ibanClient" placeholder="CH00 0000 0000 0000 0000 0"
+            style="font-family:'Lato',monospace; letter-spacing:1px;">
+          <div style="font-size:11px; color:var(--gray-dark); margin-top:5px; font-weight:300;">Uniquement si caution
+            non-membre applicable</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Remarques</label>
+          <textarea id="remarques" rows="3" placeholder="Informations complémentaires, demandes spéciales…"></textarea>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn btn-ghost" onclick="prev(2)">← Retour</button>
+          <button class="btn btn-primary" onclick="next(2)">Continuer →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ STEP 4 ═══════════════════ -->
+    <div class="section card" id="step3">
+      <div class="card-header">
+        <div class="card-step-badge">4</div>
+        <div>
+          <h2>Conditions de location</h2>
+          <p>Veuillez lire et approuver chaque condition</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="cond-list">
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text">Un jour de location = 23h (10h→9h du lendemain). Les jours fériés sont comptabilisés
+              comme week-end.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text">Le déneigement éventuel est à la charge du locataire. Par grand froid (&lt;0°C),
+              l'eau courante sera coupée et les WC mis hors service.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text">L'évacuation de tous les déchets est à la charge du locataire. Le brasero doit être
+              nettoyé par le client.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text">Pas de sous-location. Les membres ADS bénéficient d'une réduction de 20% sur la
+              location.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text"><strong>Annulation :</strong> en cas d'annulation dans le mois précédant la date de
+              location, 50% du montant total versé sera retenu à titre de dédommagement.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text"><strong>Responsabilité :</strong> l'ADS décline toute responsabilité pour incendie,
+              vols ou accidents. Le locataire garantit être couvert par une assurance RC.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text"><strong>Paiement :</strong> uniquement par voie bancaire sur IBAN CH37 0900 0000 1711
+              4870 5 dans les 7 jours. Le paiement confirme la réservation.</div>
+          </div>
+          <div class="cond-item" onclick="checkCond(this)">
+            <div class="cond-box"></div>
+            <div class="cond-text"><strong>Convention morale :</strong> respecter la nature, les activités agricoles et
+              forestières du site. Remettre les lieux dans leur état initial avant de quitter.</div>
+          </div>
+        </div>
+
+        <div class="field-error" id="errConds" style="margin-top:10px;">Veuillez accepter toutes les conditions.</div>
+
+        <div class="field-group" style="margin-top:24px;">
+          <label class="field-label">Signature <span class="req">*</span></label>
+          <div class="sig-wrap">
+            <div class="sig-bar">
+              <span>Signature du locataire</span>
+              <button class="sig-clear" onclick="clearSig()">Effacer</button>
+            </div>
+            <canvas id="sigCanvas" width="700" height="140"></canvas>
+          </div>
+          <div class="field-error" id="errSig">La signature est requise.</div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn btn-ghost" onclick="prev(3)">← Retour</button>
+          <button class="btn btn-primary" onclick="next(3)">Continuer →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ STEP 5 ═══════════════════ -->
+    <div class="section card" id="step4">
+      <div class="card-header">
+        <div class="card-step-badge">5</div>
+        <div>
+          <h2>Récapitulatif &amp; Validation</h2>
+          <p>Vérifiez les informations avant d'envoyer le contrat</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="recap-block">
+          <div class="recap-block-head">Date & Période</div>
+          <div class="recap-block-body">
+            <div class="recap-row"><span class="k">Date</span><span class="v" id="rDate">–</span></div>
+            <div class="recap-row"><span class="k">Période</span><span class="v" id="rPeriod">–</span></div>
+            <div class="recap-row"><span class="k">Nb personnes</span><span class="v" id="rNb">–</span></div>
+          </div>
+        </div>
+
+        <div class="recap-block">
+          <div class="recap-block-head">Options sélectionnées</div>
+          <div class="recap-block-body" id="rOpts">–</div>
+        </div>
+
+        <div class="recap-block">
+          <div class="recap-block-head">Locataire</div>
+          <div class="recap-block-body">
+            <div class="recap-row"><span class="k">Responsable</span><span class="v" id="rNom">–</span></div>
+            <div class="recap-row"><span class="k">Adresse</span><span class="v" id="rAdresse">–</span></div>
+            <div class="recap-row"><span class="k">Contact</span><span class="v" id="rContact">–</span></div>
+            <div class="recap-row" id="rIbanRow"><span class="k">IBAN caution</span><span class="v" id="rIban">–</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="iban-payment-box">
+          <span class="label">Effectuez votre paiement dans les 7 jours sur</span>
+          <div class="iban-num">CH37 0900 0000 1711 4870 5</div>
+        </div>
+
+        <div class="warn-box">
+          ⚠ Votre réservation ne sera <strong>définitivement validée qu'après réception du paiement total</strong>.<br>
+          Veuillez retourner le contrat signé (pages 1 &amp; 2) par e-mail à la gérante :<br>
+          <strong>Daniela Allemann</strong> · <a href="mailto:dani.alle57@gmail.com"
+            style="color:var(--earth)">dani.alle57@gmail.com</a> · 078 638 47 91
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn btn-ghost" onclick="prev(4)">← Retour</button>
+          <button class="btn btn-submit" onclick="submitForm()">✓ Valider le contrat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="successWrap">
+      <div class="success-inner">
+        <div class="success-circle">✓</div>
+        <h2>Contrat soumis avec succès</h2>
+        <p>Votre demande de réservation a bien été enregistrée.</p>
+        <p>La réservation sera <strong>définitivement confirmée</strong> après réception du paiement sur l'IBAN
+          <strong>CH37 0900 0000 1711 4870 5</strong> dans les 7 jours.
+        </p>
+        <p>La gérante Daniela Allemann vous contactera au plus tard une semaine avant la date de location.</p>
+        <button class="btn btn-primary" style="margin-top:28px;" onclick="location.reload()">Nouveau contrat</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <div class="sidebar">
+      <div class="summary-card">
+        <div class="summary-head">
+          <h3>Résumé de la réservation</h3>
+          <div class="summary-date" id="sumDate">Aucune date sélectionnée</div>
+        </div>
+        <div class="summary-body">
+          <div class="sum-row">
+            <span class="sum-key">Période</span>
+            <span class="sum-val green" id="sumPeriod">–</span>
+          </div>
+          <div class="sum-row">
+            <span class="sum-key">Personnes</span>
+            <span class="sum-val" id="sumNb">20 pers.</span>
+          </div>
+          <div class="sum-sep"></div>
+          <div class="sum-row">
+            <span class="sum-key">Location de base</span>
+            <span class="sum-val" id="sumBase">–</span>
+          </div>
+          <div id="sumOptRows"></div>
+          <div class="sum-row" id="sumDiscRow" style="display:none">
+            <span class="sum-key">Réduction membre (−20%)</span>
+            <span class="sum-val discount" id="sumDisc">–</span>
+          </div>
+          <div class="sum-total-row">
+            <span class="sum-total-label">Total CHF</span>
+            <span class="sum-total-amount"><span class="curr">CHF</span><span id="sumTotal">–</span></span>
+          </div>
+          <div class="sum-badge green" id="badgeMember" style="display:none">✓ Tarif membre ADS appliqué (−20%)</div>
+          <div class="sum-badge orange" id="badgeCaution" style="display:none">⚠ Caution CHF 150.— remboursable via IBAN
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <h4>Contacts</h4>
+        <div class="contact-line">
+          <span class="ico">📋</span>
+          <div><strong>Gérance & Réservations</strong><br>Daniela Allemann<br>
+            <a href="tel:0786384791">078 638 47 91</a><br>
+            <a href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a>
+          </div>
+        </div>
+        <div class="contact-line">
+          <span class="ico">💰</span>
+          <div><strong>Finances</strong><br>Valérie Jeanguenin<br>
+            <a href="tel:0796464572">079 646 45 72</a>
+          </div>
+        </div>
+        <div class="contact-line">
+          <span class="ico">📍</span>
+          <div>Stand ADS · 2515 Prêles<br>Chemin Neuf 1, 2517 Diesse</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    // ─── STATE ───────────────────────────────────────────────────────
+    const S = {
+      date: '', period: null, days: [], nb: 20,
+      member: false,
+      opts: { caution: false, pizza: false, bois: false, nettoyage: true }
+    };
+
+    const PRICE = {
+      journee: { wd: 90, we: null },
+      soiree: { wd: 90, we: null },
+      complet: { wd: 150, we: 190 },
+      consecutif: { wd: 120, we: 160 }
+    };
+
+    const LABELS = {
+      journee: 'Journée (10h–17h)', soiree: 'Soirée (18h–9h)',
+      complet: 'Jour complet ~23h', consecutif: '≥ 3 jours consécutifs'
+    };
+
+    // ─── UTILS ───────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+    const show = id => $(id).style.display = 'block';
+    const hide = id => $(id).style.display = 'none';
+
+    function isWE(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr + 'T12:00:00');
+      return d.getDay() === 0 || d.getDay() === 6;
+    }
+    function isHoliday(dateStr) {
+      if (!dateStr) return false;
+      const h = ['01-01', '04-18', '04-21', '05-01', '05-29', '06-09', '08-01', '12-25', '12-26'];
+      return h.includes(dateStr.slice(5));
+    }
+    function weDay(d) { return d === 'sam' || d === 'dim'; }
+
+    function fmtDate(d) {
+      if (!d) return '–';
+      const [y, m, dd] = d.split('-');
+      return `${dd}.${m}.${y}`;
+    }
+    function fmtAmt(n) { return n.toFixed(2); }
+
+    // ─── CALC ────────────────────────────────────────────────────────
+    function calcTotal() {
+      if (!S.period) return null;
+      const we = isWE(S.date) || isHoliday(S.date);
+      const pr = PRICE[S.period];
+
+      let base = 0;
+      if (S.period === 'consecutif') {
+        if (S.days.length === 0) base = pr.wd * 3;
+        else base = S.days.reduce((a, d) => a + (weDay(d) ? pr.we : pr.wd), 0);
+      } else {
+        const p = we && pr.we !== null ? pr.we : (!we ? pr.wd : null);
+        if (p === null) return null;
+        base = p;
+      }
+
+      let opts = 0;
+      if (S.opts.caution) opts += 150;
+      if (S.opts.pizza) opts += 50;
+      if (S.opts.bois) opts += 30;
+
+      const disc = S.member ? base * 0.2 : 0;
+      return { base, disc, opts, total: base - disc + opts };
+    }
+
+    // ─── RENDER SUMMARY ──────────────────────────────────────────────
+    function renderSummary() {
+      $('sumDate').textContent = S.date ? fmtDate(S.date) : 'Aucune date sélectionnée';
+      $('sumPeriod').textContent = S.period ? LABELS[S.period] : '–';
+      $('sumNb').textContent = S.nb + ' pers.';
+
+      const c = calcTotal();
+      $('sumBase').textContent = c ? fmtAmt(c.base) + ' CHF' : '–';
+
+      // opt rows
+      let html = '';
+      if (S.opts.caution) html += optRow('Caution', '+150.00 CHF');
+      if (S.opts.pizza) html += optRow('Four à pizza', '+50.00 CHF');
+      if (S.opts.bois) html += optRow('Bois suppl.', '+30.00 CHF');
+      if (!S.opts.nettoyage) html += optRow('Nettoyage (si non fait)', '50.—/h');
+      $('sumOptRows').innerHTML = html;
+
+      if (S.member && c) {
+        $('sumDiscRow').style.display = 'flex';
+        $('sumDisc').textContent = '−' + fmtAmt(c.disc) + ' CHF';
+      } else { $('sumDiscRow').style.display = 'none'; }
+
+      $('sumTotal').textContent = c ? fmtAmt(c.total) : '–';
+      $('badgeMember').style.display = S.member ? 'block' : 'none';
+      $('badgeCaution').style.display = S.opts.caution ? 'block' : 'none';
+    }
+    function optRow(k, v) {
+      return `<div class="sum-row"><span class="sum-key">${k}</span><span class="sum-val">${v}</span></div>`;
+    }
+
+    // ─── STEP 1 ──────────────────────────────────────────────────────
+    function onDateChange() {
+      S.date = $('dateField').value;
+      const we = isWE(S.date) || isHoliday(S.date);
+      document.querySelectorAll('[data-p="journee"],[data-p="soiree"]').forEach(c => {
+        c.classList.toggle('disabled', we);
+      });
+      $('priceC').textContent = we ? '190.—' : '150.—';
+      $('priceCons').textContent = we ? '160.—/j' : '120.—/j';
+      if (we && (S.period === 'journee' || S.period === 'soiree')) {
+        S.period = null;
+        document.querySelectorAll('.pcard').forEach(c => c.classList.remove('selected'));
+      }
+      renderSummary();
+    }
+
+    function pickPeriod(el) {
+      if (el.classList.contains('disabled')) return;
+      document.querySelectorAll('.pcard').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      S.period = el.dataset.p;
+      $('grpDays').style.display = S.period === 'consecutif' ? 'block' : 'none';
+      renderSummary();
+    }
+
+    let nbVal = 20;
+    function changeNb(d) {
+      nbVal = Math.max(1, Math.min(70, nbVal + d));
+      S.nb = nbVal;
+      $('nbVal').value = nbVal;
+      renderSummary();
+    }
+    function onNbInput(el) {
+      nbVal = Math.max(1, Math.min(70, parseInt(el.value) || 1));
+      S.nb = nbVal;
+      el.value = nbVal;
+      renderSummary();
+    }
+
+    function toggleDay(el) {
+      el.classList.toggle('on');
+      const d = el.dataset.d;
+      S.days = el.classList.contains('on')
+        ? [...S.days, d]
+        : S.days.filter(x => x !== d);
+      renderSummary();
+    }
+
+    // ─── STEP 2 ──────────────────────────────────────────────────────
+    function toggleMember() {
+      S.member = !S.member;
+      $('memberBanner').classList.toggle('on', S.member);
+      $('memberToggle').style.background = S.member ? 'var(--green)' : '';
+      $('discPill').style.display = S.member ? 'inline-flex' : 'none';
+      if (S.member) {
+        S.opts.caution = false;
+        $('optCaution').classList.remove('on');
+        $('optCaution').style.opacity = '.4';
+        $('optCaution').style.pointerEvents = 'none';
+      } else {
+        $('optCaution').style.opacity = '';
+        $('optCaution').style.pointerEvents = '';
+      }
+      renderSummary();
+    }
+
+    function toggleOpt(key) {
+      S.opts[key] = !S.opts[key];
+      const id = 'opt' + key[0].toUpperCase() + key.slice(1);
+      $(id).classList.toggle('on', S.opts[key]);
+      renderSummary();
+    }
+
+    // ─── NAVIGATION ──────────────────────────────────────────────────
+    function goStep(idx) {
+      document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === idx));
+      document.querySelectorAll('.prog-step').forEach((s, i) => {
+        s.classList.remove('active', 'done');
+        if (i === idx) s.classList.add('active');
+        else if (i < idx) s.classList.add('done');
+      });
+      if (idx === 4) fillRecap();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function next(from) {
+      if (!validate(from)) return;
+      goStep(from + 1);
+    }
+    function prev(from) { goStep(from - 1); }
+
+    function validate(idx) {
+      if (idx === 0) {
+        let ok = true;
+        if (!S.date) { $('errDate').style.display = 'block'; ok = false; } else $('errDate').style.display = 'none';
+        if (!S.period) { $('errPeriod').style.display = 'block'; ok = false; } else $('errPeriod').style.display = 'none';
+        return ok;
+      }
+      if (idx === 2) {
+        let ok = true;
+        ['prenom', 'nom', 'adresse', 'np', 'localite', 'tel'].forEach(id => {
+          const v = $(id).value.trim();
+          if (!v) { $('err' + id[0].toUpperCase() + id.slice(1)).style.display = 'block'; $(id).classList.add('err'); ok = false; }
+          else { $('err' + id[0].toUpperCase() + id.slice(1)).style.display = 'none'; $(id).classList.remove('err'); }
+        });
+        return ok;
+      }
+      if (idx === 3) {
+        const allOk = [...document.querySelectorAll('.cond-item')].every(c => c.classList.contains('ok'));
+        if (!allOk) { $('errConds').style.display = 'block'; return false; }
+        $('errConds').style.display = 'none';
+        if (!sigHasData()) { $('errSig').style.display = 'block'; return false; }
+        $('errSig').style.display = 'none';
+        return true;
+      }
+      return true;
+    }
+
+    // ─── CONDITIONS ───────────────────────────────────────────────────
+    function checkCond(el) { el.classList.toggle('ok'); }
+
+    // ─── SIGNATURE ───────────────────────────────────────────────────
+    const canvas = $('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, pts = [];
+
+    function pos(e) {
+      const r = canvas.getBoundingClientRect();
+      const sx = canvas.width / r.width, sy = canvas.height / r.height;
+      const src = e.touches ? e.touches[0] : e;
+      return { x: (src.clientX - r.left) * sx, y: (src.clientY - r.top) * sy };
+    }
+    function startDraw(e) { drawing = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); pts.push(p); }
+    function draw(e) {
+      if (!drawing) return;
+      const p = pos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = '#2B5038'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.stroke(); pts.push(p);
+    }
+    function endDraw() { drawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e); }, { passive: false });
+    canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e); }, { passive: false });
+    canvas.addEventListener('touchend', endDraw);
+
+    function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); pts = []; }
+    function sigHasData() { return pts.length > 5; }
+
+    // ─── RECAP ───────────────────────────────────────────────────────
+    function fillRecap() {
+      $('rDate').textContent = fmtDate(S.date);
+      $('rPeriod').textContent = S.period ? LABELS[S.period] : '–';
+      $('rNb').textContent = S.nb + ' personnes';
+      $('rNom').textContent = ($('prenom').value + ' ' + $('nom').value).trim();
+      $('rAdresse').textContent = [$('adresse').value, $('np').value, $('localite').value].filter(Boolean).join(', ');
+      $('rContact').textContent = [$('tel').value, $('email').value].filter(Boolean).join(' · ');
+      $('rIban').textContent = $('ibanClient').value || '–';
+
+      const c = calcTotal();
+      const rows = [];
+      if (S.member) rows.push(row('Membre ADS', '<span style="color:var(--accent)">−20% appliqué</span>'));
+      if (S.opts.caution) rows.push(row('Caution non-membre', '+ 150.00 CHF'));
+      if (S.opts.pizza) rows.push(row('Four à pizza', '+ 50.00 CHF'));
+      if (S.opts.bois) rows.push(row('Bois chauffage suppl.', '+ 30.00 CHF'));
+      if (!S.opts.nettoyage) rows.push(row('Nettoyage (à facturer)', '50.—/h'));
+      if (!rows.length) rows.push('<div class="recap-row"><span class="k" style="color:var(--gray)">Aucune option supplémentaire</span></div>');
+      $('rOpts').innerHTML = rows.join('');
+
+      if (c) $('sumTotal').textContent = fmtAmt(c.total);
+    }
+    function row(k, v) { return `<div class="recap-row"><span class="k">${k}</span><span class="v">${v}</span></div>`; }
+
+    // ─── SUBMIT ──────────────────────────────────────────────────────
+    function submitForm() {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelector('.sidebar').style.display = 'none';
+      $('successWrap').classList.add('show');
+    }
+
+    // ─── INIT ────────────────────────────────────────────────────────
+    const today = new Date().toISOString().split('T')[0];
+    $('dateField').min = today;
+    renderSummary();
+  </script>
+</body>
+
+</html>
