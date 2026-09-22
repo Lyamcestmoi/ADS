@@ -2,6 +2,7 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { ArrowRight, CalendarCheck, CircleDollarSign, House, MapPin, SlidersHorizontal } from '@lucide/astro';
 
 const title = 'Stand ADS Prêles — Location de salle · Plateau de Diesse';
 const description =
@@ -16,13 +17,13 @@ const description =
     <img src="/stand.png" alt="Stand ADS Prêles avec vue sur le Chasseral" class="hero-img">
     <div class="hero-overlay">
       <div class="hero-content">
-        <div class="hero-eyebrow">📍 Prêles · Plateau de Diesse · Berne</div>
+        <div class="hero-eyebrow"><MapPin size={15} stroke-width={1.8} aria-hidden="true" /> Prêles · Plateau de Diesse · Berne</div>
         <h1 class="hero-title">Le Stand <em>ADS</em><br>à Prêles</h1>
         <p class="hero-desc">Une salle conviviale au cœur du Plateau de Diesse, avec vue imprenable sur le Chasseral.
           Idéale pour vos fêtes, repas et rassemblements.</p>
         <div class="hero-actions">
-          <a href="/reservation/" class="btn-hero btn-hero-primary">📋 Réserver en ligne</a>
-          <a href="#infos" class="btn-hero btn-hero-ghost">En savoir plus ↓</a>
+          <a href="/reservation/" class="btn-hero btn-hero-primary"><CalendarCheck size={18} stroke-width={1.8} aria-hidden="true" /> Réserver en ligne</a>
+          <a href="#infos" class="btn-hero btn-hero-ghost">En savoir plus</a>
         </div>
       </div>
     </div>
@@ -65,7 +66,7 @@ const description =
         <!-- équipements -->
         <div class="info-card">
           <div class="info-card-head">
-            <span class="info-card-icon">🏠</span>
+            <span class="info-card-icon"><House size={22} stroke-width={1.8} aria-hidden="true" /></span>
             <h3>Équipements inclus</h3>
           </div>
           <div class="info-card-body">
@@ -87,7 +88,7 @@ const description =
         <div style="display: flex; flex-direction: column; gap: 20px;">
           <div class="info-card">
             <div class="info-card-head">
-              <span class="info-card-icon">💰</span>
+              <span class="info-card-icon"><CircleDollarSign size={22} stroke-width={1.8} aria-hidden="true" /></span>
               <h3>Tarifs</h3>
             </div>
             <div class="info-card-body">
@@ -117,20 +118,20 @@ const description =
 
           <div class="info-card">
             <div class="info-card-head">
-              <span class="info-card-icon">⚙️</span>
+              <span class="info-card-icon"><SlidersHorizontal size={22} stroke-width={1.8} aria-hidden="true" /></span>
               <h3>Options disponibles</h3>
             </div>
             <div class="info-card-body">
               <div class="tarif-row">
-                <span class="t-name">🍕 Four à pizza</span>
+                <span class="t-name">Four à pizza</span>
                 <span class="t-price">+ 50.—</span>
               </div>
               <div class="tarif-row">
-                <span class="t-name">🪵 Bois suppl. (hiver)</span>
+                <span class="t-name">Bois supplémentaire (hiver)</span>
                 <span class="t-price">+ 30.—</span>
               </div>
               <div class="tarif-row">
-                <span class="t-name">🧹 Nettoyage (si non fait)</span>
+                <span class="t-name">Nettoyage (si non fait)</span>
                 <span class="t-price">50.—/h</span>
               </div>
             </div>
@@ -149,7 +150,7 @@ const description =
         <p>Remplissez le contrat de location en ligne, la gérance vous confirmera la disponibilité. Votre réservation
           est validée après réception du paiement.</p>
       </div>
-      <a href="/reservation/" class="btn-cta">📋 Accéder au formulaire →</a>
+      <a href="/reservation/" class="btn-cta">Accéder au formulaire <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" /></a>
     </div>
   </div>
 
@@ -164,7 +165,6 @@ const description =
       <div class="coming-grid reveal">
 
         <div class="coming-card">
-          <div class="coming-icon">👥</div>
           <div class="coming-title">Le Comité ADS</div>
           <div class="coming-desc">Présentation des membres du comité de l'Amicale Du Stand, leurs rôles et coordonnées.
           </div>
@@ -176,7 +176,6 @@ const description =
         </div>
 
         <div class="coming-card">
-          <div class="coming-icon">🖼</div>
           <div class="coming-title">Galerie Photos</div>
           <div class="coming-desc">Découvrez le stand en images : l'intérieur, les événements passés, la vue sur le
             Chasseral.</div>
@@ -188,7 +187,6 @@ const description =
         </div>
 
         <div class="coming-card">
-          <div class="coming-icon">📋</div>
           <div class="coming-title">Infos Pratiques</div>
           <div class="coming-desc">Pense-bête complet, ce qu'il faut apporter, les règles d'utilisation et le calendrier
             des réservations.</div>
@@ -214,37 +212,31 @@ const description =
       <div class="contact-grid reveal">
 
         <div class="contact-box">
-          <h4>📋 Gérance & Réservations</h4>
-          <div class="contact-line"><span class="ci">👤</span>
+          <h4><CalendarCheck size={19} stroke-width={1.8} aria-hidden="true" /> Gérance & Réservations</h4>
+          <div class="contact-line">
             <div><strong>Daniela Allemann</strong><br><span>Chemin Neuf 1, 2517 Diesse</span></div>
           </div>
-          <div class="contact-line"><span class="ci">📞</span><a href="tel:0786384791">078 638 47 91</a></div>
-          <div class="contact-line"><span class="ci">✉</span><a
-              href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a></div>
+          <div class="contact-line"><a href="tel:0786384791">078 638 47 91</a></div>
+          <div class="contact-line"><a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a></div>
         </div>
 
         <div class="contact-box">
-          <h4>💰 Finances</h4>
-          <div class="contact-line"><span class="ci">👤</span>
+          <h4><CircleDollarSign size={19} stroke-width={1.8} aria-hidden="true" /> Finances</h4>
+          <div class="contact-line">
             <div><strong>Valérie Jeanguenin</strong></div>
           </div>
-          <div class="contact-line"><span class="ci">📞</span><a href="tel:0796464572">079 646 45 72</a></div>
-          <div class="contact-line"><span class="ci">✉</span><a
-              href="mailto:valerie.jeanguenin@gmail.com">valerie.jeanguenin@gmail.com</a></div>
-          <div class="contact-line" style="margin-top:10px;"><span class="ci">🏦</span>
-            <div><span>IBAN : </span><strong style="font-family:monospace; font-size:12px;">CH37 0900 0000 1711 4870
-                5</strong></div>
-          </div>
+          <div class="contact-line"><a href="tel:0796464572">079 646 45 72</a></div>
+          <div class="contact-line"><a href="mailto:caisse@ads-preles.ch">caisse@ads-preles.ch</a></div>
         </div>
 
         <div class="contact-box">
-          <h4>📍 Accès au stand</h4>
-          <div class="contact-line"><span class="ci">📌</span>
+          <h4><MapPin size={19} stroke-width={1.8} aria-hidden="true" /> Accès au stand</h4>
+          <div class="contact-line">
             <div><strong>Stand ADS</strong><br><span>2515 Prêles</span><br><span>Plateau de Diesse, BE</span></div>
           </div>
-          <a href="https://maps.google.com/?q=Stand+ADS+Prêles+2515" target="_blank" class="map-placeholder"
+          <a href="https://maps.google.com/?q=Stand+ADS+Prêles+2515" target="_blank" rel="noopener noreferrer" class="map-placeholder"
             style="margin-top:14px;">
-            <div class="map-icon">🗺</div>
+            <div class="map-icon"><MapPin size={30} stroke-width={1.7} aria-hidden="true" /></div>
             <span>Ouvrir dans Google Maps</span>
             <small>Stand ADS · Prêles · 2515</small>
           </a>
