@@ -1,4 +1,6 @@
 ---
+import { Mail, Phone } from '@lucide/astro';
+
 interface Props {
   active?: 'home' | 'reservation';
 }
@@ -8,13 +10,21 @@ const { active = 'home' } = Astro.props;
 
 <div class="topbar">
   <div>
-    🏔 <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
+    <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
     <span style="margin-left:12px; opacity:.5;">·</span>
     <span style="margin-left:12px;">Stand ADS — 2515 Prêles</span>
   </div>
+
   <div class="topbar-right">
-    <span>📞 <a href="tel:0786384791">078 638 47 91</a></span>
-    <span>✉ <a href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a></span>
+    <span class="topbar-contact">
+      <Phone size={14} stroke-width={1.8} aria-hidden="true" />
+      <a href="tel:0786384791">078 638 47 91</a>
+    </span>
+
+    <span class="topbar-contact">
+      <Mail size={14} stroke-width={1.8} aria-hidden="true" />
+      <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>
+    </span>
   </div>
 </div>
 
@@ -33,8 +43,11 @@ const { active = 'home' } = Astro.props;
         <div class="nav-logo-sub">Prêles · Plateau de Diesse</div>
       </div>
     </a>
+
     <div class="nav-links">
-      <a href="/" class:list={['nav-link', { active: active === 'home' }]}>Accueil</a>
+      <a href="/" class:list={['nav-link', { active: active === 'home' }]}>
+        Accueil
+      </a>
       <a
         href="/reservation/"
         class:list={['nav-link', { active: active === 'reservation' }]}
@@ -47,3 +60,15 @@ const { active = 'home' } = Astro.props;
     </div>
   </div>
 </nav>
+
+<style>
+  .topbar-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .topbar-contact :global(svg) {
+    flex: 0 0 auto;
+  }
+</style>
