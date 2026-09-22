@@ -10,8 +10,14 @@
     "check": "astro check"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
-    "astro": "^5.14.1",
+    "@astrojs/check": "^0.9.10",
+    "astro": "^7.3.3",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@lucide/astro": "^1.47.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
