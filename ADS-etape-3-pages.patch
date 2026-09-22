@@ -1,0 +1,60 @@
+diff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml
+new file mode 100644
+index 0000000..58280cf
+--- /dev/null
++++ b/.github/workflows/deploy.yml
+@@ -0,0 +1,39 @@
++name: Deploy to GitHub Pages
++
++on:
++  push:
++    branches:
++      - main
++  workflow_dispatch:
++
++permissions:
++  contents: read
++  pages: write
++  id-token: write
++
++concurrency:
++  group: pages
++  cancel-in-progress: false
++
++jobs:
++  build:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout repository
++        uses: actions/checkout@v7
++
++      - name: Install, build and upload site
++        uses: withastro/action@v6
++        with:
++          node-version: 24
++
++  deploy:
++    needs: build
++    runs-on: ubuntu-latest
++    environment:
++      name: github-pages
++      url: ${{ steps.deployment.outputs.page_url }}
++    steps:
++      - name: Deploy to GitHub Pages
++        id: deployment
++        uses: actions/deploy-pages@v5
+diff --git a/README.md b/README.md
+index ca22f63..492b1e3 100644
+--- a/README.md
++++ b/README.md
+@@ -21,3 +21,10 @@ npm run preview
+ Le dossier `public/` contient les ressources servies telles quelles, notamment
+ le domaine personnalisé `CNAME` et la page de réservation historique. Cette
+ dernière sera migrée vers des composants Astro dans une prochaine étape.
++
++## Déploiement
++
++Le workflow `.github/workflows/deploy.yml` construit et publie automatiquement
++le dossier `dist/` sur GitHub Pages après chaque push sur `main`. Dans les
++paramètres du dépôt, la source de GitHub Pages doit être réglée sur
++`GitHub Actions`.
