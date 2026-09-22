@@ -1,0 +1,49 @@
+---
+interface Props {
+  active?: 'home' | 'reservation';
+}
+
+const { active = 'home' } = Astro.props;
+---
+
+<div class="topbar">
+  <div>
+    🏔 <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
+    <span style="margin-left:12px; opacity:.5;">·</span>
+    <span style="margin-left:12px;">Stand ADS — 2515 Prêles</span>
+  </div>
+  <div class="topbar-right">
+    <span>📞 <a href="tel:0786384791">078 638 47 91</a></span>
+    <span>✉ <a href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a></span>
+  </div>
+</div>
+
+<nav aria-label="Navigation principale">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Stand ADS — Accueil">
+      <img
+        src="/logo.png"
+        width="52"
+        height="52"
+        alt="Logo de l'ADS"
+        style="object-fit:contain; border-radius:50%;"
+      />
+      <div>
+        <div class="nav-logo-text">Stand ADS</div>
+        <div class="nav-logo-sub">Prêles · Plateau de Diesse</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="/" class:list={['nav-link', { active: active === 'home' }]}>Accueil</a>
+      <a
+        href="/contrat.html"
+        class:list={['nav-link', { active: active === 'reservation' }]}
+      >
+        Réservation
+      </a>
+      <span class="nav-link soon" aria-disabled="true">Comité</span>
+      <span class="nav-link soon" aria-disabled="true">Galerie</span>
+      <span class="nav-link soon" aria-disabled="true">Infos pratiques</span>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,2236 @@
+diff --git a/public/contrat.html b/public/contrat.html
+index 8d92be7..76d9a59 100644
+--- a/public/contrat.html
++++ b/public/contrat.html
+@@ -9,7 +9,6 @@
+   <link
+     href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap"
+     rel="stylesheet">
+-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+   <style>
+     input.cval {
+       border: none;
+@@ -189,15 +188,6 @@
+       letter-spacing: .8px;
+     }
+ 
+-    .header-meta .iban-small {
+-      font-size: 12px;
+-      font-weight: 700;
+-      color: var(--green-dark);
+-      font-family: 'Lato', monospace;
+-      letter-spacing: .5px;
+-      margin-top: 3px;
+-    }
+-
+     .contact-pill {
+       display: inline-flex;
+       align-items: center;
+@@ -1227,7 +1217,7 @@
+       font-weight: 700;
+     }
+ 
+-    .iban-payment-box {
++    .payment-info-box {
+       background: var(--green-dark);
+       border-radius: var(--radius);
+       padding: 20px 24px;
+@@ -1235,7 +1225,7 @@
+       margin: 20px 0;
+     }
+ 
+-    .iban-payment-box .label {
++    .payment-info-box .label {
+       font-size: 11px;
+       font-weight: 700;
+       text-transform: uppercase;
+@@ -1245,12 +1235,19 @@
+       margin-bottom: 8px;
+     }
+ 
+-    .iban-payment-box .iban-num {
+-      font-family: 'Lato', monospace;
+-      font-size: 20px;
++    .payment-info-box .payment-title {
++      font-family: 'Playfair Display', serif;
++      font-size: 19px;
+       font-weight: 700;
+       color: white;
+-      letter-spacing: 2px;
++      margin-bottom: 8px;
++    }
++
++    .payment-info-box p {
++      color: var(--green-mid);
++      font-size: 13px;
++      line-height: 1.6;
++      margin: 0;
+     }
+ 
+     .warn-box {
+@@ -1798,7 +1795,7 @@
+           <div class="opt-icon">🔑</div>
+           <div class="opt-info">
+             <div class="opt-name">Caution – Non membre</div>
+-            <div class="opt-desc">CHF 150.— remboursés via IBAN à la reddition si tout est OK</div>
++            <div class="opt-desc">CHF 150.— remboursés après l'état des lieux si tout est en ordre</div>
+           </div>
+           <span class="opt-price">+ 150.—</span>
+           <div class="opt-toggle"></div>
+@@ -1902,14 +1899,6 @@
+           </div>
+         </div>
+ 
+-        <div class="field-group">
+-          <label class="field-label">IBAN pour restitution de la caution</label>
+-          <input type="text" id="ibanClient" placeholder="CH00 0000 0000 0000 0000 0"
+-            style="font-family:'Lato',monospace; letter-spacing:1px;">
+-          <div style="font-size:11px; color:var(--gray-dark); margin-top:5px; font-weight:300;">Uniquement si caution
+-            non-membre applicable</div>
+-        </div>
+-
+         <div class="field-group">
+           <label class="field-label">Remarques</label>
+           <textarea id="remarques" rows="3" placeholder="Informations complémentaires, demandes spéciales…"></textarea>
+@@ -1966,8 +1955,9 @@
+           </div>
+           <div class="cond-item" onclick="checkCond(this)">
+             <div class="cond-box"></div>
+-            <div class="cond-text"><strong>Paiement :</strong> uniquement par voie bancaire sur IBAN CH37 0900 0000 1711
+-              4870 5 dans les 7 jours. Le paiement confirme la réservation.</div>
++            <div class="cond-text"><strong>Paiement :</strong> les informations de paiement sont transmises après
++              vérification de la disponibilité. La réservation devient définitive après confirmation et réception du
++              paiement.</div>
+           </div>
+           <div class="cond-item" onclick="checkCond(this)">
+             <div class="cond-box"></div>
+@@ -2028,21 +2018,19 @@
+             <div class="recap-row"><span class="k">Responsable</span><span class="v" id="rNom">–</span></div>
+             <div class="recap-row"><span class="k">Adresse</span><span class="v" id="rAdresse">–</span></div>
+             <div class="recap-row"><span class="k">Contact</span><span class="v" id="rContact">–</span></div>
+-            <div class="recap-row" id="rIbanRow"><span class="k">IBAN caution</span><span class="v" id="rIban">–</span>
+-            </div>
+           </div>
+         </div>
+ 
+-        <div class="iban-payment-box">
+-          <span class="label">Effectuez votre paiement dans les 7 jours sur</span>
+-          <div class="iban-num">CH37 0900 0000 1711 4870 5</div>
+-          <div id="qrcode" style="margin-top:16px; display:flex; justify-content:center;"></div>
+-          <span class="label" style="margin-top:8px;">Scanner pour accéder au formulaire</span>
++        <div class="payment-info-box">
++          <span class="label">Étape suivante</span>
++          <div class="payment-title">Confirmation et paiement</div>
++          <p>Après vérification de la disponibilité, la gérante vous transmettra la confirmation ainsi que les
++            informations de paiement correspondant à votre réservation.</p>
+         </div>
+ 
+         <div class="warn-box">
+-          ⚠ Votre réservation ne sera <strong>définitivement validée qu'après réception du paiement total</strong>.<br>
+-          Veuillez retourner le contrat signé (pages 1 &amp; 2) par e-mail à la gérante :<br>
++          ⚠ L'envoi du formulaire constitue une <strong>demande de réservation et non une confirmation</strong>.<br>
++          La gérante vous contactera après vérification de la disponibilité :<br>
+           <strong>Daniela Allemann</strong> · <a href="mailto:dani.alle57@gmail.com"
+             style="color:var(--earth)">dani.alle57@gmail.com</a> · 078 638 47 91
+         </div>
+@@ -2060,10 +2048,8 @@
+         <div class="success-circle">✓</div>
+         <h2>Contrat soumis avec succès</h2>
+         <p>Votre demande de réservation a bien été enregistrée.</p>
+-        <p>La réservation sera <strong>définitivement confirmée</strong> après réception du paiement sur l'IBAN
+-          <strong>CH37 0900 0000 1711 4870 5</strong> dans les 7 jours.
+-        </p>
+-        <p>La gérante Daniela Allemann vous contactera au plus tard une semaine avant la date de location.</p>
++        <p>La gérante vérifiera la disponibilité et vous transmettra ensuite la confirmation et les informations de
++          paiement. Ne procédez à aucun versement avant cette confirmation.</p>
+         <button class="btn btn-primary" style="margin-top:28px;" onclick="location.reload()">Nouveau contrat</button>
+       </div>
+     </div>
+@@ -2099,7 +2085,7 @@
+             <span class="sum-total-amount"><span class="curr">CHF</span><span id="sumTotal">–</span></span>
+           </div>
+           <div class="sum-badge green" id="badgeMember" style="display:none">✓ Tarif membre ADS appliqué (−20%)</div>
+-          <div class="sum-badge orange" id="badgeCaution" style="display:none">⚠ Caution CHF 150.— remboursable via IBAN
++          <div class="sum-badge orange" id="badgeCaution" style="display:none">⚠ Caution CHF 150.— remboursable après état des lieux
+           </div>
+         </div>
+       </div>
+@@ -2388,7 +2374,6 @@
+       $('rNom').textContent = ($('prenom').value + ' ' + $('nom').value).trim();
+       $('rAdresse').textContent = [$('adresse').value, $('np').value, $('localite').value].filter(Boolean).join(', ');
+       $('rContact').textContent = [$('tel').value, $('email').value].filter(Boolean).join(' · ');
+-      $('rIban').textContent = $('ibanClient').value || '–';
+ 
+       const c = calcTotal();
+       const rows = [];
+@@ -2416,14 +2401,7 @@
+     $('dateField').min = today;
+     renderSummary();
+ 
+-    new QRCode(document.getElementById("qrcode"), {
+-      text: "https://lyamcestmoi.github.io/ADS/",
+-      width: 100,
+-      height: 100,
+-      colorDark: "#2B5038",
+-      colorLight: "#ffffff",
+-    });
+   </script>
+ </body>
+ 
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/src/components/SiteFooter.astro b/src/components/SiteFooter.astro
+new file mode 100644
+index 0000000..0ba4ce9
+--- /dev/null
++++ b/src/components/SiteFooter.astro
+@@ -0,0 +1,19 @@
++<footer>
++  <div class="footer-inner">
++    <div class="footer-left">
++      <strong>Stand ADS Prêles</strong> · Amicale Du Stand<br />
++      Commune de Plateau de Diesse · 2515 Prêles
++    </div>
++    <div class="footer-right">
++      <span class="beta-badge">Avant-projet v0.1</span>
++      <a href="/contrat.html">Réservation</a>
++      <a
++        href="https://www.leplateaudediesse.ch/locations-de-salles/Stand-ADS-Preles"
++        target="_blank"
++        rel="noopener noreferrer"
++      >
++        Site communal
++      </a>
++    </div>
++  </div>
++</footer>
+diff --git a/src/components/SiteHeader.astro b/src/components/SiteHeader.astro
+new file mode 100644
+index 0000000..d4d86c2
+--- /dev/null
++++ b/src/components/SiteHeader.astro
+@@ -0,0 +1,49 @@
++---
++interface Props {
++  active?: 'home' | 'reservation';
++}
++
++const { active = 'home' } = Astro.props;
++---
++
++<div class="topbar">
++  <div>
++    🏔 <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
++    <span style="margin-left:12px; opacity:.5;">·</span>
++    <span style="margin-left:12px;">Stand ADS — 2515 Prêles</span>
++  </div>
++  <div class="topbar-right">
++    <span>📞 <a href="tel:0786384791">078 638 47 91</a></span>
++    <span>✉ <a href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a></span>
++  </div>
++</div>
++
++<nav aria-label="Navigation principale">
++  <div class="nav-inner">
++    <a href="/" class="nav-logo" aria-label="Stand ADS — Accueil">
++      <img
++        src="/logo.png"
++        width="52"
++        height="52"
++        alt="Logo de l'ADS"
++        style="object-fit:contain; border-radius:50%;"
++      />
++      <div>
++        <div class="nav-logo-text">Stand ADS</div>
++        <div class="nav-logo-sub">Prêles · Plateau de Diesse</div>
++      </div>
++    </a>
++    <div class="nav-links">
++      <a href="/" class:list={['nav-link', { active: active === 'home' }]}>Accueil</a>
++      <a
++        href="/contrat.html"
++        class:list={['nav-link', { active: active === 'reservation' }]}
++      >
++        Réservation
++      </a>
++      <span class="nav-link soon" aria-disabled="true">Comité</span>
++      <span class="nav-link soon" aria-disabled="true">Galerie</span>
++      <span class="nav-link soon" aria-disabled="true">Infos pratiques</span>
++    </div>
++  </div>
++</nav>
+diff --git a/src/layouts/MainLayout.astro b/src/layouts/MainLayout.astro
+new file mode 100644
+index 0000000..368db39
+--- /dev/null
++++ b/src/layouts/MainLayout.astro
+@@ -0,0 +1,52 @@
++---
++import '../styles/global.css';
++
++interface Props {
++  title: string;
++  description: string;
++  image?: string;
++}
++
++const {
++  title,
++  description,
++  image = '/stand.png',
++} = Astro.props;
++
++const canonicalUrl = Astro.site
++  ? new URL(Astro.url.pathname, Astro.site)
++  : Astro.url;
++const socialImage = Astro.site
++  ? new URL(image, Astro.site)
++  : new URL(image, Astro.url);
++---
++
++<!doctype html>
++<html lang="fr">
++  <head>
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++
++    <title>{title}</title>
++    <meta name="description" content={description} />
++    <link rel="canonical" href={canonicalUrl} />
++
++    <meta property="og:type" content="website" />
++    <meta property="og:locale" content="fr_CH" />
++    <meta property="og:title" content={title} />
++    <meta property="og:description" content={description} />
++    <meta property="og:url" content={canonicalUrl} />
++    <meta property="og:image" content={socialImage} />
++
++    <link rel="icon" type="image/png" href="/logo.png" />
++    <link rel="preconnect" href="https://fonts.googleapis.com" />
++    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
++    <link
++      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap"
++      rel="stylesheet"
++    />
++  </head>
++  <body>
++    <slot />
++  </body>
++</html>
+diff --git a/src/pages/index.astro b/src/pages/index.astro
+index e441c70..f972672 100644
+--- a/src/pages/index.astro
++++ b/src/pages/index.astro
+@@ -1,949 +1,19 @@
+-<!DOCTYPE html>
+-<html lang="fr">
++---
++import MainLayout from '../layouts/MainLayout.astro';
++import SiteFooter from '../components/SiteFooter.astro';
++import SiteHeader from '../components/SiteHeader.astro';
+ 
+-<head>
+-  <meta charset="UTF-8">
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++const title = 'Stand ADS Prêles — Location de salle · Plateau de Diesse';
++const description =
++  "Louez le Stand ADS à Prêles, sur le Plateau de Diesse. Salle pouvant accueillir jusqu'à 65 personnes, cheminée, four à pizza et vue sur le Chasseral.";
++---
+ 
+-  <!-- SEO — Google Maps / recherche "stand prêles" -->
+-  <title>Stand ADS Prêles — Location de salle · Plateau de Diesse</title>
+-  <meta name="description"
+-    content="Louez le Stand ADS à Prêles, sur le Plateau de Diesse. Salle pouvant accueillir jusqu'à 65 personnes, cheminée, four à pizza, vue sur le Chasseral. Réservation en ligne.">
+-  <meta name="keywords"
+-    content="stand prêles, location salle prêles, ADS prêles, amicale du stand, plateau de diesse, salle fête diesse, location stand chasseral">
+-  <meta property="og:title" content="Stand ADS Prêles — Location de salle">
+-  <meta property="og:description"
+-    content="Salle de 65 places avec cheminée et vue sur le Chasseral. Réservation en ligne.">
+-  <meta property="og:image" content="stand.png">
+-
+-  <link
+-    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap"
+-    rel="stylesheet">
+-  <link rel="icon" type="image/png" href="logo.png">
+-
+-  <style>
+-    :root {
+-      --green: #3A6B4A;
+-      --green-dark: #2B5038;
+-      --green-light: #EDF4EF;
+-      --green-mid: #C8DDD0;
+-      --accent: #6B9E5E;
+-      --earth: #8B6F47;
+-      --earth-light: #F5EDE0;
+-      --white: #FFFFFF;
+-      --off: #F7F8F6;
+-      --gray-l: #EDEEED;
+-      --gray: #B8BCB9;
+-      --gray-d: #6B716D;
+-      --ink: #1E2620;
+-      --shadow: 0 4px 20px rgba(30, 38, 32, .10);
+-      --shadow-lg: 0 8px 40px rgba(30, 38, 32, .15);
+-      --r: 10px;
+-    }
+-
+-    *,
+-    *::before,
+-    *::after {
+-      box-sizing: border-box;
+-      margin: 0;
+-      padding: 0;
+-    }
+-
+-    html {
+-      scroll-behavior: smooth;
+-    }
+-
+-    body {
+-      font-family: 'Lato', sans-serif;
+-      background: var(--off);
+-      color: var(--ink);
+-      line-height: 1.6;
+-    }
+-
+-    /* ── TOP BAR ── */
+-    .topbar {
+-      background: var(--green-dark);
+-      padding: 7px 40px;
+-      display: flex;
+-      justify-content: space-between;
+-      align-items: center;
+-      font-size: 11px;
+-      color: var(--green-mid);
+-    }
+-
+-    .topbar a {
+-      color: var(--green-mid);
+-      text-decoration: none;
+-      font-weight: 700;
+-    }
+-
+-    .topbar a:hover {
+-      color: white;
+-    }
+-
+-    .topbar-right {
+-      display: flex;
+-      gap: 20px;
+-    }
+-
+-    /* ── NAV ── */
+-    nav {
+-      background: var(--white);
+-      border-bottom: 2px solid var(--green);
+-      box-shadow: var(--shadow);
+-      position: sticky;
+-      top: 0;
+-      z-index: 100;
+-    }
+-
+-    .nav-inner {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-      display: flex;
+-      align-items: center;
+-      gap: 0;
+-      height: 64px;
+-    }
+-
+-    .nav-logo {
+-      display: flex;
+-      align-items: center;
+-      gap: 12px;
+-      text-decoration: none;
+-      margin-right: auto;
+-    }
+-
+-    .nav-emblem {
+-      width: 40px;
+-      height: 40px;
+-      background: var(--green);
+-      border-radius: 50%;
+-      display: flex;
+-      align-items: center;
+-      justify-content: center;
+-      font-size: 12px;
+-      font-weight: 700;
+-      color: white;
+-      letter-spacing: 1px;
+-      flex-shrink: 0;
+-    }
+-
+-    .nav-logo-text {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 17px;
+-      font-weight: 700;
+-      color: var(--ink);
+-      line-height: 1.2;
+-    }
+-
+-    .nav-logo-sub {
+-      font-size: 11px;
+-      color: var(--gray-d);
+-      font-weight: 300;
+-      font-family: 'Lato', sans-serif;
+-    }
+-
+-    .nav-links {
+-      display: flex;
+-      gap: 0;
+-    }
+-
+-    .nav-link {
+-      padding: 0 18px;
+-      height: 64px;
+-      display: flex;
+-      align-items: center;
+-      font-size: 13px;
+-      font-weight: 700;
+-      color: var(--gray-d);
+-      text-decoration: none;
+-      border-bottom: 3px solid transparent;
+-      transition: all .18s;
+-      letter-spacing: .3px;
+-      white-space: nowrap;
+-    }
+-
+-    .nav-link:hover {
+-      color: var(--green);
+-      border-color: var(--green-mid);
+-    }
+-
+-    .nav-link.active {
+-      color: var(--green-dark);
+-      border-color: var(--green);
+-    }
+-
+-    .nav-link.soon {
+-      opacity: .45;
+-      cursor: default;
+-      position: relative;
+-    }
+-
+-    .nav-link.soon::after {
+-      content: 'bientôt';
+-      position: absolute;
+-      top: 12px;
+-      right: 4px;
+-      font-size: 8px;
+-      font-weight: 700;
+-      background: var(--earth);
+-      color: white;
+-      padding: 1px 5px;
+-      border-radius: 8px;
+-      letter-spacing: .5px;
+-      text-transform: uppercase;
+-    }
+-
+-    .nav-cta {
+-      margin-left: 16px;
+-      background: var(--green);
+-      color: white;
+-      border: none;
+-      padding: 10px 20px;
+-      border-radius: 6px;
+-      font-family: 'Lato', sans-serif;
+-      font-size: 13px;
+-      font-weight: 700;
+-      cursor: pointer;
+-      text-decoration: none;
+-      transition: all .15s;
+-      white-space: nowrap;
+-    }
+-
+-    .nav-cta:hover {
+-      background: var(--green-dark);
+-      box-shadow: 0 4px 12px rgba(58, 107, 74, .3);
+-    }
+-
+-    /* ── HERO ── */
+-    .hero {
+-      position: relative;
+-      height: 520px;
+-      overflow: hidden;
+-    }
+-
+-    .hero-img {
+-      width: 100%;
+-      height: 100%;
+-      object-fit: cover;
+-      object-position: center 55%;
+-      display: block;
+-      transform: scale(1.02);
+-      animation: zoomOut 8s ease forwards;
+-    }
+-
+-    @keyframes zoomOut {
+-      from {
+-        transform: scale(1.06);
+-      }
+-
+-      to {
+-        transform: scale(1);
+-      }
+-    }
+-
+-    .hero-overlay {
+-      position: absolute;
+-      inset: 0;
+-      background: linear-gradient(135deg,
+-          rgba(43, 80, 56, .82) 0%,
+-          rgba(43, 80, 56, .45) 45%,
+-          rgba(0, 0, 0, .15) 100%);
+-      display: flex;
+-      align-items: center;
+-    }
+-
+-    .hero-content {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-      width: 100%;
+-      animation: fadeUp .7s ease both;
+-    }
+-
+-    @keyframes fadeUp {
+-      from {
+-        opacity: 0;
+-        transform: translateY(20px);
+-      }
+-
+-      to {
+-        opacity: 1;
+-        transform: translateY(0);
+-      }
+-    }
+-
+-    .hero-eyebrow {
+-      display: inline-flex;
+-      align-items: center;
+-      gap: 8px;
+-      background: rgba(255, 255, 255, .15);
+-      backdrop-filter: blur(8px);
+-      border: 1px solid rgba(255, 255, 255, .25);
+-      border-radius: 20px;
+-      padding: 6px 14px;
+-      font-size: 12px;
+-      color: rgba(255, 255, 255, .9);
+-      font-weight: 700;
+-      letter-spacing: .8px;
+-      text-transform: uppercase;
+-      margin-bottom: 16px;
+-    }
+-
+-    .hero-title {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 52px;
+-      font-weight: 700;
+-      color: white;
+-      line-height: 1.1;
+-      margin-bottom: 14px;
+-      text-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+-      max-width: 600px;
+-    }
+-
+-    .hero-title em {
+-      font-style: italic;
+-      color: #A8D5B5;
+-    }
+-
+-    .hero-desc {
+-      font-size: 17px;
+-      color: rgba(255, 255, 255, .85);
+-      font-weight: 300;
+-      max-width: 480px;
+-      line-height: 1.7;
+-      margin-bottom: 28px;
+-    }
+-
+-    .hero-actions {
+-      display: flex;
+-      gap: 12px;
+-      flex-wrap: wrap;
+-    }
+-
+-    .btn-hero {
+-      padding: 14px 32px;
+-      border-radius: 7px;
+-      font-family: 'Lato', sans-serif;
+-      font-size: 14px;
+-      font-weight: 700;
+-      cursor: pointer;
+-      text-decoration: none;
+-      transition: all .18s;
+-      display: inline-flex;
+-      align-items: center;
+-      gap: 8px;
+-      letter-spacing: .3px;
+-    }
+-
+-    .btn-hero-primary {
+-      background: white;
+-      color: var(--green-dark);
+-      border: 2px solid white;
+-    }
+-
+-    .btn-hero-primary:hover {
+-      background: var(--green-light);
+-      border-color: var(--green-light);
+-      transform: translateY(-1px);
+-      box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+-    }
+-
+-    .btn-hero-ghost {
+-      background: rgba(255, 255, 255, .12);
+-      color: white;
+-      border: 2px solid rgba(255, 255, 255, .4);
+-      backdrop-filter: blur(8px);
+-    }
+-
+-    .btn-hero-ghost:hover {
+-      background: rgba(255, 255, 255, .22);
+-      border-color: rgba(255, 255, 255, .7);
+-    }
+-
+-    /* ── STATS RIBBON ── */
+-    .stats-ribbon {
+-      background: var(--green-dark);
+-      padding: 0;
+-    }
+-
+-    .stats-inner {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-      display: grid;
+-      grid-template-columns: repeat(4, 1fr);
+-    }
+-
+-    .stat-item {
+-      padding: 22px 0;
+-      text-align: center;
+-      border-right: 1px solid rgba(255, 255, 255, .1);
+-      animation: fadeUp .5s ease both;
+-    }
+-
+-    .stat-item:last-child {
+-      border-right: none;
+-    }
+-
+-    .stat-num {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 32px;
+-      font-weight: 700;
+-      color: #A8D5B5;
+-      line-height: 1;
+-      margin-bottom: 4px;
+-    }
+-
+-    .stat-label {
+-      font-size: 12px;
+-      color: rgba(255, 255, 255, .65);
+-      font-weight: 300;
+-      letter-spacing: .3px;
+-    }
+-
+-    /* ── SECTION WRAPPER ── */
+-    section {
+-      padding: 72px 0;
+-    }
+-
+-    .section-inner {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-    }
+-
+-    .section-label {
+-      display: inline-flex;
+-      align-items: center;
+-      gap: 8px;
+-      font-size: 11px;
+-      font-weight: 700;
+-      text-transform: uppercase;
+-      letter-spacing: 2px;
+-      color: var(--green);
+-      margin-bottom: 10px;
+-    }
+-
+-    .section-label::before {
+-      content: '';
+-      width: 24px;
+-      height: 2px;
+-      background: var(--green);
+-      border-radius: 2px;
+-    }
+-
+-    .section-title {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 36px;
+-      font-weight: 700;
+-      color: var(--ink);
+-      line-height: 1.2;
+-      margin-bottom: 12px;
+-    }
+-
+-    .section-sub {
+-      font-size: 16px;
+-      color: var(--gray-d);
+-      font-weight: 300;
+-      max-width: 520px;
+-      line-height: 1.7;
+-      margin-bottom: 40px;
+-    }
+-
+-    /* ── INFOS GRID ── */
+-    .infos-grid {
+-      display: grid;
+-      grid-template-columns: 1fr 1fr;
+-      gap: 28px;
+-      align-items: start;
+-    }
+-
+-    .info-card {
+-      background: var(--white);
+-      border-radius: var(--r);
+-      box-shadow: var(--shadow);
+-      overflow: hidden;
+-      transition: transform .2s, box-shadow .2s;
+-    }
+-
+-    .info-card:hover {
+-      transform: translateY(-3px);
+-      box-shadow: var(--shadow-lg);
+-    }
+-
+-    .info-card-head {
+-      background: var(--green-light);
+-      border-bottom: 2px solid var(--green-mid);
+-      padding: 16px 22px;
+-      display: flex;
+-      align-items: center;
+-      gap: 12px;
+-    }
+-
+-    .info-card-icon {
+-      font-size: 22px;
+-    }
+-
+-    .info-card-head h3 {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 17px;
+-      font-weight: 600;
+-      color: var(--green-dark);
+-    }
+-
+-    .info-card-body {
+-      padding: 20px 22px;
+-    }
+-
+-    .feat-list {
+-      list-style: none;
+-    }
+-
+-    .feat-list li {
+-      display: flex;
+-      align-items: flex-start;
+-      gap: 10px;
+-      padding: 7px 0;
+-      border-bottom: 1px solid var(--gray-l);
+-      font-size: 14px;
+-      color: var(--ink);
+-    }
+-
+-    .feat-list li:last-child {
+-      border-bottom: none;
+-    }
+-
+-    .feat-list li::before {
+-      content: '✓';
+-      color: var(--green);
+-      font-weight: 700;
+-      font-size: 13px;
+-      margin-top: 2px;
+-      flex-shrink: 0;
+-    }
+-
+-    /* tarifs inline */
+-    .tarif-row {
+-      display: flex;
+-      justify-content: space-between;
+-      align-items: center;
+-      padding: 10px 0;
+-      border-bottom: 1px solid var(--gray-l);
+-      font-size: 14px;
+-    }
+-
+-    .tarif-row:last-child {
+-      border-bottom: none;
+-    }
+-
+-    .tarif-row .t-name {
+-      color: var(--ink);
+-      font-weight: 400;
+-    }
+-
+-    .tarif-row .t-price {
+-      font-family: 'Lato', monospace;
+-      font-weight: 700;
+-      color: var(--green-dark);
+-      font-size: 15px;
+-    }
+-
+-    .tarif-note {
+-      font-size: 11px;
+-      color: var(--gray-d);
+-      margin-top: 10px;
+-      font-style: italic;
+-    }
+-
+-    /* ── CTA SECTION ── */
+-    .cta-section {
+-      background: var(--green-dark);
+-      padding: 64px 0;
+-    }
+-
+-    .cta-inner {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-      display: flex;
+-      align-items: center;
+-      justify-content: space-between;
+-      gap: 40px;
+-      flex-wrap: wrap;
+-    }
+-
+-    .cta-text h2 {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 32px;
+-      color: white;
+-      margin-bottom: 10px;
+-    }
+-
+-    .cta-text p {
+-      font-size: 15px;
+-      color: var(--green-mid);
+-      font-weight: 300;
+-      max-width: 460px;
+-      line-height: 1.7;
+-    }
+-
+-    .btn-cta {
+-      background: white;
+-      color: var(--green-dark);
+-      padding: 16px 40px;
+-      border-radius: 8px;
+-      font-family: 'Lato', sans-serif;
+-      font-size: 15px;
+-      font-weight: 700;
+-      text-decoration: none;
+-      transition: all .18s;
+-      white-space: nowrap;
+-      flex-shrink: 0;
+-      display: inline-flex;
+-      align-items: center;
+-      gap: 10px;
+-      box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
+-    }
+-
+-    .btn-cta:hover {
+-      background: var(--green-light);
+-      transform: translateY(-2px);
+-      box-shadow: 0 8px 28px rgba(0, 0, 0, .3);
+-    }
+-
+-    /* ── COMING SOON GRID ── */
+-    .coming-grid {
+-      display: grid;
+-      grid-template-columns: repeat(3, 1fr);
+-      gap: 20px;
+-    }
+-
+-    .coming-card {
+-      background: var(--white);
+-      border-radius: var(--r);
+-      box-shadow: var(--shadow);
+-      padding: 28px 24px;
+-      position: relative;
+-      overflow: hidden;
+-      opacity: .72;
+-      transition: opacity .2s;
+-    }
+-
+-    .coming-card:hover {
+-      opacity: 1;
+-    }
+-
+-    .coming-card::after {
+-      content: 'Bientôt';
+-      position: absolute;
+-      top: 14px;
+-      right: -22px;
+-      background: var(--earth);
+-      color: white;
+-      font-size: 10px;
+-      font-weight: 700;
+-      letter-spacing: 1px;
+-      text-transform: uppercase;
+-      padding: 4px 32px;
+-      transform: rotate(35deg);
+-    }
+-
+-    .coming-icon {
+-      font-size: 32px;
+-      margin-bottom: 14px;
+-    }
+-
+-    .coming-title {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 18px;
+-      font-weight: 600;
+-      color: var(--ink);
+-      margin-bottom: 8px;
+-    }
+-
+-    .coming-desc {
+-      font-size: 13px;
+-      color: var(--gray-d);
+-      font-weight: 300;
+-      line-height: 1.6;
+-    }
+-
+-    .coming-items {
+-      margin-top: 12px;
+-    }
+-
+-    .coming-items span {
+-      display: inline-block;
+-      background: var(--gray-l);
+-      color: var(--gray-d);
+-      font-size: 11px;
+-      font-weight: 700;
+-      padding: 3px 10px;
+-      border-radius: 12px;
+-      margin: 3px 3px 0 0;
+-    }
+-
+-    /* ── CONTACT ── */
+-    .contact-grid {
+-      display: grid;
+-      grid-template-columns: 1fr 1fr 1fr;
+-      gap: 20px;
+-    }
+-
+-    .contact-box {
+-      background: var(--white);
+-      border-radius: var(--r);
+-      box-shadow: var(--shadow);
+-      padding: 24px;
+-      border-top: 3px solid var(--green);
+-    }
+-
+-    .contact-box h4 {
+-      font-family: 'Playfair Display', serif;
+-      font-size: 16px;
+-      color: var(--green-dark);
+-      margin-bottom: 14px;
+-    }
+-
+-    .contact-line {
+-      display: flex;
+-      align-items: flex-start;
+-      gap: 10px;
+-      margin-bottom: 10px;
+-      font-size: 13px;
+-      line-height: 1.5;
+-    }
+-
+-    .contact-line .ci {
+-      font-size: 16px;
+-      flex-shrink: 0;
+-      margin-top: 1px;
+-    }
+-
+-    .contact-line a {
+-      color: var(--green-dark);
+-      font-weight: 700;
+-      text-decoration: none;
+-    }
+-
+-    .contact-line a:hover {
+-      text-decoration: underline;
+-    }
+-
+-    .contact-line span {
+-      color: var(--gray-d);
+-    }
+-
+-    /* ── MAP PLACEHOLDER ── */
+-    .map-placeholder {
+-      background: var(--green-light);
+-      border: 2px solid var(--green-mid);
+-      border-radius: var(--r);
+-      height: 180px;
+-      display: flex;
+-      flex-direction: column;
+-      align-items: center;
+-      justify-content: center;
+-      gap: 8px;
+-      cursor: pointer;
+-      transition: all .18s;
+-      text-decoration: none;
+-    }
+-
+-    .map-placeholder:hover {
+-      background: var(--green-mid);
+-    }
+-
+-    .map-placeholder .map-icon {
+-      font-size: 36px;
+-    }
+-
+-    .map-placeholder span {
+-      font-size: 13px;
+-      font-weight: 700;
+-      color: var(--green-dark);
+-    }
+-
+-    .map-placeholder small {
+-      font-size: 11px;
+-      color: var(--gray-d);
+-    }
+-
+-    /* ── FOOTER ── */
+-    footer {
+-      background: var(--ink);
+-      padding: 36px 0;
+-    }
+-
+-    .footer-inner {
+-      max-width: 1100px;
+-      margin: 0 auto;
+-      padding: 0 40px;
+-      display: flex;
+-      align-items: center;
+-      justify-content: space-between;
+-      flex-wrap: wrap;
+-      gap: 16px;
+-    }
+-
+-    .footer-left {
+-      font-size: 12px;
+-      color: #666;
+-      line-height: 1.7;
+-    }
+-
+-    .footer-left strong {
+-      color: #999;
+-    }
+-
+-    .footer-right {
+-      display: flex;
+-      gap: 20px;
+-      align-items: center;
+-    }
+-
+-    .footer-right a {
+-      font-size: 12px;
+-      color: #666;
+-      text-decoration: none;
+-      transition: color .15s;
+-    }
+-
+-    .footer-right a:hover {
+-      color: var(--green-mid);
+-    }
+-
+-    .beta-badge {
+-      background: var(--earth);
+-      color: white;
+-      font-size: 10px;
+-      font-weight: 700;
+-      padding: 3px 8px;
+-      border-radius: 4px;
+-      letter-spacing: .8px;
+-      text-transform: uppercase;
+-    }
+-
+-    /* ── ANIMATIONS ── */
+-    .reveal {
+-      opacity: 0;
+-      transform: translateY(20px);
+-      transition: opacity .6s ease, transform .6s ease;
+-    }
+-
+-    .reveal.visible {
+-      opacity: 1;
+-      transform: none;
+-    }
+-
+-    /* ── RESPONSIVE ── */
+-    @media (max-width: 820px) {
+-      .topbar {
+-        display: none;
+-      }
+-
+-      .hero {
+-        height: 380px;
+-      }
+-
+-      .hero-title {
+-        font-size: 34px;
+-      }
+-
+-      .hero-desc {
+-        font-size: 14px;
+-      }
+-
+-      .stats-inner {
+-        grid-template-columns: repeat(2, 1fr);
+-      }
+-
+-      .stat-item:nth-child(2) {
+-        border-right: none;
+-      }
+-
+-      .infos-grid {
+-        grid-template-columns: 1fr;
+-      }
+-
+-      .coming-grid {
+-        grid-template-columns: 1fr;
+-      }
+-
+-      .contact-grid {
+-        grid-template-columns: 1fr;
+-      }
+-
+-      .cta-inner {
+-        flex-direction: column;
+-        text-align: center;
+-      }
+-
+-      .nav-links {
+-        display: none;
+-      }
+-
+-      .nav-inner {
+-        padding: 0 16px;
+-      }
+-
+-      section {
+-        padding: 48px 0;
+-      }
+-
+-      .section-inner {
+-        padding: 0 16px;
+-      }
+-
+-      .footer-inner {
+-        flex-direction: column;
+-        text-align: center;
+-      }
+-    }
+-  </style>
+-</head>
+-
+-<body>
+-
+-  <!-- TOP BAR -->
+-  <div class="topbar">
+-    <div>
+-      🏔 <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
+-      <span style="margin-left:12px; opacity:.5;">·</span>
+-      <span style="margin-left:12px;">Stand ADS — 2515 Prêles</span>
+-    </div>
+-    <div class="topbar-right">
+-      <span>📞 <a href="tel:0786384791">078 638 47 91</a></span>
+-      <span>✉ <a href="mailto:dani.alle57@gmail.com">dani.alle57@gmail.com</a></span>
+-    </div>
+-  </div>
+-
+-  <!-- NAV -->
+-  <nav>
+-    <div class="nav-inner">
+-      <a href="index.html" class="nav-logo">
+-        <img src="logo.png" alt="ADS" style="width:52px; height:52px; object-fit:contain; border-radius:50%;">
+-
+-        <div>
+-          <div class="nav-logo-text">Stand ADS</div>
+-          <div class="nav-logo-sub">Prêles · Plateau de Diesse</div>
+-        </div>
+-      </a>
+-      <div class="nav-links">
+-        <a href="index.html" class="nav-link active">Accueil</a>
+-        <a href="contrat.html" class="nav-link">Réservation</a>
+-        <a class="nav-link soon">Comité</a>
+-        <a class="nav-link soon">Galerie</a>
+-        <a class="nav-link soon">Infos pratiques</a>
+-      </div>
+-    </div>
+-  </nav>
++<MainLayout title={title} description={description}>
++  <SiteHeader active="home" />
+ 
+   <!-- HERO -->
+   <div class="hero">
+-    <img src="stand.png" alt="Stand ADS Prêles avec vue sur le Chasseral" class="hero-img">
++    <img src="/stand.png" alt="Stand ADS Prêles avec vue sur le Chasseral" class="hero-img">
+     <div class="hero-overlay">
+       <div class="hero-content">
+         <div class="hero-eyebrow">📍 Prêles · Plateau de Diesse · Berne</div>
+@@ -951,7 +21,7 @@
+         <p class="hero-desc">Une salle conviviale au cœur du Plateau de Diesse, avec vue imprenable sur le Chasseral.
+           Idéale pour vos fêtes, repas et rassemblements.</p>
+         <div class="hero-actions">
+-          <a href="contrat.html" class="btn-hero btn-hero-primary">📋 Réserver en ligne</a>
++          <a href="/contrat.html" class="btn-hero btn-hero-primary">📋 Réserver en ligne</a>
+           <a href="#infos" class="btn-hero btn-hero-ghost">En savoir plus ↓</a>
+         </div>
+       </div>
+@@ -1079,7 +149,7 @@
+         <p>Remplissez le contrat de location en ligne, la gérance vous confirmera la disponibilité. Votre réservation
+           est validée après réception du paiement.</p>
+       </div>
+-      <a href="contrat.html" class="btn-cta">📋 Accéder au formulaire →</a>
++      <a href="/contrat.html" class="btn-cta">📋 Accéder au formulaire →</a>
+     </div>
+   </div>
+ 
+@@ -1184,30 +254,21 @@
+     </div>
+   </section>
+ 
+-  <!-- FOOTER -->
+-  <footer>
+-    <div class="footer-inner">
+-      <div class="footer-left">
+-        <strong>Stand ADS Prêles</strong> · Amicale Du Stand<br>
+-        Commune de Plateau de Diesse · 2515 Prêles
+-      </div>
+-      <div class="footer-right">
+-        <span class="beta-badge">Avant-projet v0.1</span>
+-        <a href="contrat.html">Réservation</a>
+-        <a href="https://www.leplateaudediesse.ch/locations-de-salles/Stand-ADS-Preles" target="_blank">Site
+-          communal</a>
+-      </div>
+-    </div>
+-  </footer>
++
++  <SiteFooter />
+ 
+   <script>
+-    // Scroll reveal
+-    const observer = new IntersectionObserver(entries => {
+-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+-    }, { threshold: 0.1 });
+-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
++    const observer = new IntersectionObserver(
++      (entries) => {
++        entries.forEach((entry) => {
++          if (entry.isIntersecting) entry.target.classList.add('visible');
++        });
++      },
++      { threshold: 0.1 },
++    );
++
++    document
++      .querySelectorAll('.reveal')
++      .forEach((element) => observer.observe(element));
+   </script>
+-
+-</body>
+-
+-</html>
+\ No newline at end of file
++</MainLayout>
+diff --git a/src/styles/global.css b/src/styles/global.css
+new file mode 100644
+index 0000000..4c87c50
+--- /dev/null
++++ b/src/styles/global.css
+@@ -0,0 +1,880 @@
++    :root {
++      --green: #3A6B4A;
++      --green-dark: #2B5038;
++      --green-light: #EDF4EF;
++      --green-mid: #C8DDD0;
++      --accent: #6B9E5E;
++      --earth: #8B6F47;
++      --earth-light: #F5EDE0;
++      --white: #FFFFFF;
++      --off: #F7F8F6;
++      --gray-l: #EDEEED;
++      --gray: #B8BCB9;
++      --gray-d: #6B716D;
++      --ink: #1E2620;
++      --shadow: 0 4px 20px rgba(30, 38, 32, .10);
++      --shadow-lg: 0 8px 40px rgba(30, 38, 32, .15);
++      --r: 10px;
++    }
++
++    *,
++    *::before,
++    *::after {
++      box-sizing: border-box;
++      margin: 0;
++      padding: 0;
++    }
++
++    html {
++      scroll-behavior: smooth;
++    }
++
++    body {
++      font-family: 'Lato', sans-serif;
++      background: var(--off);
++      color: var(--ink);
++      line-height: 1.6;
++    }
++
++    /* ── TOP BAR ── */
++    .topbar {
++      background: var(--green-dark);
++      padding: 7px 40px;
++      display: flex;
++      justify-content: space-between;
++      align-items: center;
++      font-size: 11px;
++      color: var(--green-mid);
++    }
++
++    .topbar a {
++      color: var(--green-mid);
++      text-decoration: none;
++      font-weight: 700;
++    }
++
++    .topbar a:hover {
++      color: white;
++    }
++
++    .topbar-right {
++      display: flex;
++      gap: 20px;
++    }
++
++    /* ── NAV ── */
++    nav {
++      background: var(--white);
++      border-bottom: 2px solid var(--green);
++      box-shadow: var(--shadow);
++      position: sticky;
++      top: 0;
++      z-index: 100;
++    }
++
++    .nav-inner {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++      display: flex;
++      align-items: center;
++      gap: 0;
++      height: 64px;
++    }
++
++    .nav-logo {
++      display: flex;
++      align-items: center;
++      gap: 12px;
++      text-decoration: none;
++      margin-right: auto;
++    }
++
++    .nav-emblem {
++      width: 40px;
++      height: 40px;
++      background: var(--green);
++      border-radius: 50%;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      font-size: 12px;
++      font-weight: 700;
++      color: white;
++      letter-spacing: 1px;
++      flex-shrink: 0;
++    }
++
++    .nav-logo-text {
++      font-family: 'Playfair Display', serif;
++      font-size: 17px;
++      font-weight: 700;
++      color: var(--ink);
++      line-height: 1.2;
++    }
++
++    .nav-logo-sub {
++      font-size: 11px;
++      color: var(--gray-d);
++      font-weight: 300;
++      font-family: 'Lato', sans-serif;
++    }
++
++    .nav-links {
++      display: flex;
++      gap: 0;
++    }
++
++    .nav-link {
++      padding: 0 18px;
++      height: 64px;
++      display: flex;
++      align-items: center;
++      font-size: 13px;
++      font-weight: 700;
++      color: var(--gray-d);
++      text-decoration: none;
++      border-bottom: 3px solid transparent;
++      transition: all .18s;
++      letter-spacing: .3px;
++      white-space: nowrap;
++    }
++
++    .nav-link:hover {
++      color: var(--green);
++      border-color: var(--green-mid);
++    }
++
++    .nav-link.active {
++      color: var(--green-dark);
++      border-color: var(--green);
++    }
++
++    .nav-link.soon {
++      opacity: .45;
++      cursor: default;
++      position: relative;
++    }
++
++    .nav-link.soon::after {
++      content: 'bientôt';
++      position: absolute;
++      top: 12px;
++      right: 4px;
++      font-size: 8px;
++      font-weight: 700;
++      background: var(--earth);
++      color: white;
++      padding: 1px 5px;
++      border-radius: 8px;
++      letter-spacing: .5px;
++      text-transform: uppercase;
++    }
++
++    .nav-cta {
++      margin-left: 16px;
++      background: var(--green);
++      color: white;
++      border: none;
++      padding: 10px 20px;
++      border-radius: 6px;
++      font-family: 'Lato', sans-serif;
++      font-size: 13px;
++      font-weight: 700;
++      cursor: pointer;
++      text-decoration: none;
++      transition: all .15s;
++      white-space: nowrap;
++    }
++
++    .nav-cta:hover {
++      background: var(--green-dark);
++      box-shadow: 0 4px 12px rgba(58, 107, 74, .3);
++    }
++
++    /* ── HERO ── */
++    .hero {
++      position: relative;
++      height: 520px;
++      overflow: hidden;
++    }
++
++    .hero-img {
++      width: 100%;
++      height: 100%;
++      object-fit: cover;
++      object-position: center 55%;
++      display: block;
++      transform: scale(1.02);
++      animation: zoomOut 8s ease forwards;
++    }
++
++    @keyframes zoomOut {
++      from {
++        transform: scale(1.06);
++      }
++
++      to {
++        transform: scale(1);
++      }
++    }
++
++    .hero-overlay {
++      position: absolute;
++      inset: 0;
++      background: linear-gradient(135deg,
++          rgba(43, 80, 56, .82) 0%,
++          rgba(43, 80, 56, .45) 45%,
++          rgba(0, 0, 0, .15) 100%);
++      display: flex;
++      align-items: center;
++    }
++
++    .hero-content {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++      width: 100%;
++      animation: fadeUp .7s ease both;
++    }
++
++    @keyframes fadeUp {
++      from {
++        opacity: 0;
++        transform: translateY(20px);
++      }
++
++      to {
++        opacity: 1;
++        transform: translateY(0);
++      }
++    }
++
++    .hero-eyebrow {
++      display: inline-flex;
++      align-items: center;
++      gap: 8px;
++      background: rgba(255, 255, 255, .15);
++      backdrop-filter: blur(8px);
++      border: 1px solid rgba(255, 255, 255, .25);
++      border-radius: 20px;
++      padding: 6px 14px;
++      font-size: 12px;
++      color: rgba(255, 255, 255, .9);
++      font-weight: 700;
++      letter-spacing: .8px;
++      text-transform: uppercase;
++      margin-bottom: 16px;
++    }
++
++    .hero-title {
++      font-family: 'Playfair Display', serif;
++      font-size: 52px;
++      font-weight: 700;
++      color: white;
++      line-height: 1.1;
++      margin-bottom: 14px;
++      text-shadow: 0 2px 12px rgba(0, 0, 0, .25);
++      max-width: 600px;
++    }
++
++    .hero-title em {
++      font-style: italic;
++      color: #A8D5B5;
++    }
++
++    .hero-desc {
++      font-size: 17px;
++      color: rgba(255, 255, 255, .85);
++      font-weight: 300;
++      max-width: 480px;
++      line-height: 1.7;
++      margin-bottom: 28px;
++    }
++
++    .hero-actions {
++      display: flex;
++      gap: 12px;
++      flex-wrap: wrap;
++    }
++
++    .btn-hero {
++      padding: 14px 32px;
++      border-radius: 7px;
++      font-family: 'Lato', sans-serif;
++      font-size: 14px;
++      font-weight: 700;
++      cursor: pointer;
++      text-decoration: none;
++      transition: all .18s;
++      display: inline-flex;
++      align-items: center;
++      gap: 8px;
++      letter-spacing: .3px;
++    }
++
++    .btn-hero-primary {
++      background: white;
++      color: var(--green-dark);
++      border: 2px solid white;
++    }
++
++    .btn-hero-primary:hover {
++      background: var(--green-light);
++      border-color: var(--green-light);
++      transform: translateY(-1px);
++      box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
++    }
++
++    .btn-hero-ghost {
++      background: rgba(255, 255, 255, .12);
++      color: white;
++      border: 2px solid rgba(255, 255, 255, .4);
++      backdrop-filter: blur(8px);
++    }
++
++    .btn-hero-ghost:hover {
++      background: rgba(255, 255, 255, .22);
++      border-color: rgba(255, 255, 255, .7);
++    }
++
++    /* ── STATS RIBBON ── */
++    .stats-ribbon {
++      background: var(--green-dark);
++      padding: 0;
++    }
++
++    .stats-inner {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++      display: grid;
++      grid-template-columns: repeat(4, 1fr);
++    }
++
++    .stat-item {
++      padding: 22px 0;
++      text-align: center;
++      border-right: 1px solid rgba(255, 255, 255, .1);
++      animation: fadeUp .5s ease both;
++    }
++
++    .stat-item:last-child {
++      border-right: none;
++    }
++
++    .stat-num {
++      font-family: 'Playfair Display', serif;
++      font-size: 32px;
++      font-weight: 700;
++      color: #A8D5B5;
++      line-height: 1;
++      margin-bottom: 4px;
++    }
++
++    .stat-label {
++      font-size: 12px;
++      color: rgba(255, 255, 255, .65);
++      font-weight: 300;
++      letter-spacing: .3px;
++    }
++
++    /* ── SECTION WRAPPER ── */
++    section {
++      padding: 72px 0;
++    }
++
++    .section-inner {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++    }
++
++    .section-label {
++      display: inline-flex;
++      align-items: center;
++      gap: 8px;
++      font-size: 11px;
++      font-weight: 700;
++      text-transform: uppercase;
++      letter-spacing: 2px;
++      color: var(--green);
++      margin-bottom: 10px;
++    }
++
++    .section-label::before {
++      content: '';
++      width: 24px;
++      height: 2px;
++      background: var(--green);
++      border-radius: 2px;
++    }
++
++    .section-title {
++      font-family: 'Playfair Display', serif;
++      font-size: 36px;
++      font-weight: 700;
++      color: var(--ink);
++      line-height: 1.2;
++      margin-bottom: 12px;
++    }
++
++    .section-sub {
++      font-size: 16px;
++      color: var(--gray-d);
++      font-weight: 300;
++      max-width: 520px;
++      line-height: 1.7;
++      margin-bottom: 40px;
++    }
++
++    /* ── INFOS GRID ── */
++    .infos-grid {
++      display: grid;
++      grid-template-columns: 1fr 1fr;
++      gap: 28px;
++      align-items: start;
++    }
++
++    .info-card {
++      background: var(--white);
++      border-radius: var(--r);
++      box-shadow: var(--shadow);
++      overflow: hidden;
++      transition: transform .2s, box-shadow .2s;
++    }
++
++    .info-card:hover {
++      transform: translateY(-3px);
++      box-shadow: var(--shadow-lg);
++    }
++
++    .info-card-head {
++      background: var(--green-light);
++      border-bottom: 2px solid var(--green-mid);
++      padding: 16px 22px;
++      display: flex;
++      align-items: center;
++      gap: 12px;
++    }
++
++    .info-card-icon {
++      font-size: 22px;
++    }
++
++    .info-card-head h3 {
++      font-family: 'Playfair Display', serif;
++      font-size: 17px;
++      font-weight: 600;
++      color: var(--green-dark);
++    }
++
++    .info-card-body {
++      padding: 20px 22px;
++    }
++
++    .feat-list {
++      list-style: none;
++    }
++
++    .feat-list li {
++      display: flex;
++      align-items: flex-start;
++      gap: 10px;
++      padding: 7px 0;
++      border-bottom: 1px solid var(--gray-l);
++      font-size: 14px;
++      color: var(--ink);
++    }
++
++    .feat-list li:last-child {
++      border-bottom: none;
++    }
++
++    .feat-list li::before {
++      content: '✓';
++      color: var(--green);
++      font-weight: 700;
++      font-size: 13px;
++      margin-top: 2px;
++      flex-shrink: 0;
++    }
++
++    /* tarifs inline */
++    .tarif-row {
++      display: flex;
++      justify-content: space-between;
++      align-items: center;
++      padding: 10px 0;
++      border-bottom: 1px solid var(--gray-l);
++      font-size: 14px;
++    }
++
++    .tarif-row:last-child {
++      border-bottom: none;
++    }
++
++    .tarif-row .t-name {
++      color: var(--ink);
++      font-weight: 400;
++    }
++
++    .tarif-row .t-price {
++      font-family: 'Lato', monospace;
++      font-weight: 700;
++      color: var(--green-dark);
++      font-size: 15px;
++    }
++
++    .tarif-note {
++      font-size: 11px;
++      color: var(--gray-d);
++      margin-top: 10px;
++      font-style: italic;
++    }
++
++    /* ── CTA SECTION ── */
++    .cta-section {
++      background: var(--green-dark);
++      padding: 64px 0;
++    }
++
++    .cta-inner {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++      display: flex;
++      align-items: center;
++      justify-content: space-between;
++      gap: 40px;
++      flex-wrap: wrap;
++    }
++
++    .cta-text h2 {
++      font-family: 'Playfair Display', serif;
++      font-size: 32px;
++      color: white;
++      margin-bottom: 10px;
++    }
++
++    .cta-text p {
++      font-size: 15px;
++      color: var(--green-mid);
++      font-weight: 300;
++      max-width: 460px;
++      line-height: 1.7;
++    }
++
++    .btn-cta {
++      background: white;
++      color: var(--green-dark);
++      padding: 16px 40px;
++      border-radius: 8px;
++      font-family: 'Lato', sans-serif;
++      font-size: 15px;
++      font-weight: 700;
++      text-decoration: none;
++      transition: all .18s;
++      white-space: nowrap;
++      flex-shrink: 0;
++      display: inline-flex;
++      align-items: center;
++      gap: 10px;
++      box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
++    }
++
++    .btn-cta:hover {
++      background: var(--green-light);
++      transform: translateY(-2px);
++      box-shadow: 0 8px 28px rgba(0, 0, 0, .3);
++    }
++
++    /* ── COMING SOON GRID ── */
++    .coming-grid {
++      display: grid;
++      grid-template-columns: repeat(3, 1fr);
++      gap: 20px;
++    }
++
++    .coming-card {
++      background: var(--white);
++      border-radius: var(--r);
++      box-shadow: var(--shadow);
++      padding: 28px 24px;
++      position: relative;
++      overflow: hidden;
++      opacity: .72;
++      transition: opacity .2s;
++    }
++
++    .coming-card:hover {
++      opacity: 1;
++    }
++
++    .coming-card::after {
++      content: 'Bientôt';
++      position: absolute;
++      top: 14px;
++      right: -22px;
++      background: var(--earth);
++      color: white;
++      font-size: 10px;
++      font-weight: 700;
++      letter-spacing: 1px;
++      text-transform: uppercase;
++      padding: 4px 32px;
++      transform: rotate(35deg);
++    }
++
++    .coming-icon {
++      font-size: 32px;
++      margin-bottom: 14px;
++    }
++
++    .coming-title {
++      font-family: 'Playfair Display', serif;
++      font-size: 18px;
++      font-weight: 600;
++      color: var(--ink);
++      margin-bottom: 8px;
++    }
++
++    .coming-desc {
++      font-size: 13px;
++      color: var(--gray-d);
++      font-weight: 300;
++      line-height: 1.6;
++    }
++
++    .coming-items {
++      margin-top: 12px;
++    }
++
++    .coming-items span {
++      display: inline-block;
++      background: var(--gray-l);
++      color: var(--gray-d);
++      font-size: 11px;
++      font-weight: 700;
++      padding: 3px 10px;
++      border-radius: 12px;
++      margin: 3px 3px 0 0;
++    }
++
++    /* ── CONTACT ── */
++    .contact-grid {
++      display: grid;
++      grid-template-columns: 1fr 1fr 1fr;
++      gap: 20px;
++    }
++
++    .contact-box {
++      background: var(--white);
++      border-radius: var(--r);
++      box-shadow: var(--shadow);
++      padding: 24px;
++      border-top: 3px solid var(--green);
++    }
++
++    .contact-box h4 {
++      font-family: 'Playfair Display', serif;
++      font-size: 16px;
++      color: var(--green-dark);
++      margin-bottom: 14px;
++    }
++
++    .contact-line {
++      display: flex;
++      align-items: flex-start;
++      gap: 10px;
++      margin-bottom: 10px;
++      font-size: 13px;
++      line-height: 1.5;
++    }
++
++    .contact-line .ci {
++      font-size: 16px;
++      flex-shrink: 0;
++      margin-top: 1px;
++    }
++
++    .contact-line a {
++      color: var(--green-dark);
++      font-weight: 700;
++      text-decoration: none;
++    }
++
++    .contact-line a:hover {
++      text-decoration: underline;
++    }
++
++    .contact-line span {
++      color: var(--gray-d);
++    }
++
++    /* ── MAP PLACEHOLDER ── */
++    .map-placeholder {
++      background: var(--green-light);
++      border: 2px solid var(--green-mid);
++      border-radius: var(--r);
++      height: 180px;
++      display: flex;
++      flex-direction: column;
++      align-items: center;
++      justify-content: center;
++      gap: 8px;
++      cursor: pointer;
++      transition: all .18s;
++      text-decoration: none;
++    }
++
++    .map-placeholder:hover {
++      background: var(--green-mid);
++    }
++
++    .map-placeholder .map-icon {
++      font-size: 36px;
++    }
++
++    .map-placeholder span {
++      font-size: 13px;
++      font-weight: 700;
++      color: var(--green-dark);
++    }
++
++    .map-placeholder small {
++      font-size: 11px;
++      color: var(--gray-d);
++    }
++
++    /* ── FOOTER ── */
++    footer {
++      background: var(--ink);
++      padding: 36px 0;
++    }
++
++    .footer-inner {
++      max-width: 1100px;
++      margin: 0 auto;
++      padding: 0 40px;
++      display: flex;
++      align-items: center;
++      justify-content: space-between;
++      flex-wrap: wrap;
++      gap: 16px;
++    }
++
++    .footer-left {
++      font-size: 12px;
++      color: #666;
++      line-height: 1.7;
++    }
++
++    .footer-left strong {
++      color: #999;
++    }
++
++    .footer-right {
++      display: flex;
++      gap: 20px;
++      align-items: center;
++    }
++
++    .footer-right a {
++      font-size: 12px;
++      color: #666;
++      text-decoration: none;
++      transition: color .15s;
++    }
++
++    .footer-right a:hover {
++      color: var(--green-mid);
++    }
++
++    .beta-badge {
++      background: var(--earth);
++      color: white;
++      font-size: 10px;
++      font-weight: 700;
++      padding: 3px 8px;
++      border-radius: 4px;
++      letter-spacing: .8px;
++      text-transform: uppercase;
++    }
++
++    /* ── ANIMATIONS ── */
++    .reveal {
++      opacity: 0;
++      transform: translateY(20px);
++      transition: opacity .6s ease, transform .6s ease;
++    }
++
++    .reveal.visible {
++      opacity: 1;
++      transform: none;
++    }
++
++    /* ── RESPONSIVE ── */
++    @media (max-width: 820px) {
++      .topbar {
++        display: none;
++      }
++
++      .hero {
++        height: 380px;
++      }
++
++      .hero-title {
++        font-size: 34px;
++      }
++
++      .hero-desc {
++        font-size: 14px;
++      }
++
++      .stats-inner {
++        grid-template-columns: repeat(2, 1fr);
++      }
++
++      .stat-item:nth-child(2) {
++        border-right: none;
++      }
++
++      .infos-grid {
++        grid-template-columns: 1fr;
++      }
++
++      .coming-grid {
++        grid-template-columns: 1fr;
++      }
++
++      .contact-grid {
++        grid-template-columns: 1fr;
++      }
++
++      .cta-inner {
++        flex-direction: column;
++        text-align: center;
++      }
++
++      .nav-links {
++        display: none;
++      }
++
++      .nav-inner {
++        padding: 0 16px;
++      }
++
++      section {
++        padding: 48px 0;
++      }
++
++      .section-inner {
++        padding: 0 16px;
++      }
++
++      .footer-inner {
++        flex-direction: column;
++        text-align: center;
++      }
++    }

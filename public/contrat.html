@@ -9,7 +9,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap"
     rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     input.cval {
       border: none;
@@ -187,15 +186,6 @@
       font-weight: 300;
       text-transform: uppercase;
       letter-spacing: .8px;
-    }
-
-    .header-meta .iban-small {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--green-dark);
-      font-family: 'Lato', monospace;
-      letter-spacing: .5px;
-      margin-top: 3px;
     }
 
     .contact-pill {
@@ -1227,7 +1217,7 @@
       font-weight: 700;
     }
 
-    .iban-payment-box {
+    .payment-info-box {
       background: var(--green-dark);
       border-radius: var(--radius);
       padding: 20px 24px;
@@ -1235,7 +1225,7 @@
       margin: 20px 0;
     }
 
-    .iban-payment-box .label {
+    .payment-info-box .label {
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
@@ -1245,12 +1235,19 @@
       margin-bottom: 8px;
     }
 
-    .iban-payment-box .iban-num {
-      font-family: 'Lato', monospace;
-      font-size: 20px;
+    .payment-info-box .payment-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
       font-weight: 700;
       color: white;
-      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .payment-info-box p {
+      color: var(--green-mid);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0;
     }
 
     .warn-box {
@@ -1798,7 +1795,7 @@
           <div class="opt-icon">🔑</div>
           <div class="opt-info">
             <div class="opt-name">Caution – Non membre</div>
-            <div class="opt-desc">CHF 150.— remboursés via IBAN à la reddition si tout est OK</div>
+            <div class="opt-desc">CHF 150.— remboursés après l'état des lieux si tout est en ordre</div>
           </div>
           <span class="opt-price">+ 150.—</span>
           <div class="opt-toggle"></div>
@@ -1903,14 +1900,6 @@
         </div>
 
         <div class="field-group">
-          <label class="field-label">IBAN pour restitution de la caution</label>
-          <input type="text" id="ibanClient" placeholder="CH00 0000 0000 0000 0000 0"
-            style="font-family:'Lato',monospace; letter-spacing:1px;">
-          <div style="font-size:11px; color:var(--gray-dark); margin-top:5px; font-weight:300;">Uniquement si caution
-            non-membre applicable</div>
-        </div>
-
-        <div class="field-group">
           <label class="field-label">Remarques</label>
           <textarea id="remarques" rows="3" placeholder="Informations complémentaires, demandes spéciales…"></textarea>
         </div>
@@ -1966,8 +1955,9 @@
           </div>
           <div class="cond-item" onclick="checkCond(this)">
             <div class="cond-box"></div>
-            <div class="cond-text"><strong>Paiement :</strong> uniquement par voie bancaire sur IBAN CH37 0900 0000 1711
-              4870 5 dans les 7 jours. Le paiement confirme la réservation.</div>
+            <div class="cond-text"><strong>Paiement :</strong> les informations de paiement sont transmises après
+              vérification de la disponibilité. La réservation devient définitive après confirmation et réception du
+              paiement.</div>
           </div>
           <div class="cond-item" onclick="checkCond(this)">
             <div class="cond-box"></div>
@@ -2028,21 +2018,19 @@
             <div class="recap-row"><span class="k">Responsable</span><span class="v" id="rNom">–</span></div>
             <div class="recap-row"><span class="k">Adresse</span><span class="v" id="rAdresse">–</span></div>
             <div class="recap-row"><span class="k">Contact</span><span class="v" id="rContact">–</span></div>
-            <div class="recap-row" id="rIbanRow"><span class="k">IBAN caution</span><span class="v" id="rIban">–</span>
-            </div>
           </div>
         </div>
 
-        <div class="iban-payment-box">
-          <span class="label">Effectuez votre paiement dans les 7 jours sur</span>
-          <div class="iban-num">CH37 0900 0000 1711 4870 5</div>
-          <div id="qrcode" style="margin-top:16px; display:flex; justify-content:center;"></div>
-          <span class="label" style="margin-top:8px;">Scanner pour accéder au formulaire</span>
+        <div class="payment-info-box">
+          <span class="label">Étape suivante</span>
+          <div class="payment-title">Confirmation et paiement</div>
+          <p>Après vérification de la disponibilité, la gérante vous transmettra la confirmation ainsi que les
+            informations de paiement correspondant à votre réservation.</p>
         </div>
 
         <div class="warn-box">
-          ⚠ Votre réservation ne sera <strong>définitivement validée qu'après réception du paiement total</strong>.<br>
-          Veuillez retourner le contrat signé (pages 1 &amp; 2) par e-mail à la gérante :<br>
+          ⚠ L'envoi du formulaire constitue une <strong>demande de réservation et non une confirmation</strong>.<br>
+          La gérante vous contactera après vérification de la disponibilité :<br>
           <strong>Daniela Allemann</strong> · <a href="mailto:dani.alle57@gmail.com"
             style="color:var(--earth)">dani.alle57@gmail.com</a> · 078 638 47 91
         </div>
@@ -2060,10 +2048,8 @@
         <div class="success-circle">✓</div>
         <h2>Contrat soumis avec succès</h2>
         <p>Votre demande de réservation a bien été enregistrée.</p>
-        <p>La réservation sera <strong>définitivement confirmée</strong> après réception du paiement sur l'IBAN
-          <strong>CH37 0900 0000 1711 4870 5</strong> dans les 7 jours.
-        </p>
-        <p>La gérante Daniela Allemann vous contactera au plus tard une semaine avant la date de location.</p>
+        <p>La gérante vérifiera la disponibilité et vous transmettra ensuite la confirmation et les informations de
+          paiement. Ne procédez à aucun versement avant cette confirmation.</p>
         <button class="btn btn-primary" style="margin-top:28px;" onclick="location.reload()">Nouveau contrat</button>
       </div>
     </div>
@@ -2099,7 +2085,7 @@
             <span class="sum-total-amount"><span class="curr">CHF</span><span id="sumTotal">–</span></span>
           </div>
           <div class="sum-badge green" id="badgeMember" style="display:none">✓ Tarif membre ADS appliqué (−20%)</div>
-          <div class="sum-badge orange" id="badgeCaution" style="display:none">⚠ Caution CHF 150.— remboursable via IBAN
+          <div class="sum-badge orange" id="badgeCaution" style="display:none">⚠ Caution CHF 150.— remboursable après état des lieux
           </div>
         </div>
       </div>
@@ -2388,7 +2374,6 @@
       $('rNom').textContent = ($('prenom').value + ' ' + $('nom').value).trim();
       $('rAdresse').textContent = [$('adresse').value, $('np').value, $('localite').value].filter(Boolean).join(', ');
       $('rContact').textContent = [$('tel').value, $('email').value].filter(Boolean).join(' · ');
-      $('rIban').textContent = $('ibanClient').value || '–';
 
       const c = calcTotal();
       const rows = [];
@@ -2416,13 +2401,6 @@
     $('dateField').min = today;
     renderSummary();
 
-    new QRCode(document.getElementById("qrcode"), {
-      text: "https://lyamcestmoi.github.io/ADS/",
-      width: 100,
-      height: 100,
-      colorDark: "#2B5038",
-      colorLight: "#ffffff",
-    });
   </script>
 </body>
 
