@@ -459,7 +459,9 @@
     }
 
     .info-card-icon {
-      font-size: 22px;
+      color: var(--green-dark);
+      display: inline-flex;
+      flex-shrink: 0;
     }
 
     .info-card-head h3 {
@@ -626,11 +628,6 @@
       transform: rotate(35deg);
     }
 
-    .coming-icon {
-      font-size: 32px;
-      margin-bottom: 14px;
-    }
-
     .coming-title {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
@@ -681,6 +678,13 @@
       font-size: 16px;
       color: var(--green-dark);
       margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .contact-box h4 svg {
+      flex-shrink: 0;
     }
 
     .contact-line {
@@ -690,12 +694,6 @@
       margin-bottom: 10px;
       font-size: 13px;
       line-height: 1.5;
-    }
-
-    .contact-line .ci {
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-top: 1px;
     }
 
     .contact-line a {
@@ -733,7 +731,8 @@
     }
 
     .map-placeholder .map-icon {
-      font-size: 36px;
+      color: var(--green-dark);
+      display: inline-flex;
     }
 
     .map-placeholder span {
