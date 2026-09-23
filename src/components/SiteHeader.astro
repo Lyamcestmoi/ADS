@@ -1,5 +1,5 @@
 ---
-import { Mail } from '@lucide/astro';
+import { ArrowUpRight } from '@lucide/astro';
 
 interface Props {
   active?: 'home' | 'reservation';
@@ -8,62 +8,29 @@ interface Props {
 const { active = 'home' } = Astro.props;
 ---
 
-<div class="topbar">
-  <div>
-    <a href="https://www.leplateaudediesse.ch">Commune de Plateau de Diesse</a>
-    <span style="margin-left:12px; opacity:.5;">·</span>
-    <span style="margin-left:12px;">Stand ADS — 2515 Prêles</span>
-  </div>
-
-  <div class="topbar-right">
-    <span class="topbar-contact">
-      <Mail size={14} stroke-width={1.8} aria-hidden="true" />
-      <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>
-    </span>
-  </div>
-</div>
-
-<nav aria-label="Navigation principale">
-  <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="Stand ADS — Accueil">
-      <img
-        src="/logo.png"
-        width="52"
-        height="52"
-        alt="Logo de l'ADS"
-        style="object-fit:contain; border-radius:50%;"
-      />
-      <div>
-        <div class="nav-logo-text">Stand ADS</div>
-        <div class="nav-logo-sub">Prêles · Plateau de Diesse</div>
-      </div>
+<header class="site-header">
+  <nav class="nav-shell" aria-label="Navigation principale">
+    <a href="/" class="brand" aria-label="Stand ADS — Accueil">
+      <img src="/logo.png" width="46" height="46" alt="" />
+      <span>
+        <strong>Stand ADS</strong>
+        <small>Prêles · Plateau de Diesse</small>
+      </span>
     </a>
 
     <div class="nav-links">
-      <a href="/" class:list={['nav-link', { active: active === 'home' }]}>
-        Accueil
-      </a>
-      <a
-        href="/reservation/"
-        class:list={['nav-link', { active: active === 'reservation' }]}
-      >
-        Réservation
-      </a>
-      <span class="nav-link soon" aria-disabled="true">Comité</span>
-      <span class="nav-link soon" aria-disabled="true">Galerie</span>
-      <span class="nav-link soon" aria-disabled="true">Infos pratiques</span>
+      <a href="/" class:list={{ active: active === 'home' }}>Accueil</a>
+      <a href="/#stand">Le stand</a>
+      <a href="/#tarifs">Tarifs</a>
+      <a href="/#contact">Contact</a>
     </div>
-  </div>
-</nav>
 
-<style>
-  .topbar-contact {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .topbar-contact :global(svg) {
-    flex: 0 0 auto;
-  }
-</style>
+    <a
+      href="/reservation/"
+      class:list={['nav-book', { active: active === 'reservation' }]}
+    >
+      Réserver
+      <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
+    </a>
+  </nav>
+</header>
