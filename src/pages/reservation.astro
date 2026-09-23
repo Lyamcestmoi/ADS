@@ -1,5 +1,5 @@
 ---
-import { ArrowLeft, CalendarDays, Check, Info, Mail } from '@lucide/astro';
+import { ArrowLeft, CalendarDays, Check, Info, Mail, Phone } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -158,8 +158,10 @@ const description =
           </button>
 
           <p class="fallback">
-            Pour réserver dès maintenant :
-            <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>
+            Pour réserver dès maintenant, contactez <strong>Mme Daniela Allemann</strong> :
+            <a href="tel:+41786384791">078 638 47 91</a>
+            ou
+            <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>.
           </p>
         </form>
 
@@ -182,6 +184,10 @@ const description =
           <a class="summary-contact" href="mailto:gerante@ads-preles.ch">
             <Mail size={18} stroke-width={1.8} aria-hidden="true" />
             Écrire à la gérance
+          </a>
+          <a class="summary-contact summary-contact-phone" href="tel:+41786384791">
+            <Phone size={18} stroke-width={1.8} aria-hidden="true" />
+            078 638 47 91
           </a>
         </aside>
       </div>
@@ -607,6 +613,10 @@ const description =
   .summary-contact:hover {
     border-color: var(--yellow);
     color: var(--yellow);
+  }
+
+  .summary-contact-phone {
+    margin-top: 10px;
   }
 
   @media (max-width: 960px) {
