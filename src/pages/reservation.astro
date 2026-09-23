@@ -1,4 +1,5 @@
 ---
+import { ArrowLeft, CalendarDays, Check, Info, Mail } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -11,33 +12,46 @@ const description =
 <MainLayout title={title} description={description}>
   <SiteHeader active="reservation" />
 
-  <main>
-    <section class="hero-reservation">
-      <div class="container">
-        <p class="eyebrow">Location du Stand ADS</p>
-        <h1>Demande de réservation</h1>
-        <p>
-          La disponibilité et le montant définitif sont confirmés par la gérance
-          avant tout paiement.
-        </p>
+  <main class="reservation-page">
+    <section class="reservation-hero">
+      <div class="reservation-shell reservation-hero-grid">
+        <div>
+          <a class="back-link" href="/">
+            <ArrowLeft size={16} stroke-width={1.8} aria-hidden="true" />
+            Retour au stand
+          </a>
+          <p class="reservation-eyebrow">Votre événement à Prêles</p>
+          <h1>Préparons votre réservation.</h1>
+          <p class="reservation-lead">
+            Indiquez-nous les grandes lignes de votre projet. La gérance vérifie
+            ensuite la disponibilité et vous confirme le montant définitif.
+          </p>
+        </div>
+
+        <ol class="reservation-steps" aria-label="Étapes de la réservation">
+          <li><span>01</span><strong>Choisissez votre formule</strong></li>
+          <li><span>02</span><strong>Ajoutez vos informations</strong></li>
+          <li><span>03</span><strong>Recevez une confirmation</strong></li>
+        </ol>
       </div>
     </section>
 
-    <section class="content">
-      <div class="container layout">
-        <form id="reservation-form" class="card">
+    <section class="reservation-content">
+      <div class="reservation-shell reservation-layout">
+        <form id="reservation-form" class="form-panel">
           <div class="notice" role="status">
-            <strong>Envoi en ligne bientôt disponible</strong>
-            <span>Aucune donnée n’est envoyée pour le moment.</span>
+            <Info size={20} stroke-width={1.8} aria-hidden="true" />
+            <div>
+              <strong>Le formulaire est en préparation</strong>
+              <span>Aucune donnée n’est envoyée actuellement. Vous pouvez nous écrire par e-mail.</span>
+            </div>
           </div>
 
           <fieldset>
-            <legend>1. Votre événement</legend>
-
-            <div class="grid">
+            <legend><span>01</span> Votre événement</legend>
+            <div class="form-grid">
               <label class="full">
-                Type de location *
-
+                <span>Type de location *</span>
                 <select name="tarif" required>
                   <option value="">Choisir une formule</option>
                   <option>Journée ou soirée, lundi–jeudi — CHF 90.–</option>
@@ -48,76 +62,63 @@ const description =
               </label>
 
               <label>
-                Date de début *
+                <span>Date de début *</span>
                 <input name="date_debut" type="date" required />
               </label>
 
               <label>
-                Date de fin
+                <span>Date de fin</span>
                 <input name="date_fin" type="date" />
               </label>
 
               <label>
-                Nombre de personnes *
-
+                <span>Nombre de personnes *</span>
                 <input
                   name="participants"
                   type="number"
                   min="1"
-                  max="70"
+                  max="65"
                   placeholder="Ex. 45"
                   required
                 />
               </label>
 
-              <label class="check">
+              <label class="check-row">
                 <input name="membre_ads" type="checkbox" />
-                Membre ADS (réduction de 20 %)
+                <span>Membre ADS <small>réduction de 20 %</small></span>
               </label>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend>2. Options</legend>
-
-            <div class="options">
-              <label class="option">
+            <legend><span>02</span> Options</legend>
+            <div class="option-grid">
+              <label class="option-card">
                 <input name="four_pizza" type="checkbox" />
-
-                <span>
-                  <strong>Four à pizza</strong>
-                  <small>+ CHF 50.–</small>
-                </span>
+                <span><strong>Four à pizza</strong><small>+ CHF 50.–</small></span>
+                <Check size={18} stroke-width={2} aria-hidden="true" />
               </label>
-
-              <label class="option">
+              <label class="option-card">
                 <input name="bois" type="checkbox" />
-
-                <span>
-                  <strong>Bois supplémentaire</strong>
-                  <small>+ CHF 30.–</small>
-                </span>
+                <span><strong>Bois supplémentaire</strong><small>+ CHF 30.–</small></span>
+                <Check size={18} stroke-width={2} aria-hidden="true" />
               </label>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend>3. Vos coordonnées</legend>
-
-            <div class="grid">
+            <legend><span>03</span> Vos coordonnées</legend>
+            <div class="form-grid">
               <label>
-                Prénom *
+                <span>Prénom *</span>
                 <input name="prenom" autocomplete="given-name" required />
               </label>
-
               <label>
-                Nom *
+                <span>Nom *</span>
                 <input name="nom" autocomplete="family-name" required />
               </label>
-
               <label>
-                Téléphone *
-
+                <span>Téléphone *</span>
                 <input
                   name="telephone"
                   type="tel"
@@ -126,10 +127,8 @@ const description =
                   required
                 />
               </label>
-
               <label>
-                E-mail *
-
+                <span>E-mail *</span>
                 <input
                   name="email"
                   type="email"
@@ -138,10 +137,8 @@ const description =
                   required
                 />
               </label>
-
               <label class="full">
-                Remarques
-
+                <span>Remarques</span>
                 <textarea
                   name="remarques"
                   rows="5"
@@ -151,53 +148,41 @@ const description =
             </div>
           </fieldset>
 
-          <label class="consent">
+          <label class="consent-row">
             <input type="checkbox" required />
-            Je comprends qu’il s’agit d’une demande et non d’une confirmation.
+            <span>Je comprends qu’il s’agit d’une demande et non d’une confirmation.</span>
           </label>
 
-          <button type="button" disabled>
+          <button class="submit-button" type="button" disabled>
             Envoi en ligne bientôt disponible
           </button>
 
           <p class="fallback">
-            Pour réserver maintenant :
-            <a href="mailto:gerante@ads-preles.ch">
-              gerante@ads-preles.ch
-            </a>
+            Pour réserver dès maintenant :
+            <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>
           </p>
         </form>
 
-        <aside class="card summary">
-          <p class="eyebrow">Informations</p>
-          <h2>Tarifs principaux</h2>
-
+        <aside class="summary-panel">
+          <div>
+            <p class="reservation-eyebrow">Repères</p>
+            <h2>Les tarifs en un coup d’œil.</h2>
+          </div>
+          <dl>
+            <div><dt>Lun–jeu · journée/soirée</dt><dd>CHF 90.–</dd></div>
+            <div><dt>Lun–jeu · jour complet</dt><dd>CHF 150.–</dd></div>
+            <div><dt>Week-end ou férié</dt><dd>CHF 190.–</dd></div>
+            <div><dt>Dès 3 jours · par jour</dt><dd>CHF 120.–</dd></div>
+          </dl>
           <ul>
-            <li>
-              <span>Lun–jeu, journée/soirée</span>
-              <strong>CHF 90.–</strong>
-            </li>
-
-            <li>
-              <span>Lun–jeu, jour complet</span>
-              <strong>CHF 150.–</strong>
-            </li>
-
-            <li>
-              <span>Week-end ou férié</span>
-              <strong>CHF 190.–</strong>
-            </li>
-
-            <li>
-              <span>Dès 3 jours, par jour</span>
-              <strong>CHF 120.–</strong>
-            </li>
+            <li><Check size={16} stroke-width={2} aria-hidden="true" /> Réduction membre ADS de 20 %</li>
+            <li><Check size={16} stroke-width={2} aria-hidden="true" /> Caution non-membre de CHF 150.–</li>
+            <li><CalendarDays size={16} stroke-width={1.8} aria-hidden="true" /> Disponibilité confirmée par la gérance</li>
           </ul>
-
-          <p class="note">
-            Caution non-membre : CHF 150.–. Le tarif final et les informations
-            de paiement sont communiqués après vérification de la disponibilité.
-          </p>
+          <a class="summary-contact" href="mailto:gerante@ads-preles.ch">
+            <Mail size={18} stroke-width={1.8} aria-hidden="true" />
+            Écrire à la gérance
+          </a>
         </aside>
       </div>
     </section>
@@ -207,120 +192,200 @@ const description =
 </MainLayout>
 
 <script>
-  const form =
-    document.querySelector<HTMLFormElement>('#reservation-form');
+  const form = document.querySelector<HTMLFormElement>('#reservation-form');
+  const start = document.querySelector<HTMLInputElement>('[name="date_debut"]');
+  const end = document.querySelector<HTMLInputElement>('[name="date_fin"]');
+  const now = new Date();
+  const today = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('-');
 
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
+  form?.addEventListener('submit', (event) => event.preventDefault());
+
+  if (start) start.min = today;
+  if (end) end.min = today;
+
+  start?.addEventListener('change', () => {
+    if (!end) return;
+    end.min = start.value || today;
+    if (end.value && end.value < end.min) end.value = '';
   });
-
-  const today = new Date().toISOString().split('T')[0];
-
-  document
-    .querySelectorAll<HTMLInputElement>('input[type="date"]')
-    .forEach((input) => {
-      input.min = today;
-    });
 </script>
 
 <style>
-  .container {
-    width: min(1100px, calc(100% - 40px));
-    margin: 0 auto;
+  .reservation-page {
+    background: var(--cream);
   }
 
-  .hero-reservation {
-    padding: 70px 0;
-    color: white;
-    background:
-      linear-gradient(
-        120deg,
-        rgba(43, 80, 56, 0.96),
-        rgba(58, 107, 74, 0.78)
-      ),
-      url('/stand.png') center 55% / cover;
+  .reservation-shell {
+    width: var(--shell);
+    margin-inline: auto;
   }
 
-  .eyebrow {
-    color: var(--green-mid);
-    font-size: 12px;
+  .reservation-hero {
+    padding: 90px 0 86px;
+    background: var(--forest-950);
+    color: var(--white);
+  }
+
+  .reservation-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+    gap: 90px;
+    align-items: end;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 62px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 1.4px;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--yellow);
+  }
+
+  .reservation-eyebrow {
+    margin: 0 0 16px;
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
   h1 {
-    margin: 8px 0 14px;
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(38px, 6vw, 58px);
-    line-height: 1.08;
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(54px, 7vw, 92px);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 0.94;
   }
 
-  .hero-reservation p:last-child {
+  .reservation-lead {
     max-width: 650px;
-    color: rgba(255, 255, 255, 0.86);
+    margin: 28px 0 0;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 18px;
   }
 
-  .content {
-    padding: 55px 0 80px;
+  .reservation-steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .layout {
+  .reservation-steps li {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 310px;
+    grid-template-columns: 42px 1fr;
+    gap: 15px;
+    align-items: center;
+    min-height: 66px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .reservation-steps span {
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .reservation-steps strong {
+    font-size: 14px;
+  }
+
+  .reservation-content {
+    padding: 76px 0 110px;
+  }
+
+  .reservation-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
     gap: 28px;
     align-items: start;
   }
 
-  .card {
-    padding: 30px;
-    border: 1px solid var(--gray-l);
-    border-radius: 14px;
-    background: white;
-    box-shadow: var(--shadow);
+  .form-panel {
+    padding: clamp(24px, 4vw, 48px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
   }
 
   .notice {
-    display: grid;
-    gap: 3px;
-    margin-bottom: 30px;
-    padding: 15px 17px;
-    border: 1px solid #e8cf8f;
-    border-radius: 9px;
-    background: #fff8e7;
-    color: #6d5520;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 48px;
+    padding: 18px 20px;
+    border: 1px solid #dec456;
+    border-radius: var(--radius-sm);
+    background: #fbf1bd;
+    color: #554807;
+  }
+
+  .notice svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+  }
+
+  .notice div,
+  .notice strong,
+  .notice span {
+    display: block;
+  }
+
+  .notice span {
+    margin-top: 2px;
+    font-size: 13px;
   }
 
   fieldset {
-    margin: 0 0 32px;
+    margin: 0 0 48px;
     padding: 0;
     border: 0;
   }
 
   legend {
     width: 100%;
-    margin-bottom: 18px;
-    padding-bottom: 9px;
-    border-bottom: 2px solid var(--green-light);
-    color: var(--green-dark);
-    font-family: 'Playfair Display', serif;
+    margin-bottom: 24px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--line);
+    color: var(--forest-900);
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.03em;
   }
 
-  .grid,
-  .options {
+  legend span {
+    margin-right: 12px;
+    color: var(--blue);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  .form-grid,
+  .option-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 20px;
   }
 
-  label {
+  label:not(.check-row, .option-card, .consent-row) {
     display: grid;
-    gap: 7px;
-    font-size: 14px;
-    font-weight: 700;
+    gap: 8px;
+  }
+
+  label > span {
+    font-size: 13px;
+    font-weight: 800;
   }
 
   .full {
@@ -331,158 +396,285 @@ const description =
   select,
   textarea {
     width: 100%;
-    padding: 12px 13px;
-    border: 1px solid var(--gray);
-    border-radius: 7px;
-    background: white;
+    min-height: 50px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: 0;
+    background: var(--white);
     color: var(--ink);
-    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
   }
 
   input:focus,
   select:focus,
   textarea:focus {
-    border-color: var(--green);
-    outline: 3px solid rgba(58, 107, 74, 0.12);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(17, 135, 178, 0.12);
   }
 
-  .check,
-  .option,
-  .consent {
+  .check-row,
+  .option-card,
+  .consent-row {
     display: flex;
-    gap: 10px;
-    align-items: flex-start;
+    gap: 12px;
+    align-items: center;
   }
 
-  .check {
+  .check-row {
     align-self: end;
-    padding-bottom: 12px;
+    min-height: 50px;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
   }
 
-  .check input,
-  .option input,
-  .consent input {
-    width: auto;
-    margin-top: 4px;
-    accent-color: var(--green);
+  .check-row input,
+  .option-card input,
+  .consent-row input {
+    width: 18px;
+    min-height: 18px;
+    margin: 0;
+    accent-color: var(--blue);
   }
 
-  .option {
-    padding: 15px;
-    border: 1px solid var(--gray-l);
-    border-radius: 9px;
-    background: var(--off);
+  .check-row span,
+  .check-row small {
+    display: block;
   }
 
-  .option span {
+  .check-row small {
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .option-card {
+    position: relative;
+    min-height: 86px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    cursor: pointer;
+  }
+
+  .option-card span {
     display: grid;
+    margin-right: auto;
   }
 
-  .option small {
-    color: var(--gray-d);
-    font-weight: 400;
+  .option-card small {
+    color: var(--muted);
+    font-weight: 500;
   }
 
-  .consent {
+  .option-card > svg {
+    opacity: 0;
+    color: var(--blue);
+  }
+
+  .option-card:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-soft);
+  }
+
+  .option-card:has(input:checked) > svg {
+    opacity: 1;
+  }
+
+  .consent-row {
+    align-items: flex-start;
     margin-bottom: 18px;
-    padding: 15px;
-    border-radius: 9px;
-    background: var(--green-light);
+    padding: 17px;
+    border-radius: var(--radius-sm);
+    background: var(--forest-100);
   }
 
-  button {
+  .consent-row input {
+    flex: 0 0 auto;
+    margin-top: 3px;
+  }
+
+  .submit-button {
     width: 100%;
-    padding: 14px;
+    min-height: 54px;
     border: 0;
-    border-radius: 7px;
-    background: var(--gray);
-    color: white;
-    font: inherit;
-    font-weight: 700;
+    border-radius: 999px;
+    background: #bdc6c3;
+    color: var(--white);
+    font-weight: 800;
     cursor: not-allowed;
   }
 
   .fallback {
-    margin-top: 15px;
-    color: var(--gray-d);
-    font-size: 14px;
+    margin: 16px 0 0;
+    color: var(--muted);
+    font-size: 13px;
     text-align: center;
   }
 
   .fallback a {
-    color: var(--green-dark);
-    font-weight: 700;
+    color: var(--forest-900);
+    font-weight: 800;
   }
 
-  .summary {
+  .summary-panel {
     position: sticky;
-    top: 88px;
+    top: 110px;
+    padding: 34px;
+    border-radius: var(--radius);
+    background: var(--forest-900);
+    color: var(--white);
   }
 
-  .summary h2 {
-    margin: 5px 0 18px;
-    font-family: 'Playfair Display', serif;
-    font-size: 25px;
+  .summary-panel h2 {
+    margin: 0 0 28px;
+    font-size: 34px;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
   }
 
-  .summary li {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--gray-l);
-    list-style: none;
+  .summary-panel dl {
+    margin: 0;
   }
 
-  .summary li span {
-    color: var(--gray-d);
+  .summary-panel dl div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   }
 
-  .summary li strong {
-    white-space: nowrap;
-  }
-
-  .note {
-    margin-top: 18px;
-    color: var(--gray-d);
+  .summary-panel dt,
+  .summary-panel dd {
+    margin: 0;
     font-size: 13px;
   }
 
-  @media (max-width: 820px) {
-    .layout {
+  .summary-panel dt {
+    color: rgba(255, 255, 255, 0.64);
+  }
+
+  .summary-panel dd {
+    color: var(--yellow);
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .summary-panel ul {
+    display: grid;
+    gap: 12px;
+    margin: 28px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .summary-panel li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+  }
+
+  .summary-panel li svg {
+    flex: 0 0 auto;
+    color: var(--yellow);
+  }
+
+  .summary-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .summary-contact:hover {
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+
+  @media (max-width: 960px) {
+    .reservation-hero-grid,
+    .reservation-layout {
       grid-template-columns: 1fr;
     }
 
-    .summary {
+    .reservation-hero-grid {
+      gap: 46px;
+    }
+
+    .back-link {
+      margin-bottom: 44px;
+    }
+
+    .reservation-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .reservation-steps li {
+      grid-template-columns: 1fr;
+      gap: 5px;
+      align-content: start;
+      border-bottom: 0;
+    }
+
+    .summary-panel {
       position: static;
       grid-row: 1;
     }
   }
 
-  @media (max-width: 600px) {
-    .container {
-      width: min(100% - 24px, 1100px);
+  @media (max-width: 640px) {
+    .reservation-hero {
+      padding: 54px 0 58px;
     }
 
-    .hero-reservation {
-      padding: 48px 0;
+    .reservation-steps {
+      grid-template-columns: 1fr;
+      gap: 0;
     }
 
-    .content {
-      padding: 30px 0 55px;
+    .reservation-steps li {
+      grid-template-columns: 38px 1fr;
+      min-height: 52px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     }
 
-    .card {
-      padding: 20px;
+    .reservation-content {
+      padding: 28px 0 70px;
     }
 
-    .grid,
-    .options {
+    .form-grid,
+    .option-grid {
       grid-template-columns: 1fr;
     }
 
     .full {
       grid-column: auto;
+    }
+
+    .notice {
+      margin-bottom: 36px;
+    }
+
+    fieldset {
+      margin-bottom: 38px;
     }
   }
 </style>
