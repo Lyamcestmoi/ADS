@@ -130,7 +130,7 @@ a {
 .nav-links a {
   position: relative;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
 }
@@ -180,7 +180,7 @@ a {
   padding: 11px 18px;
   background: var(--forest-900);
   color: var(--white);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .nav-book:hover,
@@ -277,7 +277,7 @@ a {
 .button {
   min-height: 52px;
   padding: 13px 22px;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .button-primary {
@@ -331,15 +331,15 @@ a {
 .fact strong {
   display: block;
   color: var(--yellow);
-  font-size: 27px;
+  font-size: 30px;
   font-weight: 600;
   letter-spacing: -0.04em;
 }
 
 .fact span {
   color: rgba(255, 255, 255, 0.66);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 15px;
+  line-height: 1.35;
 }
 
 .section {
@@ -417,7 +417,7 @@ a {
 
 .panel-head h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   letter-spacing: -0.025em;
 }
 
@@ -448,7 +448,8 @@ a {
   padding: 14px 16px 14px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.78);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.45;
 }
 
 .equipment-list li:nth-last-child(-n + 2) {
@@ -482,12 +483,13 @@ a {
 
 .price-row dt {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
 .price-row dd {
   color: var(--forest-900);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   white-space: nowrap;
 }
@@ -504,7 +506,7 @@ a {
   border-radius: 999px;
   background: var(--blue-soft);
   color: #0a6282;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -534,14 +536,14 @@ a {
 .option-item span {
   display: block;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .option-item strong {
   display: block;
   margin-top: 5px;
   color: var(--forest-900);
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .image-story {
@@ -586,6 +588,8 @@ a {
   max-width: 420px;
   margin: 42px 0 0;
   color: rgba(255, 255, 255, 0.78);
+  font-size: 18px;
+  line-height: 1.65;
 }
 
 .booking-band {
@@ -667,7 +671,8 @@ a {
   max-width: 310px;
   margin: 0 0 24px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .text-link {
@@ -719,7 +724,7 @@ a {
 
 .footer-brand span {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .footer-links {
@@ -732,7 +737,7 @@ a {
 
 .footer-links a {
   color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
+  font-size: 15px;
   text-decoration: none;
 }
 
