@@ -12,6 +12,18 @@ const title = 'Contrat de réservation — Stand ADS Prêles';
 const description =
   'Formulaire et contrat de location du Stand ADS à Prêles.';
 
+const calendarId = 'f5q9pam7lk03msfakrjqet1sts@group.calendar.google.com';
+const calendarUrl = new URL('https://calendar.google.com/calendar/embed');
+calendarUrl.searchParams.set('src', calendarId);
+calendarUrl.searchParams.set('ctz', 'Europe/Zurich');
+calendarUrl.searchParams.set('mode', 'MONTH');
+calendarUrl.searchParams.set('showTitle', '0');
+calendarUrl.searchParams.set('showPrint', '0');
+calendarUrl.searchParams.set('showTabs', '0');
+calendarUrl.searchParams.set('showCalendars', '0');
+calendarUrl.searchParams.set('showTz', '0');
+calendarUrl.searchParams.set('wkst', '2');
+
 const rentalConditions = [
   {
     title: 'Durée et tarifs',
@@ -69,6 +81,41 @@ const rentalConditions = [
       </div>
     </section>
 
+    <section class="availability-section" aria-labelledby="availability-title">
+      <div class="reservation-shell">
+        <div class="availability-heading">
+          <div>
+            <p class="booking-eyebrow">Disponibilités</p>
+            <h2 id="availability-title">Consulter l’agenda</h2>
+          </div>
+          <p>
+            Vérifiez les périodes déjà réservées avant de remplir le formulaire.
+            Une date sans réservation affichée semble disponible.
+          </p>
+        </div>
+
+        <div class="calendar-frame">
+          <iframe
+            src={calendarUrl.toString()}
+            title="Agenda des réservations du Stand ADS"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+
+        <div class="availability-note" role="note">
+          <Info size={21} stroke-width={1.8} aria-hidden="true" />
+          <p>
+            L’agenda est indicatif. La réservation devient définitive uniquement
+            après confirmation de Mme Daniela Allemann et réception du paiement.
+          </p>
+          <a href={calendarUrl.toString()} target="_blank" rel="noopener noreferrer">
+            Ouvrir l’agenda en grand
+          </a>
+        </div>
+      </div>
+    </section>
+
     <nav class="progress" aria-label="Progression de la réservation">
       <div class="reservation-shell progress-grid">
         <button class="progress-step active" type="button" data-go-step="0" aria-current="step"><span>01</span><strong>Date & période</strong></button>
@@ -93,7 +140,7 @@ const rentalConditions = [
           <section class="form-step active" data-step="0" aria-labelledby="step-title-0">
             <header class="step-header">
               <span class="step-number">01</span>
-              <div><h2 id="step-title-0">Date & période</h2><p>Indiquez la date, la durée et le nombre de personnes.</p></div>
+              <div><h2 id="step-title-0">Date & période</h2><p>Après avoir consulté l’agenda ci-dessus, indiquez la date, la durée et le nombre de personnes.</p></div>
             </header>
 
             <div class="field-grid two-cols">
@@ -630,6 +677,17 @@ const rentalConditions = [
   .booking-hero h1 { max-width: 720px; margin: 0; font-size: clamp(52px, 6.5vw, 80px); font-weight: 500; letter-spacing: -.055em; line-height: .94; }
   .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.78); font-size: 19px; line-height: 1.6; }
 
+  .availability-section { padding: 64px 0 70px; border-bottom: 1px solid var(--line); background: var(--paper); }
+  .availability-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .75fr); gap: 60px; align-items: end; margin-bottom: 30px; }
+  .availability-heading h2 { margin: 0; color: var(--forest-900); font-size: clamp(36px, 5vw, 58px); font-weight: 550; letter-spacing: -.05em; line-height: 1; }
+  .availability-heading > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.6; }
+  .calendar-frame { min-height: 640px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 18px 55px rgba(9,45,41,.07); }
+  .calendar-frame iframe { display: block; width: 100%; height: 640px; border: 0; }
+  .availability-note { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; margin-top: 18px; padding: 15px 17px; border-radius: var(--radius-sm); background: var(--forest-100); color: var(--forest-900); }
+  .availability-note svg { flex: 0 0 auto; }
+  .availability-note p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .availability-note a { color: var(--forest-900); font-size: 14px; font-weight: 800; white-space: nowrap; }
+
   .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(16px); }
   .progress-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-inline: 1px solid var(--line); }
   .progress-step { min-height: 74px; padding: 12px 18px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); text-align: left; cursor: pointer; transition: background 160ms ease, color 160ms ease; }
@@ -798,7 +856,8 @@ const rentalConditions = [
   .recap-actions { flex-wrap: wrap; }
 
   @media (max-width: 1020px) {
-    .booking-hero-grid, .booking-layout { grid-template-columns: 1fr; }
+    .booking-hero-grid, .booking-layout, .availability-heading { grid-template-columns: 1fr; }
+    .availability-heading { gap: 20px; }
     .booking-sidebar { position: static; grid-row: 1; grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 760px) {
@@ -806,6 +865,11 @@ const rentalConditions = [
     .booking-hero-grid { gap: 28px; }
     .back-link { margin-bottom: 34px; }
     .booking-lead { font-size: 17px; }
+    .availability-section { padding: 44px 0 50px; }
+    .calendar-frame { min-height: 560px; border-radius: 16px; }
+    .calendar-frame iframe { height: 560px; }
+    .availability-note { grid-template-columns: auto 1fr; align-items: start; }
+    .availability-note a { grid-column: 2; white-space: normal; }
     .progress { top: 72px; overflow-x: auto; }
     .progress-grid { width: max-content; min-width: 100%; }
     .progress-step { width: 145px; min-height: 66px; }
@@ -823,6 +887,8 @@ const rentalConditions = [
     .payment-total { text-align: left; }
   }
   @media (max-width: 520px) {
+    .calendar-frame { min-height: 500px; margin-inline: -6px; }
+    .calendar-frame iframe { height: 500px; }
     .form-card { padding: 20px 16px; border-radius: 16px; }
     .step-header { grid-template-columns: 38px 1fr; }
     .step-number { width: 38px; height: 38px; }
