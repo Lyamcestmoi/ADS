@@ -8,7 +8,7 @@ interface Props {
 const { active = 'home' } = Astro.props;
 ---
 
-<header class="site-header">
+<header class:list={['site-header', { 'site-header-home': active === 'home' }]}>
   <nav class="nav-shell" aria-label="Navigation principale">
     <a href="/" class="brand" aria-label="Stand ADS — Accueil">
       <img src="/logo.png" width="46" height="46" alt="" />
@@ -34,3 +34,16 @@ const { active = 'home' } = Astro.props;
     </a>
   </nav>
 </header>
+
+<script>
+  const homeHeader = document.querySelector<HTMLElement>('.site-header-home');
+
+  if (homeHeader) {
+    const updateHeader = () => {
+      homeHeader.classList.toggle('is-scrolled', window.scrollY > 32);
+    };
+
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+  }
+</script>
