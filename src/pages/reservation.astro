@@ -18,7 +18,7 @@ const description =
 
   <main class="booking-page">
     <section class="booking-hero">
-      <div class="booking-shell booking-hero-grid">
+      <div class="reservation-shell booking-hero-grid">
         <div>
           <a class="back-link" href="/">
             <ArrowLeft size={17} stroke-width={1.8} aria-hidden="true" />
@@ -35,7 +35,7 @@ const description =
     </section>
 
     <nav class="progress" aria-label="Progression de la réservation">
-      <div class="booking-shell progress-grid">
+      <div class="reservation-shell progress-grid">
         <button class="progress-step active" type="button" data-go-step="0" aria-current="step"><span>01</span><strong>Date & période</strong></button>
         <button class="progress-step" type="button" data-go-step="1"><span>02</span><strong>Options</strong></button>
         <button class="progress-step" type="button" data-go-step="2"><span>03</span><strong>Coordonnées</strong></button>
@@ -45,7 +45,7 @@ const description =
     </nav>
 
     <section class="booking-content">
-      <div class="booking-shell booking-layout">
+      <div class="reservation-shell booking-layout">
         <form id="booking-form" class="form-card" novalidate>
           <div class="privacy-note" role="note">
             <ShieldCheck size={22} stroke-width={1.8} aria-hidden="true" />
@@ -534,35 +534,36 @@ const description =
 
 <style>
   .booking-page { background: var(--cream); }
-  .booking-shell { width: var(--shell); margin-inline: auto; }
-  .booking-hero { padding: 72px 0 68px; background: var(--forest-950); color: var(--white); }
+  .reservation-shell { width: var(--shell); margin-inline: auto; }
+  .booking-hero { padding: 58px 0 56px; background: var(--forest-950); color: var(--white); }
   .booking-hero-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 70px; align-items: end; }
-  .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 44px; color: rgba(255,255,255,.68); font-size: 14px; font-weight: 700; text-decoration: none; }
+  .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 32px; color: rgba(255,255,255,.72); font-size: 15px; font-weight: 700; text-decoration: none; }
   .back-link:hover { color: var(--yellow); }
-  .booking-eyebrow { margin: 0 0 12px; color: var(--yellow); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
-  .booking-hero h1 { margin: 0; font-size: clamp(50px, 7vw, 88px); font-weight: 500; letter-spacing: -.06em; line-height: .95; }
-  .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.72); font-size: 19px; line-height: 1.6; }
+  .booking-eyebrow { margin: 0 0 12px; color: var(--yellow); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .booking-hero h1 { max-width: 720px; margin: 0; font-size: clamp(52px, 6.5vw, 80px); font-weight: 500; letter-spacing: -.055em; line-height: .94; }
+  .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.78); font-size: 19px; line-height: 1.6; }
 
   .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(16px); }
-  .progress-grid { display: grid; grid-template-columns: repeat(5, 1fr); }
-  .progress-step { min-height: 76px; padding: 12px 16px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); text-align: left; cursor: pointer; }
-  .progress-step:first-child { border-left: 1px solid var(--line); }
+  .progress-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-inline: 1px solid var(--line); }
+  .progress-step { min-height: 74px; padding: 12px 18px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); text-align: left; cursor: pointer; transition: background 160ms ease, color 160ms ease; }
+  .progress-step:first-child { border-left: 0; }
+  .progress-step:last-child { border-right: 0; }
   .progress-step span, .progress-step strong { display: block; }
-  .progress-step span { margin-bottom: 4px; color: var(--blue); font-size: 10px; font-weight: 800; }
-  .progress-step strong { font-size: 14px; }
+  .progress-step span { margin-bottom: 4px; color: var(--blue); font-size: 11px; font-weight: 800; }
+  .progress-step strong { font-size: 15px; line-height: 1.25; }
   .progress-step.active { background: var(--forest-900); color: var(--white); }
   .progress-step.active span { color: var(--yellow); }
   .progress-step.done { color: var(--forest-900); }
-  .progress-step:disabled { cursor: default; opacity: .5; }
+  .progress-step:disabled { cursor: default; opacity: .72; }
 
-  .booking-content { padding: 52px 0 100px; }
-  .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 28px; align-items: start; }
-  .form-card { min-width: 0; padding: clamp(24px, 4vw, 46px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+  .booking-content { padding: 38px 0 100px; }
+  .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 30px; align-items: start; }
+  .form-card { min-width: 0; padding: clamp(26px, 4vw, 48px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: 0 18px 55px rgba(9,45,41,.06); }
   .privacy-note, .included-note, .send-note { display: flex; gap: 14px; align-items: flex-start; padding: 17px 18px; border-radius: var(--radius-sm); }
   .privacy-note { margin-bottom: 38px; border: 1px solid #bad6c7; background: #e8f1ec; color: var(--forest-900); }
   .privacy-note svg, .included-note svg, .send-note svg { flex: 0 0 auto; margin-top: 2px; }
   .privacy-note strong, .privacy-note span { display: block; }
-  .privacy-note span { margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .privacy-note span { margin-top: 3px; color: var(--muted); font-size: 15px; line-height: 1.5; }
 
   .form-step { display: none; }
   .form-step.active { display: block; animation: step-in 260ms ease both; }
@@ -577,16 +578,16 @@ const description =
   .full { grid-column: 1 / -1; }
   .postal-field { max-width: 220px; }
   .field { display: grid; gap: 8px; }
-  .field > span, .field > label, .plain-fieldset legend { color: var(--ink); font-size: 15px; font-weight: 800; }
-  .field small { color: var(--muted); font-size: 13px; }
-  input, textarea { width: 100%; min-height: 52px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 9px; outline: 0; background: var(--white); color: var(--ink); }
+  .field > span, .field > label, .plain-fieldset legend { color: var(--ink); font-size: 16px; font-weight: 800; }
+  .field small { color: var(--muted); font-size: 14px; }
+  input, textarea { width: 100%; min-height: 54px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 9px; outline: 0; background: var(--white); color: var(--ink); font-size: 16px; }
   textarea { resize: vertical; }
   input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(17,135,178,.12); }
   input[type='checkbox'] { width: 19px; min-height: 19px; padding: 0; accent-color: var(--blue); }
   .check-card { display: flex; gap: 12px; align-items: center; min-height: 52px; margin-top: 31px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); cursor: pointer; }
   .check-card span, .check-card strong, .check-card small { display: block; }
-  .check-card strong { font-size: 14px; }
-  .check-card small { color: var(--muted); font-size: 12px; }
+  .check-card strong { font-size: 15px; }
+  .check-card small { color: var(--muted); font-size: 13px; }
 
   .plain-fieldset { margin: 34px 0 0; padding: 0; border: 0; }
   .plain-fieldset legend { margin-bottom: 14px; }
@@ -594,19 +595,19 @@ const description =
   .period-card { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; min-height: 112px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); color: var(--ink); text-align: left; cursor: pointer; transition: border-color 150ms ease, background 150ms ease, transform 150ms ease; }
   .period-card svg { grid-row: 1 / 3; color: var(--blue); }
   .period-card strong { font-size: 17px; }
-  .period-card span { color: var(--muted); font-size: 14px; }
-  .period-card b { grid-column: 1 / -1; margin-top: 9px; color: var(--forest-900); font-size: 17px; }
+  .period-card span { color: var(--muted); font-size: 15px; }
+  .period-card b { grid-column: 1 / -1; margin-top: 9px; color: var(--forest-900); font-size: 18px; }
   .period-card:hover:not(:disabled) { border-color: var(--blue); transform: translateY(-1px); }
   .period-card.selected { border-color: var(--forest-900); background: var(--forest-100); box-shadow: inset 0 0 0 1px var(--forest-900); }
   .period-card.disabled { opacity: .42; cursor: not-allowed; }
-  .field-hint { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .field-hint { margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
   #days-group { max-width: 220px; margin-top: 22px; }
   .hidden { display: none !important; }
   .participants-row { display: grid; grid-template-columns: 220px 1fr; gap: 22px; align-items: end; margin-top: 30px; }
   .counter { display: grid; grid-template-columns: 48px 1fr 48px; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--white); }
   .counter input { min-width: 0; border: 0; border-radius: 0; text-align: center; font-weight: 800; }
   .counter button { border: 0; background: var(--forest-100); color: var(--forest-900); font-size: 21px; font-weight: 800; cursor: pointer; }
-  .capacity-note { display: flex; gap: 12px; align-items: center; min-height: 54px; padding: 12px 16px; border-radius: 9px; background: var(--blue-soft); color: #0a6282; font-size: 14px; }
+  .capacity-note { display: flex; gap: 12px; align-items: center; min-height: 54px; padding: 12px 16px; border-radius: 9px; background: var(--blue-soft); color: #0a6282; font-size: 15px; }
   .capacity-note svg { flex: 0 0 auto; }
 
   .option-list { display: grid; gap: 12px; }
@@ -616,18 +617,18 @@ const description =
   .option-row.disabled { opacity: .42; cursor: not-allowed; }
   .option-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--cream); color: var(--forest-900); }
   .option-copy, .option-copy strong, .option-copy small { display: block; }
-  .option-copy strong { font-size: 16px; }
-  .option-copy small { margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 1.4; }
-  .option-row > b { color: var(--forest-900); font-size: 15px; white-space: nowrap; }
+  .option-copy strong { font-size: 17px; }
+  .option-copy small { margin-top: 2px; color: var(--muted); font-size: 15px; line-height: 1.4; }
+  .option-row > b { color: var(--forest-900); font-size: 16px; white-space: nowrap; }
   .option-check { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--line); border-radius: 50%; color: transparent; }
   .option-row:has(input:checked) .option-check { border-color: var(--blue); background: var(--blue); color: var(--white); }
-  .included-note { margin-top: 22px; background: #fbf1bd; color: #594b08; font-size: 14px; line-height: 1.5; }
+  .included-note { margin-top: 22px; background: #fbf1bd; color: #594b08; font-size: 15px; line-height: 1.5; }
 
   .conditions-list { display: grid; gap: 10px; }
   .condition-row { display: grid; grid-template-columns: 22px 1fr; gap: 13px; align-items: start; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); cursor: pointer; }
   .condition-row:has(input:checked) { border-color: #8db7a0; background: #edf5f0; }
   .condition-row input { margin-top: 2px; }
-  .condition-row span { color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .condition-row span { color: var(--muted); font-size: 16px; line-height: 1.55; }
   .condition-row strong { color: var(--ink); }
   .signature-field { margin-top: 30px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--white); }
   .signature-head { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 15px 18px; border-bottom: 1px solid var(--line); }
@@ -640,7 +641,7 @@ const description =
   .step-error { min-height: 24px; margin: 18px 0 0; color: #a62f28; font-size: 14px; font-weight: 700; }
   .step-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
   .step-actions.end { justify-content: flex-end; }
-  .action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 12px 19px; border: 1px solid transparent; border-radius: 999px; font-size: 14px; font-weight: 800; cursor: pointer; }
+  .action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 12px 21px; border: 1px solid transparent; border-radius: 999px; font-size: 15px; font-weight: 800; cursor: pointer; }
   .action.primary { background: var(--forest-900); color: var(--white); }
   .action.primary:hover { background: var(--blue); }
   .action.secondary { border-color: var(--line); background: var(--white); color: var(--forest-900); }
@@ -653,18 +654,18 @@ const description =
   .summary-card header > span { display: block; margin-top: 8px; color: rgba(255,255,255,.58); font-size: 14px; }
   .summary-card dl { margin: 24px 0 0; }
   .summary-card dl div { display: grid; grid-template-columns: 1fr auto; gap: 14px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,.13); }
-  .summary-card dt, .summary-card dd { margin: 0; font-size: 14px; }
+  .summary-card dt, .summary-card dd { margin: 0; font-size: 15px; }
   .summary-card dt { color: rgba(255,255,255,.62); }
   .summary-card dd { font-weight: 800; text-align: right; }
   .summary-card .discount-row dd { color: var(--yellow); }
   .summary-total { display: flex; justify-content: space-between; gap: 15px; align-items: end; padding: 22px 0 10px; }
   .summary-total span { color: rgba(255,255,255,.68); font-size: 13px; }
   .summary-total strong { color: var(--yellow); font-size: 24px; }
-  .summary-card > p { margin: 10px 0 0; color: rgba(255,255,255,.48); font-size: 12px; line-height: 1.5; }
+  .summary-card > p { margin: 10px 0 0; color: rgba(255,255,255,.6); font-size: 13px; line-height: 1.5; }
   .manager-card { border: 1px solid var(--line); background: var(--paper); }
   .manager-card .booking-eyebrow { color: var(--blue); }
   .manager-card h3 { margin: 0 0 17px; font-size: 20px; }
-  .manager-card a { display: flex; gap: 9px; align-items: center; padding: 8px 0; color: var(--forest-900); font-size: 14px; font-weight: 700; text-decoration: none; }
+  .manager-card a { display: flex; gap: 9px; align-items: center; padding: 8px 0; color: var(--forest-900); font-size: 15px; font-weight: 700; text-decoration: none; }
   .manager-card a:hover { color: var(--blue); }
 
   .recap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
@@ -696,7 +697,7 @@ const description =
     .booking-sidebar { position: static; grid-row: 1; grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 760px) {
-    .booking-hero { padding: 54px 0; }
+    .booking-hero { padding: 46px 0; }
     .booking-hero-grid { gap: 28px; }
     .back-link { margin-bottom: 34px; }
     .booking-lead { font-size: 17px; }
@@ -727,7 +728,7 @@ const description =
   @media print {
     :global(.site-header), :global(.site-footer), .booking-hero, .progress, .booking-sidebar, .privacy-note, .step-actions, .send-note { display: none !important; }
     .booking-page, .booking-content { background: white !important; padding: 0 !important; }
-    .booking-shell, .booking-layout { width: 100% !important; display: block !important; }
+    .reservation-shell, .booking-layout { width: 100% !important; display: block !important; }
     .form-card { padding: 0 !important; border: 0 !important; }
     .form-step { display: none !important; }
     .recap-step.active { display: block !important; }
