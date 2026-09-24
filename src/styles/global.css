@@ -659,9 +659,70 @@ a {
 }
 
 @media (hover: hover) {
-  .gallery-item:hover img {
+  .gallery-item:hover img,
+  .interior-photo:hover img {
     transform: scale(1.025);
   }
+}
+
+.gallery-subheading {
+  margin: 76px 0 28px;
+  padding-top: 34px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.gallery-subheading h3,
+.gallery-subheading p {
+  margin: 0;
+}
+
+.gallery-subheading h3 {
+  color: var(--forest-900);
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.gallery-subheading p {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.interior-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 240px;
+  gap: 18px;
+}
+
+.interior-photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+}
+
+.interior-photo-wide {
+  grid-column: span 2;
+}
+
+.interior-photo-banner {
+  grid-column: 1 / -1;
+}
+
+.interior-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.interior-photo-banner img {
+  object-position: center 58%;
 }
 
 .image-story {
@@ -1165,6 +1226,20 @@ a {
     grid-column: 1 / -1;
   }
 
+  .gallery-subheading {
+    margin-top: 58px;
+  }
+
+  .interior-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 280px;
+  }
+
+  .interior-photo-wide,
+  .interior-photo-banner {
+    grid-column: span 2;
+  }
+
   .image-story figure {
     min-height: 440px;
   }
@@ -1286,6 +1361,33 @@ a {
     flex: 0 0 min(78vw, 320px);
     height: auto;
     aspect-ratio: 3 / 4;
+    scroll-snap-align: center;
+  }
+
+  .gallery-subheading {
+    margin: 48px 0 22px;
+    padding-top: 26px;
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .interior-gallery-grid {
+    display: flex;
+    gap: 12px;
+    margin-inline: -14px;
+    padding: 0 14px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .interior-photo,
+  .interior-photo-wide,
+  .interior-photo-banner {
+    flex: 0 0 min(84vw, 350px);
+    height: auto;
+    aspect-ratio: 4 / 3;
     scroll-snap-align: center;
   }
 
