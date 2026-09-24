@@ -1,5 +1,14 @@
 ---
-import { ArrowRight, ArrowUpRight, Check, MapPin, Phone } from '@lucide/astro';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Phone,
+  X,
+} from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -384,6 +393,28 @@ const equipment = [
     </section>
   </main>
 
+  <dialog id="image-lightbox" class="image-lightbox" aria-label="Photo agrandie">
+    <button class="lightbox-close" type="button" aria-label="Fermer la photo">
+      <X size={30} stroke-width={1.7} aria-hidden="true" />
+    </button>
+
+    <button class="lightbox-nav lightbox-previous" type="button" aria-label="Photo précédente">
+      <ChevronLeft size={34} stroke-width={1.6} aria-hidden="true" />
+    </button>
+
+    <figure class="lightbox-figure">
+      <img class="lightbox-image" src="" alt="" />
+      <figcaption>
+        <span class="lightbox-caption"></span>
+        <span class="lightbox-counter" aria-live="polite"></span>
+      </figcaption>
+    </figure>
+
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="Photo suivante">
+      <ChevronRight size={34} stroke-width={1.6} aria-hidden="true" />
+    </button>
+  </dialog>
+
   <SiteFooter />
 </MainLayout>
 
@@ -408,4 +439,76 @@ const equipment = [
 
     elements.forEach((element) => observer.observe(element));
   }
+
+  const lightbox = document.querySelector<HTMLDialogElement>('#image-lightbox');
+  const lightboxImage = lightbox?.querySelector<HTMLImageElement>('.lightbox-image');
+  const lightboxCaption = lightbox?.querySelector<HTMLElement>('.lightbox-caption');
+  const lightboxCounter = lightbox?.querySelector<HTMLElement>('.lightbox-counter');
+  const closeLightbox = lightbox?.querySelector<HTMLButtonElement>('.lightbox-close');
+  const previousPhoto = lightbox?.querySelector<HTMLButtonElement>('.lightbox-previous');
+  const nextPhoto = lightbox?.querySelector<HTMLButtonElement>('.lightbox-next');
+  const galleryImages = Array.from(
+    document.querySelectorAll<HTMLImageElement>(
+      '.gallery-item img, .interior-photo img, .image-story figure img',
+    ),
+  );
+  let currentPhoto = 0;
+
+  const showPhoto = (index: number) => {
+    if (!lightboxImage || !lightboxCaption || !lightboxCounter || galleryImages.length === 0) return;
+
+    currentPhoto = (index + galleryImages.length) % galleryImages.length;
+    const source = galleryImages[currentPhoto];
+    lightboxImage.src = source.currentSrc || source.src;
+    lightboxImage.alt = source.alt;
+    lightboxCaption.textContent = source.alt;
+    lightboxCounter.textContent = `${currentPhoto + 1} / ${galleryImages.length}`;
+  };
+
+  const openLightbox = (index: number) => {
+    if (!lightbox) return;
+    showPhoto(index);
+    lightbox.showModal();
+    document.body.classList.add('lightbox-open');
+  };
+
+  const closePhoto = () => {
+    lightbox?.close();
+  };
+
+  galleryImages.forEach((image, index) => {
+    const figure = image.closest<HTMLElement>('figure');
+    if (!figure) return;
+
+    figure.classList.add('is-expandable');
+    figure.setAttribute('role', 'button');
+    figure.setAttribute('tabindex', '0');
+    figure.setAttribute('aria-label', `Agrandir : ${image.alt}`);
+    figure.addEventListener('click', () => openLightbox(index));
+    figure.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
+
+  closeLightbox?.addEventListener('click', closePhoto);
+  previousPhoto?.addEventListener('click', () => showPhoto(currentPhoto - 1));
+  nextPhoto?.addEventListener('click', () => showPhoto(currentPhoto + 1));
+
+  lightbox?.addEventListener('click', (event) => {
+    if (event.target === lightbox) closePhoto();
+  });
+
+  lightbox?.addEventListener('close', () => {
+    document.body.classList.remove('lightbox-open');
+    if (lightboxImage) lightboxImage.src = '';
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!lightbox?.open) return;
+    if (event.key === 'ArrowLeft') showPhoto(currentPhoto - 1);
+    if (event.key === 'ArrowRight') showPhoto(currentPhoto + 1);
+  });
 </script>
