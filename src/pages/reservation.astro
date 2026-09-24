@@ -5,24 +5,23 @@ import {
   Printer, RotateCcw, ShieldCheck, Sparkles, UserRound, Users,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { getAvailability, googleCalendarUrl } from '../lib/availability';
 
 const title = 'Contrat de réservation — Stand ADS Prêles';
 const description =
   'Formulaire et contrat de location du Stand ADS à Prêles.';
 
-const calendarId = 'f5q9pam7lk03msfakrjqet1sts@group.calendar.google.com';
-const calendarUrl = new URL('https://calendar.google.com/calendar/embed');
-calendarUrl.searchParams.set('src', calendarId);
-calendarUrl.searchParams.set('ctz', 'Europe/Zurich');
-calendarUrl.searchParams.set('mode', 'MONTH');
-calendarUrl.searchParams.set('showTitle', '0');
-calendarUrl.searchParams.set('showPrint', '0');
-calendarUrl.searchParams.set('showTabs', '0');
-calendarUrl.searchParams.set('showCalendars', '0');
-calendarUrl.searchParams.set('showTz', '0');
-calendarUrl.searchParams.set('wkst', '2');
+const availability = await getAvailability();
+const syncedLabel = availability.syncedAt
+  ? new Intl.DateTimeFormat('fr-CH', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+      timeZone: 'Europe/Zurich',
+    }).format(new Date(availability.syncedAt))
+  : null;
 
 const rentalConditions = [
   {
@@ -88,29 +87,23 @@ const rentalConditions = [
             <p class="booking-eyebrow">Disponibilités</p>
             <h2 id="availability-title">Consulter l’agenda</h2>
           </div>
-          <p>
-            Vérifiez les périodes déjà réservées avant de remplir le formulaire.
-            Une date sans réservation affichée semble disponible.
-          </p>
+          <p>Choisissez une date libre : elle sera automatiquement reportée dans le formulaire.</p>
         </div>
 
-        <div class="calendar-frame">
-          <iframe
-            src={calendarUrl.toString()}
-            title="Agenda des réservations du Stand ADS"
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-          ></iframe>
-        </div>
+        <AvailabilityCalendar
+          bookedDates={availability.bookedDates}
+          available={availability.available}
+        />
 
         <div class="availability-note" role="note">
           <Info size={21} stroke-width={1.8} aria-hidden="true" />
           <p>
             L’agenda est indicatif. La réservation devient définitive uniquement
             après confirmation de Mme Daniela Allemann et réception du paiement.
+            {syncedLabel && <small>Mis à jour le {syncedLabel}.</small>}
           </p>
-          <a href={calendarUrl.toString()} target="_blank" rel="noopener noreferrer">
-            Ouvrir l’agenda en grand
+          <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
+            Voir dans Google Calendar
           </a>
         </div>
       </div>
@@ -147,6 +140,7 @@ const rentalConditions = [
               <label class="field">
                 <span>Date de début *</span>
                 <input id="date-field" name="date" type="date" required />
+                <small id="date-availability-feedback">Sélectionnez une date verte dans le calendrier ou saisissez-la ici.</small>
               </label>
               <label class="check-card holiday-card">
                 <input id="holiday-field" name="jour_ferie" type="checkbox" />
@@ -407,6 +401,10 @@ const rentalConditions = [
   const progressSteps = Array.from(document.querySelectorAll<HTMLButtonElement>('.progress-step'));
   const periodCards = Array.from(document.querySelectorAll<HTMLButtonElement>('.period-card'));
   const dateField = byId<HTMLInputElement>('date-field');
+  const dateAvailabilityFeedback = byId<HTMLElement>('date-availability-feedback');
+  const calendarRoot = document.querySelector<HTMLElement>('[data-availability-calendar]');
+  const calendarAvailable = calendarRoot?.dataset.calendarAvailable === 'true';
+  const bookedDates = new Set<string>(JSON.parse(calendarRoot?.dataset.booked ?? '[]'));
   const holidayField = byId<HTMLInputElement>('holiday-field');
   const daysField = byId<HTMLInputElement>('days-field');
   const daysGroup = byId<HTMLElement>('days-group');
@@ -457,6 +455,33 @@ const rentalConditions = [
 
   const formatAmount = (value: number) => `CHF ${value.toFixed(2)}`;
 
+  const addDays = (value: string, days: number) => {
+    const date = new Date(`${value}T12:00:00`);
+    date.setDate(date.getDate() + days);
+    return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+  };
+
+  const conflictingDate = () => {
+    if (!calendarAvailable || !dateField.value) return null;
+    const length = selectedPeriod === 'consecutif' ? Math.max(3, Number(daysField.value) || 3) : 1;
+    for (let offset = 0; offset < length; offset += 1) {
+      const date = addDays(dateField.value, offset);
+      if (bookedDates.has(date)) return date;
+    }
+    return null;
+  };
+
+  const updateDateAvailability = () => {
+    const conflict = conflictingDate();
+    dateField.setCustomValidity(conflict ? 'Cette date est déjà réservée.' : '');
+    dateAvailabilityFeedback.textContent = conflict
+      ? `${formatDate(conflict)} est déjà réservé${selectedPeriod === 'consecutif' ? ' dans cette période' : ''}. Choisissez une autre date.`
+      : calendarAvailable
+        ? 'Cette date apparaît disponible. La gérance doit encore confirmer la demande.'
+        : 'La disponibilité sera confirmée par la gérance.';
+    dateAvailabilityFeedback.classList.toggle('date-conflict', Boolean(conflict));
+  };
+
   const calculate = () => {
     if (!selectedPeriod) return null;
     const weekend = isWeekendRate();
@@ -499,6 +524,7 @@ const rentalConditions = [
     const consecutivePrice = document.querySelector<HTMLElement>('[data-price="consecutif"]');
     if (completePrice) completePrice.textContent = weekend ? 'CHF 190.–' : 'CHF 150.–';
     if (consecutivePrice) consecutivePrice.textContent = weekend ? 'CHF 160.– / jour' : 'CHF 120.– / jour';
+    updateDateAvailability();
     updateSummary();
   };
 
@@ -526,6 +552,8 @@ const rentalConditions = [
     setStepError(step, '');
     if (step === 0) {
       if (!dateField.value) { setStepError(step, 'Sélectionnez une date de location.'); dateField.focus(); return false; }
+      const conflict = conflictingDate();
+      if (conflict) { setStepError(step, `La date du ${formatDate(conflict)} est déjà réservée.`); dateField.focus(); return false; }
       if (!selectedPeriod) { setStepError(step, 'Sélectionnez une période disponible.'); return false; }
       if (selectedPeriod === 'consecutif' && Number(daysField.value) < 3) { setStepError(step, 'La formule consécutive nécessite au moins trois jours.'); daysField.focus(); return false; }
       if (Number(peopleField.value) < 1 || Number(peopleField.value) > 70) { setStepError(step, 'Le nombre de personnes doit être compris entre 1 et 70.'); peopleField.focus(); return false; }
@@ -613,6 +641,7 @@ const rentalConditions = [
       selectedPeriod = card.dataset.period as Period;
       periodCards.forEach((item) => { const selected = item === card; item.classList.toggle('selected', selected); item.setAttribute('aria-pressed', String(selected)); });
       daysGroup.classList.toggle('hidden', selectedPeriod !== 'consecutif');
+      updateDateAvailability();
       updateSummary();
     });
   });
@@ -645,7 +674,7 @@ const rentalConditions = [
 
   dateField.addEventListener('change', updatePeriodAvailability);
   holidayField.addEventListener('change', updatePeriodAvailability);
-  daysField.addEventListener('input', updateSummary);
+  daysField.addEventListener('input', () => { updateDateAvailability(); updateSummary(); });
   peopleField.addEventListener('input', updateSummary);
   document.querySelectorAll<HTMLButtonElement>('[data-next-step]').forEach((button) => button.addEventListener('click', () => { if (validateStep(currentStep)) showStep(currentStep + 1); }));
   document.querySelectorAll<HTMLButtonElement>('[data-prev-step]').forEach((button) => button.addEventListener('click', () => showStep(currentStep - 1)));
@@ -661,9 +690,13 @@ const rentalConditions = [
   });
 
   dateField.min = localToday();
+  const requestedDate = new URLSearchParams(window.location.search).get('date');
+  if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && requestedDate >= localToday() && !bookedDates.has(requestedDate)) {
+    dateField.value = requestedDate;
+  }
   updateCautionState();
   showStep(0);
-  updateSummary();
+  updatePeriodAvailability();
 </script>
 
 <style>
@@ -681,11 +714,10 @@ const rentalConditions = [
   .availability-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .75fr); gap: 60px; align-items: end; margin-bottom: 30px; }
   .availability-heading h2 { margin: 0; color: var(--forest-900); font-size: clamp(36px, 5vw, 58px); font-weight: 550; letter-spacing: -.05em; line-height: 1; }
   .availability-heading > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.6; }
-  .calendar-frame { min-height: 640px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 18px 55px rgba(9,45,41,.07); }
-  .calendar-frame iframe { display: block; width: 100%; height: 640px; border: 0; }
   .availability-note { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; margin-top: 18px; padding: 15px 17px; border-radius: var(--radius-sm); background: var(--forest-100); color: var(--forest-900); }
   .availability-note svg { flex: 0 0 auto; }
   .availability-note p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .availability-note p small { display: block; margin-top: 3px; }
   .availability-note a { color: var(--forest-900); font-size: 14px; font-weight: 800; white-space: nowrap; }
 
   .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(16px); }
@@ -725,6 +757,7 @@ const rentalConditions = [
   .field { display: grid; gap: 8px; }
   .field > span, .field > label, .plain-fieldset legend { color: var(--ink); font-size: 16px; font-weight: 800; }
   .field small { color: var(--muted); font-size: 14px; }
+  .field small.date-conflict { color: #a62f28; font-weight: 700; }
   input, textarea { width: 100%; min-height: 54px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 9px; outline: 0; background: var(--white); color: var(--ink); font-size: 16px; }
   textarea { resize: vertical; }
   input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(17,135,178,.12); }
@@ -866,8 +899,6 @@ const rentalConditions = [
     .back-link { margin-bottom: 34px; }
     .booking-lead { font-size: 17px; }
     .availability-section { padding: 44px 0 50px; }
-    .calendar-frame { min-height: 560px; border-radius: 16px; }
-    .calendar-frame iframe { height: 560px; }
     .availability-note { grid-template-columns: auto 1fr; align-items: start; }
     .availability-note a { grid-column: 2; white-space: normal; }
     .progress { top: 72px; overflow-x: auto; }
@@ -887,8 +918,6 @@ const rentalConditions = [
     .payment-total { text-align: left; }
   }
   @media (max-width: 520px) {
-    .calendar-frame { min-height: 500px; margin-inline: -6px; }
-    .calendar-frame iframe { height: 500px; }
     .form-card { padding: 20px 16px; border-radius: 16px; }
     .step-header { grid-template-columns: 38px 1fr; }
     .step-number { width: 38px; height: 38px; }

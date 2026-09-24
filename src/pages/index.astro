@@ -2,6 +2,7 @@
 import {
   ArrowRight,
   ArrowUpRight,
+  CalendarDays,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -10,8 +11,10 @@ import {
   X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { getAvailability } from '../lib/availability';
 
 const title = 'Location du Stand ADS à Prêles — Plateau de Diesse';
 const description =
@@ -29,6 +32,8 @@ const equipment = [
   'Un caddie de bois inclus dans la location',
   'Zone de parcage délimitée',
 ];
+
+const availability = await getAvailability();
 ---
 
 <MainLayout title={title} description={description}>
@@ -71,6 +76,32 @@ const equipment = [
           <div class="fact"><strong>≈ 23 h</strong><span>formule jour complet</span></div>
           <div class="fact"><strong>CHF 90</strong><span>tarif dès</span></div>
           <div class="fact"><strong>−20 %</strong><span>pour les membres ADS</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-availability" aria-labelledby="home-availability-title">
+      <div class="shell home-availability-grid">
+        <div class="home-availability-copy reveal">
+          <span class="availability-icon"><CalendarDays size={25} stroke-width={1.7} aria-hidden="true" /></span>
+          <p class="eyebrow">Avant de réserver</p>
+          <h2 id="home-availability-title">Voyez immédiatement<br />les dates encore libres.</h2>
+          <p>
+            L’agenda est synchronisé avec les réservations du stand. Cliquez sur
+            une date disponible pour commencer votre demande.
+          </p>
+          <a class="button button-primary" href="/reservation/">
+            Voir toutes les disponibilités
+            <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
+          </a>
+        </div>
+        <div class="home-calendar reveal">
+          <AvailabilityCalendar
+            bookedDates={availability.bookedDates}
+            available={availability.available}
+            compact
+          />
+          <p>Disponibilités indicatives, sous réserve de confirmation par la gérance.</p>
         </div>
       </div>
     </section>

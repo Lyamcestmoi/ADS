@@ -1,0 +1,186 @@
+---
+import { ChevronLeft, ChevronRight } from '@lucide/astro';
+
+type Props = {
+  bookedDates: string[];
+  available: boolean;
+  compact?: boolean;
+};
+
+const { bookedDates, available, compact = false } = Astro.props;
+---
+
+<div
+  class:list={['availability-calendar', { compact }]}
+  data-availability-calendar
+  data-booked={JSON.stringify(bookedDates)}
+  data-calendar-available={String(available)}
+>
+  <header class="calendar-toolbar">
+    <button type="button" data-calendar-previous aria-label="Afficher le mois précédent">
+      <ChevronLeft size={21} stroke-width={1.9} aria-hidden="true" />
+    </button>
+    <div>
+      <span>Disponibilités</span>
+      <h3 data-calendar-title aria-live="polite"></h3>
+    </div>
+    <button type="button" data-calendar-next aria-label="Afficher le mois suivant">
+      <ChevronRight size={21} stroke-width={1.9} aria-hidden="true" />
+    </button>
+  </header>
+
+  <div class="calendar-weekdays" aria-hidden="true">
+    <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+  </div>
+  <div class="calendar-days" data-calendar-days role="grid" aria-label="Calendrier des disponibilités"></div>
+
+  <footer class="calendar-legend">
+    {available ? (
+      <>
+        <span><i class="free"></i>Disponible</span>
+        <span><i class="booked"></i>Réservé</span>
+      </>
+    ) : (
+      <strong>Disponibilités temporairement indisponibles</strong>
+    )}
+  </footer>
+</div>
+
+<script>
+  const dateKey = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const calendars = document.querySelectorAll<HTMLElement>('[data-availability-calendar]');
+
+  calendars.forEach((calendar) => {
+    const title = calendar.querySelector<HTMLElement>('[data-calendar-title]');
+    const days = calendar.querySelector<HTMLElement>('[data-calendar-days]');
+    const previous = calendar.querySelector<HTMLButtonElement>('[data-calendar-previous]');
+    const next = calendar.querySelector<HTMLButtonElement>('[data-calendar-next]');
+    const available = calendar.dataset.calendarAvailable === 'true';
+    const booked = new Set<string>(JSON.parse(calendar.dataset.booked ?? '[]'));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let visibleMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const chooseDate = (iso: string) => {
+      const field = document.querySelector<HTMLInputElement>('#date-field');
+      if (field) {
+        field.value = iso;
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+        document.querySelector('#booking-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      window.location.href = `/reservation/?date=${encodeURIComponent(iso)}#booking-form`;
+    };
+
+    const render = () => {
+      if (!title || !days) return;
+      title.textContent = new Intl.DateTimeFormat('fr-CH', { month: 'long', year: 'numeric' }).format(visibleMonth);
+      days.replaceChildren();
+
+      const year = visibleMonth.getFullYear();
+      const month = visibleMonth.getMonth();
+      const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
+      const monthLength = new Date(year, month + 1, 0).getDate();
+      const previousMonthLength = new Date(year, month, 0).getDate();
+
+      for (let index = 0; index < 42; index += 1) {
+        const dayOffset = index - firstWeekday + 1;
+        const date = new Date(year, month, dayOffset);
+        const outside = dayOffset < 1 || dayOffset > monthLength;
+        const dayNumber = dayOffset < 1
+          ? previousMonthLength + dayOffset
+          : dayOffset > monthLength
+            ? dayOffset - monthLength
+            : dayOffset;
+        const iso = dateKey(date);
+        const isPast = date < today;
+        const isBooked = booked.has(iso);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'calendar-day';
+        button.dataset.date = iso;
+        button.dataset.state = isBooked ? 'booked' : 'free';
+        button.classList.toggle('outside', outside);
+        button.classList.toggle('today', iso === dateKey(today));
+        button.classList.toggle('booked', isBooked);
+        button.disabled = outside || isPast || isBooked || !available;
+        button.setAttribute('role', 'gridcell');
+        button.setAttribute('aria-label', `${date.toLocaleDateString('fr-CH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} — ${isBooked ? 'réservé' : 'disponible'}`);
+        button.innerHTML = `<b>${dayNumber}</b><span>${isBooked ? 'Réservé' : 'Libre'}</span>`;
+        if (!button.disabled) button.addEventListener('click', () => chooseDate(iso));
+        days.append(button);
+      }
+
+      if (previous) {
+        previous.disabled = year === today.getFullYear() && month === today.getMonth();
+      }
+    };
+
+    previous?.addEventListener('click', () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+      render();
+    });
+    next?.addEventListener('click', () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+      render();
+    });
+    render();
+  });
+</script>
+
+<style>
+  .availability-calendar { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 18px 55px rgba(9,45,41,.07); }
+  .calendar-toolbar { display: grid; grid-template-columns: 48px 1fr 48px; gap: 18px; align-items: center; padding: 24px 28px; border-bottom: 1px solid var(--line); background: var(--forest-900); color: var(--white); }
+  .calendar-toolbar > button { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: transparent; color: inherit; cursor: pointer; }
+  .calendar-toolbar > button:hover:not(:disabled) { border-color: var(--yellow); background: rgba(255,255,255,.08); }
+  .calendar-toolbar > button:disabled { opacity: .28; cursor: default; }
+  .calendar-toolbar div { text-align: center; }
+  .calendar-toolbar span { display: block; color: var(--yellow); font-size: 11px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+  .calendar-toolbar h3 { margin: 3px 0 0; font-size: clamp(22px, 3vw, 31px); font-weight: 550; letter-spacing: -.035em; text-transform: capitalize; }
+  .calendar-weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .calendar-weekdays { padding: 16px 18px 10px; color: var(--muted); font-size: 12px; font-weight: 900; text-align: center; text-transform: uppercase; }
+  .calendar-days { gap: 5px; padding: 0 18px 20px; }
+  :global(.calendar-day) { position: relative; display: grid; align-content: center; justify-items: center; min-height: 76px; padding: 8px 3px; border: 1px solid transparent; border-radius: 10px; background: #edf5f0; color: var(--forest-900); cursor: pointer; }
+  :global(.calendar-day:hover:not(:disabled)) { border-color: var(--blue); background: var(--blue-soft); transform: translateY(-1px); }
+  :global(.calendar-day b) { font-size: 18px; }
+  :global(.calendar-day span) { margin-top: 3px; color: #39705f; font-size: 10px; font-weight: 800; }
+  :global(.calendar-day.booked) { background: #f3e7e4; color: #8a453d; }
+  :global(.calendar-day.booked span) { color: #9d5a51; }
+  :global(.calendar-day.outside) { background: transparent; opacity: .24; }
+  :global(.calendar-day:disabled) { cursor: default; }
+  :global(.calendar-day.today) { box-shadow: inset 0 0 0 2px var(--yellow); }
+  .calendar-legend { display: flex; gap: 22px; align-items: center; min-height: 56px; padding: 13px 28px; border-top: 1px solid var(--line); background: var(--paper); color: var(--muted); font-size: 13px; }
+  .calendar-legend span { display: inline-flex; gap: 8px; align-items: center; }
+  .calendar-legend i { width: 10px; height: 10px; border-radius: 50%; }
+  .calendar-legend .free { background: #80ad98; }
+  .calendar-legend .booked { background: #bf756a; }
+  .calendar-legend strong { color: #9d4a40; }
+
+  .compact { box-shadow: none; }
+  .compact .calendar-toolbar { padding: 18px 20px; }
+  .compact .calendar-toolbar > button { width: 40px; height: 40px; }
+  .compact .calendar-toolbar h3 { font-size: 23px; }
+  .compact .calendar-weekdays { padding: 12px 12px 6px; font-size: 10px; }
+  .compact .calendar-days { gap: 3px; padding: 0 12px 14px; }
+  .compact :global(.calendar-day) { min-height: 52px; border-radius: 8px; }
+  .compact :global(.calendar-day b) { font-size: 15px; }
+  .compact :global(.calendar-day span) { display: none; }
+  .compact .calendar-legend { min-height: 48px; padding: 10px 20px; }
+
+  @media (max-width: 620px) {
+    .calendar-toolbar { grid-template-columns: 42px 1fr 42px; padding: 18px 14px; }
+    .calendar-toolbar > button { width: 42px; height: 42px; }
+    .calendar-weekdays { padding-inline: 8px; font-size: 10px; }
+    .calendar-days { gap: 3px; padding: 0 8px 12px; }
+    :global(.calendar-day) { min-height: 48px; border-radius: 7px; }
+    :global(.calendar-day b) { font-size: 15px; }
+    :global(.calendar-day span) { display: none; }
+    .calendar-legend { min-height: 50px; padding: 11px 16px; }
+  }
+</style>
