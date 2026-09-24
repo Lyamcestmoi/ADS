@@ -1,5 +1,5 @@
 ---
-import { ArrowUpRight } from '@lucide/astro';
+import { ArrowRight, ArrowUpRight, Menu, X } from '@lucide/astro';
 
 interface Props {
   active?: 'home' | 'reservation';
@@ -32,11 +32,65 @@ const { active = 'home' } = Astro.props;
       Réserver
       <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
     </a>
+
+    <button
+      class="mobile-menu-toggle"
+      type="button"
+      aria-label="Ouvrir le menu"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+    >
+      <Menu size={30} stroke-width={1.7} aria-hidden="true" />
+    </button>
   </nav>
 </header>
 
+<aside id="mobile-menu" class="mobile-menu" aria-hidden="true" inert>
+  <div class="mobile-menu-inner">
+    <div class="mobile-menu-head">
+      <a href="/" class="mobile-menu-brand" aria-label="Stand ADS — Accueil">
+        <img src="/logo.png" width="48" height="48" alt="" />
+        <span>
+          <strong>Stand ADS</strong>
+          <small>Prêles · Plateau de Diesse</small>
+        </span>
+      </a>
+
+      <button class="mobile-menu-close" type="button" aria-label="Fermer le menu">
+        <X size={32} stroke-width={1.6} aria-hidden="true" />
+      </button>
+    </div>
+
+    <nav class="mobile-menu-links" aria-label="Navigation mobile">
+      <a href="/" class:list={{ active: active === 'home' }}>
+        <span>Accueil</span><span aria-hidden="true">01</span>
+      </a>
+      <a href="/#stand">
+        <span>Le stand</span><span aria-hidden="true">02</span>
+      </a>
+      <a href="/#tarifs">
+        <span>Tarifs</span><span aria-hidden="true">03</span>
+      </a>
+      <a href="/#contact">
+        <span>Contact</span><span aria-hidden="true">04</span>
+      </a>
+    </nav>
+
+    <div class="mobile-menu-foot">
+      <p>Location du Stand ADS à Prêles</p>
+      <a href="/reservation/" class="mobile-menu-book">
+        Faire une demande de réservation
+        <ArrowRight size={20} stroke-width={1.8} aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</aside>
+
 <script>
   const homeHeader = document.querySelector<HTMLElement>('.site-header-home');
+  const menu = document.querySelector<HTMLElement>('#mobile-menu');
+  const openButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+  const closeButton = document.querySelector<HTMLButtonElement>('.mobile-menu-close');
 
   if (homeHeader) {
     const updateHeader = () => {
@@ -46,4 +100,40 @@ const { active = 'home' } = Astro.props;
     updateHeader();
     window.addEventListener('scroll', updateHeader, { passive: true });
   }
+
+  const setMenuOpen = (open: boolean) => {
+    if (!menu || !openButton) return;
+
+    menu.classList.toggle('is-open', open);
+    menu.setAttribute('aria-hidden', String(!open));
+    menu.toggleAttribute('inert', !open);
+    openButton.setAttribute('aria-expanded', String(open));
+    openButton.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    document.body.classList.toggle('mobile-menu-open', open);
+
+    if (open) {
+      closeButton?.focus();
+    } else if (document.activeElement === closeButton) {
+      openButton.focus();
+    }
+  };
+
+  openButton?.addEventListener('click', () => setMenuOpen(true));
+  closeButton?.addEventListener('click', () => setMenuOpen(false));
+
+  menu?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.classList.contains('is-open')) {
+      setMenuOpen(false);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 960 && menu?.classList.contains('is-open')) {
+      setMenuOpen(false);
+    }
+  });
 </script>
