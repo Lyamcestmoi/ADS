@@ -11,6 +11,41 @@ import SiteHeader from '../components/SiteHeader.astro';
 const title = 'Contrat de réservation — Stand ADS Prêles';
 const description =
   'Préparez le contrat de location du Stand ADS à Prêles, calculez le tarif et imprimez le récapitulatif signé.';
+
+const rentalConditions = [
+  {
+    title: 'Durée et tarifs',
+    text: 'Un jour complet correspond à environ 23 h, de 10 h à 9 h le lendemain. Les jours fériés sont facturés comme le week-end.',
+  },
+  {
+    title: 'Conditions hivernales',
+    text: 'Le déneigement éventuel est à la charge du locataire. Par grand froid, l’eau peut être coupée et les WC mis hors service.',
+  },
+  {
+    title: 'Déchets et brasero',
+    text: 'L’évacuation des déchets et le nettoyage du brasero sont à la charge du locataire.',
+  },
+  {
+    title: 'Utilisation du stand',
+    text: 'La sous-location est interdite. Les membres ADS bénéficient d’une réduction de 20 % sur la location.',
+  },
+  {
+    title: 'Annulation',
+    text: 'Dans le mois précédant la location, 50 % du montant versé est retenu à titre de dédommagement.',
+  },
+  {
+    title: 'Responsabilité',
+    text: 'L’ADS décline toute responsabilité en cas d’incendie, vol ou accident. Le locataire confirme disposer d’une assurance RC.',
+  },
+  {
+    title: 'Paiement',
+    text: 'Après acceptation de la demande, la gérance transmet les coordonnées bancaires et le délai de paiement. La réservation est confirmée après réception du paiement.',
+  },
+  {
+    title: 'Respect du site',
+    text: 'Le locataire s’engage à préserver la nature et les activités agricoles et forestières, puis à remettre les lieux dans leur état initial.',
+  },
+];
 ---
 
 <MainLayout title={title} description={description}>
@@ -197,16 +232,22 @@ const description =
               <div><h2 id="step-title-3">Conditions de location</h2><p>Lisez et acceptez chaque condition avant de signer.</p></div>
             </header>
 
-            <div class="conditions-list">
-              <label class="condition-row"><input type="checkbox" name="condition" /><span>Un jour complet correspond à environ 23 h, de 10 h à 9 h le lendemain. Les jours fériés sont facturés comme le week-end.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span>Le déneigement éventuel est à la charge du locataire. Par grand froid, l’eau peut être coupée et les WC mis hors service.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span>L’évacuation des déchets et le nettoyage du brasero sont à la charge du locataire.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span>La sous-location est interdite. Les membres ADS bénéficient d’une réduction de 20 % sur la location.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span><strong>Annulation :</strong> dans le mois précédant la location, 50 % du montant versé est retenu à titre de dédommagement.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span><strong>Responsabilité :</strong> l’ADS décline toute responsabilité en cas d’incendie, vol ou accident. Le locataire confirme disposer d’une assurance RC.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span><strong>Paiement :</strong> après acceptation de la demande, la gérance transmet les coordonnées bancaires et le délai de paiement. La réservation est confirmée après réception du paiement.</span></label>
-              <label class="condition-row"><input type="checkbox" name="condition" /><span><strong>Respect du site :</strong> préserver la nature et les activités agricoles et forestières, puis remettre les lieux dans leur état initial.</span></label>
-            </div>
+            <ol class="conditions-list">
+              {rentalConditions.map((condition, index) => (
+                <li class="condition-row">
+                  <span class="condition-number">{String(index + 1).padStart(2, '0')}</span>
+                  <p><strong>{condition.title} :</strong> {condition.text}</p>
+                </li>
+              ))}
+            </ol>
+
+            <label class="acceptance-row">
+              <input id="conditions-accept" name="conditions_accept" type="checkbox" />
+              <span>
+                <strong>J’ai lu et j’accepte l’ensemble des conditions de location.</strong>
+                <small>Cette confirmation vaut pour les huit conditions présentées ci-dessus.</small>
+              </span>
+            </label>
 
             <div class="signature-field">
               <div class="signature-head">
@@ -224,6 +265,19 @@ const description =
           </section>
 
           <section class="form-step recap-step" data-step="4" aria-labelledby="step-title-4">
+            <header class="print-contract-header">
+              <img src="/logo.png" width="72" height="72" alt="Logo de l’ADS" />
+              <div>
+                <span>Amicale Du Stand · Prêles</span>
+                <h1>Contrat de location</h1>
+                <p>Stand ADS · 2515 Prêles · Plateau de Diesse</p>
+              </div>
+              <dl>
+                <div><dt>Date de location</dt><dd id="print-header-date">–</dd></div>
+                <div><dt>Document préparé le</dt><dd id="print-created-date">–</dd></div>
+              </dl>
+            </header>
+
             <header class="step-header">
               <span class="step-number">05</span>
               <div><h2 id="step-title-4">Récapitulatif du contrat</h2><p>Vérifiez les informations avant d’imprimer le document.</p></div>
@@ -239,12 +293,25 @@ const description =
                 <dl><div><dt>Responsable</dt><dd id="recap-name">–</dd></div><div><dt>Adresse</dt><dd id="recap-address">–</dd></div><div><dt>Contact</dt><dd id="recap-contact">–</dd></div><div id="recap-iban-row"><dt>IBAN caution</dt><dd id="recap-iban">–</dd></div><div id="recap-remarks-row"><dt>Remarques</dt><dd id="recap-remarks">–</dd></div></dl>
               </section>
               <section class="recap-block full"><h3>Options</h3><ul id="recap-options"></ul></section>
-              <section class="recap-block full signature-recap"><h3>Signature et acceptation</h3><p>Les huit conditions de location ont été lues et acceptées.</p><img id="recap-signature" alt="Signature du locataire" /></section>
-            </div>
-
-            <div class="payment-box">
-              <div><span>Après acceptation de la demande</span><strong>Daniela transmet les informations de paiement</strong></div>
-              <div class="payment-total"><span>Total calculé</span><strong id="recap-total">CHF –</strong></div>
+              <section class="payment-box recap-payment">
+                <div><span>Après acceptation de la demande</span><strong>Daniela transmet les informations de paiement</strong></div>
+                <div class="payment-total"><span>Total calculé</span><strong id="recap-total">CHF –</strong></div>
+              </section>
+              <section class="recap-block full print-conditions">
+                <h3>Conditions de location acceptées</h3>
+                <ol>
+                  {rentalConditions.map((condition, index) => (
+                    <li><span>{index + 1}.</span><p><strong>{condition.title} :</strong> {condition.text}</p></li>
+                  ))}
+                </ol>
+              </section>
+              <section class="recap-block full signature-recap">
+                <div>
+                  <h3>Signature et acceptation</h3>
+                  <p>Le locataire <strong id="recap-signer">–</strong> confirme avoir lu et accepté l’ensemble des conditions de location.</p>
+                </div>
+                <img id="recap-signature" alt="Signature du locataire" />
+              </section>
             </div>
             <div class="send-note"><Mail size={22} stroke-width={1.8} aria-hidden="true" /><p>Imprimez d’abord ce contrat en PDF, puis joignez-le à votre e-mail pour <strong>Mme Daniela Allemann</strong> à <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>.</p></div>
             <div class="step-actions recap-actions">
@@ -252,6 +319,12 @@ const description =
               <button id="email-contract" class="action secondary" type="button"><Mail size={18} aria-hidden="true" /> Préparer l’e-mail</button>
               <button id="print-contract" class="action primary" type="button"><Printer size={18} aria-hidden="true" /> Imprimer / PDF</button>
             </div>
+
+            <footer class="print-contract-footer">
+              <strong>Gérance · Mme Daniela Allemann</strong>
+              <span>078 638 47 91 · gerante@ads-preles.ch</span>
+              <span>Stand ADS · 2515 Prêles</span>
+            </footer>
           </section>
         </form>
 
@@ -297,6 +370,7 @@ const description =
   const pizzaField = byId<HTMLInputElement>('pizza-field');
   const woodField = byId<HTMLInputElement>('wood-field');
   const cleaningField = byId<HTMLInputElement>('cleaning-field');
+  const conditionsAccept = byId<HTMLInputElement>('conditions-accept');
   const canvas = byId<HTMLCanvasElement>('signature-canvas');
   const context = canvas.getContext('2d');
 
@@ -415,8 +489,7 @@ const description =
       if (email.value && !email.checkValidity()) { setStepError(step, 'Saisissez une adresse e-mail valide.'); email.focus(); return false; }
     }
     if (step === 3) {
-      const conditions = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="condition"]'));
-      if (!conditions.every((condition) => condition.checked)) { setStepError(step, 'Toutes les conditions doivent être lues et acceptées.'); return false; }
+      if (!conditionsAccept.checked) { setStepError(step, 'Confirmez avoir lu et accepté l’ensemble des conditions.'); conditionsAccept.focus(); return false; }
       if (!signatureStarted || signaturePoints < 5) { setStepError(step, 'La signature du locataire est requise.'); return false; }
     }
     return true;
@@ -447,6 +520,9 @@ const description =
     byId('recap-period').textContent = selectedPeriod ? `${periodLabels[selectedPeriod]}${selectedPeriod === 'consecutif' ? ` · ${days} jours` : ''}` : '–';
     byId('recap-people').textContent = `${peopleField.value} personnes`;
     byId('recap-name').textContent = `${firstName} ${lastName}`.trim();
+    byId('recap-signer').textContent = `${firstName} ${lastName}`.trim();
+    byId('print-header-date').textContent = formatDate(dateField.value);
+    byId('print-created-date').textContent = new Intl.DateTimeFormat('fr-CH').format(new Date());
     byId('recap-address').textContent = `${address}, ${postal} ${city}`;
     byId('recap-contact').textContent = [phone, email].filter(Boolean).join(' · ');
     byId('recap-iban').textContent = iban || 'Non renseigné';
@@ -624,12 +700,17 @@ const description =
   .option-row:has(input:checked) .option-check { border-color: var(--blue); background: var(--blue); color: var(--white); }
   .included-note { margin-top: 22px; background: #fbf1bd; color: #594b08; font-size: 15px; line-height: 1.5; }
 
-  .conditions-list { display: grid; gap: 10px; }
-  .condition-row { display: grid; grid-template-columns: 22px 1fr; gap: 13px; align-items: start; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); cursor: pointer; }
-  .condition-row:has(input:checked) { border-color: #8db7a0; background: #edf5f0; }
-  .condition-row input { margin-top: 2px; }
-  .condition-row span { color: var(--muted); font-size: 16px; line-height: 1.55; }
+  .conditions-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .condition-row { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: start; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+  .condition-number { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--forest-100); color: var(--forest-900); font-size: 11px; font-weight: 900; }
+  .condition-row p { margin: 3px 0 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
   .condition-row strong { color: var(--ink); }
+  .acceptance-row { display: grid; grid-template-columns: 24px 1fr; gap: 14px; align-items: start; margin-top: 20px; padding: 18px; border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; transition: border-color 150ms ease, background 150ms ease; }
+  .acceptance-row:has(input:checked) { border-color: var(--blue); background: var(--blue-soft); }
+  .acceptance-row input { margin-top: 3px; }
+  .acceptance-row span, .acceptance-row strong, .acceptance-row small { display: block; }
+  .acceptance-row strong { color: var(--forest-900); font-size: 16px; }
+  .acceptance-row small { margin-top: 3px; color: var(--muted); font-size: 14px; line-height: 1.45; }
   .signature-field { margin-top: 30px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--white); }
   .signature-head { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 15px 18px; border-bottom: 1px solid var(--line); }
   .signature-head strong, .signature-head span { display: block; }
@@ -669,6 +750,7 @@ const description =
   .manager-card a:hover { color: var(--blue); }
 
   .recap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+  .print-contract-header, .print-contract-footer { display: none; }
   .recap-block { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); }
   .recap-block.full { grid-column: 1 / -1; }
   .recap-block h3 { margin: 0 0 15px; color: var(--forest-900); font-size: 18px; }
@@ -679,9 +761,17 @@ const description =
   .recap-block dt { color: var(--muted); }
   .recap-block dd { overflow-wrap: anywhere; font-weight: 700; }
   .recap-block ul { display: grid; gap: 7px; margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
-  .signature-recap p { color: var(--muted); font-size: 14px; }
-  #recap-signature { width: 100%; max-height: 120px; object-fit: contain; object-position: left center; border-top: 1px solid var(--line); }
-  .payment-box { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; margin-top: 20px; padding: 22px; border-radius: var(--radius-sm); background: var(--forest-900); color: var(--white); }
+  .print-conditions { background: #f7f4eb; }
+  .print-conditions ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; margin: 0; padding: 0; list-style: none; }
+  .print-conditions li { display: grid; grid-template-columns: 22px 1fr; gap: 7px; align-items: start; }
+  .print-conditions li span { color: var(--blue); font-size: 13px; font-weight: 900; }
+  .print-conditions li p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+  .print-conditions li strong { color: var(--ink); }
+  .signature-recap { display: grid; grid-template-columns: 1fr minmax(220px, .7fr); gap: 24px; align-items: center; }
+  .signature-recap p { margin: 0; color: var(--muted); font-size: 14px; }
+  #recap-signature { width: 100%; min-height: 90px; max-height: 120px; object-fit: contain; object-position: center; border-left: 1px solid var(--line); }
+  .payment-box { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; padding: 22px; border-radius: var(--radius-sm); background: var(--forest-900); color: var(--white); }
+  .recap-payment { grid-column: 1 / -1; }
   .payment-box span, .payment-box strong { display: block; }
   .payment-box span { color: rgba(255,255,255,.62); font-size: 13px; }
   .payment-box strong { margin-top: 4px; font-size: 18px; letter-spacing: .02em; }
@@ -712,6 +802,8 @@ const description =
     .option-row { grid-template-columns: 44px 1fr auto; }
     .option-row > b { grid-column: 2; }
     .option-check { grid-column: 3; grid-row: 1 / 3; }
+    .print-conditions ol, .signature-recap { grid-template-columns: 1fr; }
+    #recap-signature { border-top: 1px solid var(--line); border-left: 0; }
     .payment-box { grid-template-columns: 1fr; }
     .payment-total { text-align: left; }
   }
@@ -725,18 +817,51 @@ const description =
     .action { width: 100%; }
     .recap-block dl div { grid-template-columns: 1fr; gap: 2px; }
   }
+  @page { size: A4 portrait; margin: 12mm 14mm 14mm; }
   @media print {
+    :global(html), :global(body) { background: #fff !important; color: #15312d !important; }
+    :global(body) { font-size: 10pt; line-height: 1.35; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     :global(.site-header), :global(.site-footer), .booking-hero, .progress, .booking-sidebar, .privacy-note, .step-actions, .send-note { display: none !important; }
-    .booking-page, .booking-content { background: white !important; padding: 0 !important; }
+    .booking-page, .booking-content { background: #fff !important; padding: 0 !important; }
     .reservation-shell, .booking-layout { width: 100% !important; display: block !important; }
-    .form-card { padding: 0 !important; border: 0 !important; }
+    .form-card { padding: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
     .form-step { display: none !important; }
     .recap-step.active { display: block !important; }
-    .step-header { margin-bottom: 20px; }
-    .step-number { background: #eee !important; }
-    .recap-block, .payment-box { break-inside: avoid; }
-    .payment-box { color: #123c36 !important; background: #f2efe6 !important; }
-    .payment-box span { color: #64736f !important; }
-    .payment-total strong { color: #123c36 !important; }
+    .recap-step > .step-header { display: none !important; }
+
+    .print-contract-header { display: grid; grid-template-columns: 18mm 1fr auto; gap: 5mm; align-items: center; margin-bottom: 7mm; padding-bottom: 5mm; border-bottom: 2px solid #123c36; }
+    .print-contract-header img { width: 18mm; height: 18mm; object-fit: contain; }
+    .print-contract-header span { color: #1187b2; font-size: 8pt; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .print-contract-header h1 { margin: 1mm 0 0; color: #123c36; font-size: 23pt; font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+    .print-contract-header p { margin: 1.5mm 0 0; color: #64736f; font-size: 9pt; }
+    .print-contract-header dl { min-width: 42mm; margin: 0; }
+    .print-contract-header dl div { padding: 1.5mm 0; border-bottom: 1px solid rgba(21,49,45,.18); }
+    .print-contract-header dt, .print-contract-header dd { margin: 0; }
+    .print-contract-header dt { color: #64736f; font-size: 7.5pt; }
+    .print-contract-header dd { color: #15312d; font-size: 9.5pt; font-weight: 800; }
+
+    .recap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4mm; }
+    .recap-block { padding: 4mm; border-color: rgba(21,49,45,.22); border-radius: 2mm; break-inside: avoid; }
+    .recap-block h3 { margin-bottom: 3mm; font-size: 11.5pt; }
+    .recap-block dl div { grid-template-columns: 28mm 1fr; gap: 3mm; padding: 1.8mm 0; }
+    .recap-block dt, .recap-block dd, .recap-block ul { font-size: 9pt; }
+    .recap-block ul { gap: 1.5mm; }
+    .payment-box { padding: 4mm; border-radius: 2mm; break-inside: avoid; }
+    .payment-box span { font-size: 8pt; }
+    .payment-box strong { font-size: 11pt; }
+    .payment-total strong { font-size: 16pt; }
+
+    .print-conditions { grid-column: 1 / -1; break-before: page; padding: 0; border: 0; background: #fff; }
+    .print-conditions h3 { margin: 0 0 5mm; padding-bottom: 3mm; border-bottom: 2px solid #123c36; font-size: 16pt; }
+    .print-conditions ol { grid-template-columns: 1fr; gap: 3.2mm; }
+    .print-conditions li { grid-template-columns: 7mm 1fr; gap: 2mm; break-inside: avoid; }
+    .print-conditions li span { font-size: 9pt; }
+    .print-conditions li p { font-size: 9.5pt; line-height: 1.4; }
+
+    .signature-recap { grid-template-columns: 1fr 68mm; gap: 7mm; margin-top: 2mm; padding: 4mm; break-inside: avoid; }
+    .signature-recap p { font-size: 9pt; }
+    #recap-signature { min-height: 26mm; max-height: 32mm; border-left: 1px solid rgba(21,49,45,.22); border-top: 0; }
+    .print-contract-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2mm 6mm; margin-top: 6mm; padding-top: 3mm; border-top: 1px solid rgba(21,49,45,.3); color: #64736f; font-size: 8pt; }
+    .print-contract-footer strong { color: #123c36; }
   }
 </style>
