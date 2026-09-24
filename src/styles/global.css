@@ -84,21 +84,15 @@ a {
   position: fixed;
   right: 0;
   left: 0;
-  border-color: rgba(255, 255, 255, 0.16);
-  background: rgba(9, 45, 41, 0.62);
+  border-color: transparent;
+  background: transparent;
   color: var(--white);
-  opacity: 0;
-  backdrop-filter: blur(18px);
-  transition:
-    opacity 220ms ease,
-    background 220ms ease,
-    border-color 220ms ease;
-}
-
-.site-header-home:hover,
-.site-header-home:focus-within,
-.site-header-home.is-scrolled {
   opacity: 1;
+  backdrop-filter: none;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    backdrop-filter 220ms ease;
 }
 
 .site-header-home:not(.is-scrolled) .brand,
@@ -123,6 +117,7 @@ a {
   border-color: rgba(21, 49, 45, 0.1);
   background: rgba(251, 250, 246, 0.94);
   color: var(--ink);
+  backdrop-filter: blur(18px);
 }
 
 .nav-shell {
