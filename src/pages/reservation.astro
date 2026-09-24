@@ -10,7 +10,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
 const title = 'Contrat de réservation — Stand ADS Prêles';
 const description =
-  'Préparez le contrat de location du Stand ADS à Prêles, calculez le tarif et imprimez le récapitulatif signé.';
+  'Formulaire et contrat de location du Stand ADS à Prêles.';
 
 const rentalConditions = [
   {
@@ -63,8 +63,8 @@ const rentalConditions = [
           <h1>Réserver le Stand ADS.</h1>
         </div>
         <p class="booking-lead">
-          Complétez les cinq étapes, vérifiez le tarif puis imprimez le contrat en
-          PDF pour le transmettre à la gérance.
+          Remplissez le formulaire. À la fin, vous pourrez enregistrer le contrat
+          en PDF et l’envoyer à la gérance.
         </p>
       </div>
     </section>
@@ -86,14 +86,14 @@ const rentalConditions = [
             <ShieldCheck size={22} stroke-width={1.8} aria-hidden="true" />
             <div>
               <strong>Vos données restent dans votre navigateur</strong>
-              <span>Ce site statique n’enregistre rien. Le contrat est à imprimer en PDF, puis à envoyer vous-même à la gérance.</span>
+              <span>Aucune donnée n’est envoyée par ce site. Vous devrez enregistrer le contrat en PDF et l’envoyer vous-même à la gérance.</span>
             </div>
           </div>
 
           <section class="form-step active" data-step="0" aria-labelledby="step-title-0">
             <header class="step-header">
               <span class="step-number">01</span>
-              <div><h2 id="step-title-0">Date & période</h2><p>Choisissez le créneau souhaité et le nombre de participants.</p></div>
+              <div><h2 id="step-title-0">Date & période</h2><p>Indiquez la date, la durée et le nombre de personnes.</p></div>
             </header>
 
             <div class="field-grid two-cols">
@@ -154,7 +154,7 @@ const rentalConditions = [
           <section class="form-step" data-step="1" aria-labelledby="step-title-1">
             <header class="step-header">
               <span class="step-number">02</span>
-              <div><h2 id="step-title-1">Options & services</h2><p>Personnalisez la location selon vos besoins.</p></div>
+              <div><h2 id="step-title-1">Options & services</h2><p>Sélectionnez les options dont vous avez besoin.</p></div>
             </header>
 
             <div class="option-list">
@@ -199,7 +199,7 @@ const rentalConditions = [
           <section class="form-step" data-step="2" aria-labelledby="step-title-2">
             <header class="step-header">
               <span class="step-number">03</span>
-              <div><h2 id="step-title-2">Coordonnées du locataire</h2><p>Informations de la personne responsable de la location.</p></div>
+              <div><h2 id="step-title-2">Coordonnées du locataire</h2><p>Indiquez les coordonnées de la personne responsable du contrat.</p></div>
             </header>
 
             <div class="field-grid two-cols">
@@ -228,7 +228,7 @@ const rentalConditions = [
           <section class="form-step" data-step="3" aria-labelledby="step-title-3">
             <header class="step-header">
               <span class="step-number">04</span>
-              <div><h2 id="step-title-3">Conditions de location</h2><p>Lisez et acceptez chaque condition avant de signer.</p></div>
+              <div><h2 id="step-title-3">Conditions de location</h2><p>Lisez les conditions, confirmez votre accord, puis signez.</p></div>
             </header>
 
             <ol class="conditions-list">
@@ -293,7 +293,7 @@ const rentalConditions = [
               </section>
               <section class="recap-block full"><h3>Options</h3><ul id="recap-options"></ul></section>
               <section class="payment-box recap-payment">
-                <div><span>Après acceptation de la demande</span><strong>Daniela transmet les informations de paiement</strong></div>
+                <div><span>Après acceptation de la demande</span><strong>La gérance communiquera les informations de paiement</strong></div>
                 <div class="payment-total"><span>Total calculé</span><strong id="recap-total">CHF –</strong></div>
               </section>
               <section class="recap-block full print-conditions">
@@ -338,7 +338,7 @@ const rentalConditions = [
               <div id="summary-discount-row" class="discount-row hidden"><dt>Réduction membre</dt><dd id="summary-discount">–</dd></div>
             </dl>
             <div class="summary-total"><span>Total indicatif</span><strong id="summary-total">CHF –</strong></div>
-            <p>Le montant définitif reste soumis à la confirmation de la gérance.</p>
+            <p>Le montant définitif sera confirmé par la gérance.</p>
           </section>
           <section class="manager-card">
             <p class="booking-eyebrow">Contact</p><h3>Mme Daniela Allemann</h3>
