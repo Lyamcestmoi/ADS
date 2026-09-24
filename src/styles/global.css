@@ -591,6 +591,74 @@ a {
   font-size: 17px;
 }
 
+.gallery-section {
+  background: var(--paper);
+}
+
+.gallery-heading {
+  margin-bottom: 56px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 260px;
+  gap: 18px;
+}
+
+.gallery-item {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+}
+
+.gallery-item-tall {
+  grid-column: span 5;
+  grid-row: span 2;
+}
+
+.gallery-item-wide {
+  grid-column: span 7;
+}
+
+.gallery-item-room {
+  grid-column: span 4;
+}
+
+.gallery-item-detail {
+  grid-column: span 3;
+}
+
+.gallery-item-banner {
+  grid-column: 1 / -1;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.gallery-item-wide img {
+  object-position: center 55%;
+}
+
+.gallery-item-room img {
+  object-position: center 38%;
+}
+
+.gallery-item-banner img {
+  object-position: center 48%;
+}
+
+@media (hover: hover) {
+  .gallery-item:hover img {
+    transform: scale(1.025);
+  }
+}
+
 .image-story {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
@@ -881,6 +949,26 @@ a {
     gap: 28px;
   }
 
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 320px;
+  }
+
+  .gallery-item-tall {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+
+  .gallery-item-wide,
+  .gallery-item-room,
+  .gallery-item-detail {
+    grid-column: span 1;
+  }
+
+  .gallery-item-banner {
+    grid-column: 1 / -1;
+  }
+
   .image-story figure {
     min-height: 440px;
   }
@@ -977,6 +1065,32 @@ a {
 
   .section-lead {
     font-size: 17px;
+  }
+
+  .gallery-heading {
+    margin-bottom: 36px;
+  }
+
+  .gallery-grid {
+    display: flex;
+    gap: 12px;
+    margin-inline: -14px;
+    padding: 0 14px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .gallery-item,
+  .gallery-item-tall,
+  .gallery-item-wide,
+  .gallery-item-room,
+  .gallery-item-detail,
+  .gallery-item-banner {
+    flex: 0 0 min(78vw, 320px);
+    height: auto;
+    aspect-ratio: 3 / 4;
+    scroll-snap-align: center;
   }
 
   .equipment-list {
