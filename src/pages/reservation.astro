@@ -164,12 +164,11 @@ const rentalConditions = [
                 <span class="option-copy"><strong>Membre ADS</strong><small>Réduction de 20 % sur la location de base</small></span>
                 <b>−20 %</b><span class="option-check"><Check size={17} /></span>
               </label>
-              <label class="option-row">
-                <input id="caution-field" name="caution" type="checkbox" />
+              <div id="caution-row" class="option-row automatic-option applied" role="status" aria-live="polite">
                 <span class="option-icon"><KeyRound size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Caution non-membre</strong><small>Remboursée à la reddition si tout est en ordre</small></span>
-                <b>+ CHF 150.–</b><span class="option-check"><Check size={17} /></span>
-              </label>
+                <span class="option-copy"><strong>Caution non-membre</strong><small>Appliquée automatiquement et remboursée si tout est en ordre</small></span>
+                <b id="caution-status">+ CHF 150.–</b><span class="option-check"><Check size={17} /></span>
+              </div>
               <label class="option-row">
                 <input id="pizza-field" name="four_pizza" type="checkbox" />
                 <span class="option-icon"><Pizza size={22} stroke-width={1.8} /></span>
@@ -214,7 +213,7 @@ const rentalConditions = [
               <label class="field full">
                 <span>IBAN pour la restitution de la caution</span>
                 <input id="client-iban" name="iban_client" inputmode="text" autocomplete="off" placeholder="CH00 0000 0000 0000 0000 0" />
-                <small>À compléter uniquement si une caution est appliquée.</small>
+                <small id="iban-help">Obligatoire pour les non-membres afin de permettre le remboursement de la caution.</small>
               </label>
               <label class="field full"><span>Remarques</span><textarea id="remarks-field" name="remarques" rows="4"></textarea></label>
             </div>
@@ -366,7 +365,10 @@ const rentalConditions = [
   const daysGroup = byId<HTMLElement>('days-group');
   const peopleField = byId<HTMLInputElement>('people-field');
   const memberField = byId<HTMLInputElement>('member-field');
-  const cautionField = byId<HTMLInputElement>('caution-field');
+  const cautionRow = byId<HTMLElement>('caution-row');
+  const cautionStatus = byId<HTMLElement>('caution-status');
+  const clientIbanField = byId<HTMLInputElement>('client-iban');
+  const ibanHelp = byId<HTMLElement>('iban-help');
   const pizzaField = byId<HTMLInputElement>('pizza-field');
   const woodField = byId<HTMLInputElement>('wood-field');
   const cleaningField = byId<HTMLInputElement>('cleaning-field');
@@ -417,7 +419,7 @@ const rentalConditions = [
     if (selectedPeriod === 'complet') base = weekend ? 190 : 150;
     if (selectedPeriod === 'journee' || selectedPeriod === 'soiree') base = 90;
     const discount = memberField.checked ? base * 0.2 : 0;
-    const options = (cautionField.checked ? 150 : 0) + (pizzaField.checked ? 50 : 0) + (woodField.checked ? 30 : 0);
+    const options = (!memberField.checked ? 150 : 0) + (pizzaField.checked ? 50 : 0) + (woodField.checked ? 30 : 0);
     return { base, discount, options, total: base - discount + options };
   };
 
@@ -487,6 +489,7 @@ const rentalConditions = [
       if (missing) { setStepError(step, 'Complétez tous les champs obligatoires.'); missing.focus(); return false; }
       const email = byId<HTMLInputElement>('email-field');
       if (email.value && !email.checkValidity()) { setStepError(step, 'Saisissez une adresse e-mail valide.'); email.focus(); return false; }
+      if (!memberField.checked && !clientIbanField.value.trim()) { setStepError(step, 'L’IBAN est requis pour rembourser la caution des non-membres.'); clientIbanField.focus(); return false; }
     }
     if (step === 3) {
       if (!conditionsAccept.checked) { setStepError(step, 'Confirmez avoir lu et accepté l’ensemble des conditions.'); conditionsAccept.focus(); return false; }
@@ -498,7 +501,7 @@ const rentalConditions = [
   const optionTexts = () => {
     const options: string[] = [];
     if (memberField.checked) options.push('Membre ADS : réduction de 20 %');
-    if (cautionField.checked) options.push('Caution non-membre : CHF 150.–');
+    if (!memberField.checked) options.push('Caution non-membre obligatoire : CHF 150.–');
     if (pizzaField.checked) options.push('Four à pizza : CHF 50.–');
     if (woodField.checked) options.push('Bois supplémentaire : CHF 30.–');
     options.push(cleaningField.checked ? 'Nettoyage effectué par le locataire' : 'Nettoyage à facturer : CHF 50.–/h');
@@ -513,7 +516,7 @@ const rentalConditions = [
     const city = byId<HTMLInputElement>('city-field').value.trim();
     const phone = byId<HTMLInputElement>('phone-field').value.trim();
     const email = byId<HTMLInputElement>('email-field').value.trim();
-    const iban = byId<HTMLInputElement>('client-iban').value.trim();
+    const iban = clientIbanField.value.trim();
     const remarks = byId<HTMLTextAreaElement>('remarks-field').value.trim();
     const days = Math.max(3, Number(daysField.value) || 3);
     byId('recap-date').textContent = formatDate(dateField.value);
@@ -526,7 +529,7 @@ const rentalConditions = [
     byId('recap-address').textContent = `${address}, ${postal} ${city}`;
     byId('recap-contact').textContent = [phone, email].filter(Boolean).join(' · ');
     byId('recap-iban').textContent = iban || 'Non renseigné';
-    byId('recap-iban-row').classList.toggle('hidden', !cautionField.checked && !iban);
+    byId('recap-iban-row').classList.toggle('hidden', memberField.checked && !iban);
     byId('recap-remarks').textContent = remarks || 'Aucune';
     byId('recap-remarks-row').classList.toggle('hidden', !remarks);
     const optionList = byId<HTMLUListElement>('recap-options');
@@ -575,13 +578,20 @@ const rentalConditions = [
     });
   });
 
+  const updateCautionState = () => {
+    const applies = !memberField.checked;
+    cautionRow.classList.toggle('applied', applies);
+    cautionRow.classList.toggle('waived', !applies);
+    cautionStatus.textContent = applies ? '+ CHF 150.–' : 'Non applicable';
+    clientIbanField.required = applies;
+    ibanHelp.textContent = applies
+      ? 'Obligatoire pour les non-membres afin de permettre le remboursement de la caution.'
+      : 'Facultatif pour les membres ADS, qui ne versent pas de caution.';
+  };
+
   document.querySelectorAll<HTMLInputElement>('.option-row input').forEach((input) => {
     input.addEventListener('change', () => {
-      if (input === memberField) {
-        cautionField.checked = false;
-        cautionField.disabled = memberField.checked;
-        cautionField.closest('.option-row')?.classList.toggle('disabled', memberField.checked);
-      }
+      if (input === memberField) updateCautionState();
       updateSummary();
     });
   });
@@ -604,6 +614,7 @@ const rentalConditions = [
   });
 
   dateField.min = localToday();
+  updateCautionState();
   showStep(0);
   updateSummary();
 </script>
@@ -691,6 +702,9 @@ const rentalConditions = [
   .option-row > input { position: absolute; opacity: 0; pointer-events: none; }
   .option-row:has(input:checked) { border-color: var(--blue); background: var(--blue-soft); }
   .option-row.disabled { opacity: .42; cursor: not-allowed; }
+  .automatic-option { cursor: default; }
+  .automatic-option.applied { border-color: var(--blue); background: var(--blue-soft); }
+  .automatic-option.waived { background: var(--cream); opacity: .72; }
   .option-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--cream); color: var(--forest-900); }
   .option-copy, .option-copy strong, .option-copy small { display: block; }
   .option-copy strong { font-size: 17px; }
@@ -698,6 +712,7 @@ const rentalConditions = [
   .option-row > b { color: var(--forest-900); font-size: 16px; white-space: nowrap; }
   .option-check { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--line); border-radius: 50%; color: transparent; }
   .option-row:has(input:checked) .option-check { border-color: var(--blue); background: var(--blue); color: var(--white); }
+  .automatic-option.applied .option-check { border-color: var(--blue); background: var(--blue); color: var(--white); }
   .included-note { margin-top: 22px; background: #fbf1bd; color: #594b08; font-size: 15px; line-height: 1.5; }
 
   .conditions-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
