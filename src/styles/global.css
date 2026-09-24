@@ -80,6 +80,51 @@ a {
   backdrop-filter: blur(18px);
 }
 
+.site-header-home {
+  position: fixed;
+  right: 0;
+  left: 0;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(9, 45, 41, 0.62);
+  color: var(--white);
+  opacity: 0;
+  backdrop-filter: blur(18px);
+  transition:
+    opacity 220ms ease,
+    background 220ms ease,
+    border-color 220ms ease;
+}
+
+.site-header-home:hover,
+.site-header-home:focus-within,
+.site-header-home.is-scrolled {
+  opacity: 1;
+}
+
+.site-header-home:not(.is-scrolled) .brand,
+.site-header-home:not(.is-scrolled) .nav-links a {
+  color: var(--white);
+}
+
+.site-header-home:not(.is-scrolled) .brand small {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.site-header-home:not(.is-scrolled) .nav-links a::after {
+  background: var(--yellow);
+}
+
+.site-header-home:not(.is-scrolled) .nav-book {
+  background: var(--yellow);
+  color: var(--forest-950);
+}
+
+.site-header-home.is-scrolled {
+  border-color: rgba(21, 49, 45, 0.1);
+  background: rgba(251, 250, 246, 0.94);
+  color: var(--ink);
+}
+
 .nav-shell {
   width: var(--shell);
   min-height: 82px;
@@ -191,9 +236,11 @@ a {
 
 .home-hero {
   position: relative;
-  min-height: 720px;
+  min-height: 100vh;
+  min-height: 100svh;
   display: grid;
-  align-items: end;
+  grid-template-rows: 1fr auto;
+  align-items: stretch;
   overflow: hidden;
   background: var(--forest-950);
   color: var(--white);
@@ -209,7 +256,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 56%;
+  object-position: center center;
   animation: heroReveal 1.2s ease-out both;
 }
 
@@ -222,7 +269,10 @@ a {
 .hero-main {
   position: relative;
   z-index: 1;
-  padding: 112px 0 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 130px 0 72px;
 }
 
 .kicker {
@@ -806,7 +856,8 @@ a {
   }
 
   .home-hero {
-    min-height: 680px;
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   .facts-grid {
@@ -883,11 +934,12 @@ a {
   }
 
   .home-hero {
-    min-height: 650px;
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   .hero-main {
-    padding-top: 84px;
+    padding: 110px 0 54px;
   }
 
   .hero-title {
