@@ -21,12 +21,12 @@ const description =
   'Informations, équipements et tarifs pour la location du Stand ADS à Prêles.';
 
 const equipment = [
-  'Environ 65 places assises à l’intérieur',
+  'Environ 70 places assises à l’intérieur',
   'Capacité de service jusqu’à 70 personnes',
-  'Cuisine équipée : vitrocéramique, frigo, four et micro-ondes',
+  'Cuisine équipée : induction, frigo, four et micro-ondes',
   'Vaisselle pour environ 50 personnes',
-  'Cheminée intérieure avec possibilité de griller',
-  'Cheminée extérieure et table pour environ 10 personnes',
+  'Cheminée intérieure — grillades non autorisées',
+  'Braséro / cheminée extérieure avec possibilité de griller',
   'Quatre portes vitrées avec accès extérieur',
   'Eau courante, électricité et WC',
   'Un caddie de bois inclus dans la location',
@@ -59,7 +59,7 @@ const availability = await getAvailability();
         </h1>
         <p class="hero-copy">
           Le stand peut être loué pour un repas, une fête de famille ou une
-          rencontre associative. Il compte environ 65 places assises.
+          rencontre associative. Il compte environ 70 places assises.
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href="/reservation/">
@@ -72,7 +72,7 @@ const availability = await getAvailability();
 
       <div class="hero-facts">
         <div class="facts-grid shell">
-          <div class="fact"><strong>65 / 70</strong><span>places assises / personnes avec service</span></div>
+          <div class="fact"><strong>70</strong><span>places assises et capacité de service</span></div>
           <div class="fact"><strong>≈ 23 h</strong><span>formule jour complet</span></div>
           <div class="fact"><strong>CHF 90</strong><span>tarif dès</span></div>
           <div class="fact"><strong>−20 %</strong><span>pour les membres ADS</span></div>
@@ -154,8 +154,8 @@ const availability = await getAvailability();
                 <dd>CHF 190.–</dd>
               </div>
               <div class="price-row">
-                <dt>Dès 3 jours · par jour</dt>
-                <dd>CHF 120.–</dd>
+                <dt>Dès 3 jours consécutifs</dt>
+                <dd>CHF 160.– / jour</dd>
               </div>
             </dl>
             <div class="price-notes">

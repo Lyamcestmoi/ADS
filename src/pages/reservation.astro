@@ -34,7 +34,7 @@ const rentalConditions = [
   },
   {
     title: 'Déchets et brasero',
-    text: 'L’évacuation des déchets et le nettoyage du brasero sont à la charge du locataire.',
+    text: 'Les grillades sont interdites à l’intérieur et autorisées uniquement au braséro / à la cheminée extérieure. L’évacuation des déchets et le nettoyage du braséro sont à la charge du locataire.',
   },
   {
     title: 'Utilisation du stand',
@@ -165,7 +165,7 @@ const rentalConditions = [
                 </button>
                 <button class="period-card" type="button" data-period="consecutif">
                   <CalendarDays size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>3 jours ou plus</strong><span>Tarif calculé par jour</span><b data-price="consecutif">CHF 120.– / jour</b>
+                  <strong>3 jours consécutifs ou plus</strong><span>Tarif calculé par jour</span><b data-price="consecutif">CHF 160.– / jour</b>
                 </button>
               </div>
               <p class="field-hint">Le week-end et les jours fériés, seules les formules « jour complet » et « 3 jours ou plus » sont proposées.</p>
@@ -185,7 +185,7 @@ const rentalConditions = [
                   <button type="button" data-counter="1" aria-label="Ajouter une personne">+</button>
                 </div>
               </div>
-              <div class="capacity-note"><Users size={22} stroke-width={1.7} aria-hidden="true" /><span><strong>65 places assises</strong> · service jusqu’à 70 personnes</span></div>
+              <div class="capacity-note"><Users size={22} stroke-width={1.7} aria-hidden="true" /><span><strong>70 places assises</strong> · capacité maximale de 70 personnes</span></div>
             </div>
 
             <p class="step-error" data-error-step="0" role="alert"></p>
@@ -230,7 +230,7 @@ const rentalConditions = [
               </label>
             </div>
 
-            <div class="included-note"><Info size={20} stroke-width={1.8} aria-hidden="true" /><span><strong>Inclus :</strong> un caddie de bois, eau, électricité, cuisine équipée, cheminée intérieure, places assises et vaisselle.</span></div>
+            <div class="included-note"><Info size={20} stroke-width={1.8} aria-hidden="true" /><span><strong>Inclus :</strong> un caddie de bois, eau, électricité, cuisine équipée, cheminée intérieure sans grillades, places assises et vaisselle.</span></div>
             <div class="step-actions">
               <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> Retour</button>
               <button class="action primary" type="button" data-next-step>Continuer <ChevronRight size={18} aria-hidden="true" /></button>
@@ -487,7 +487,7 @@ const rentalConditions = [
     const weekend = isWeekendRate();
     const days = Math.max(3, Number(daysField.value) || 3);
     let base = 0;
-    if (selectedPeriod === 'consecutif') base = days * (weekend ? 160 : 120);
+    if (selectedPeriod === 'consecutif') base = days * 160;
     if (selectedPeriod === 'complet') base = weekend ? 190 : 150;
     if (selectedPeriod === 'journee' || selectedPeriod === 'soiree') base = 90;
     const discount = memberField.checked ? base * 0.2 : 0;
@@ -523,7 +523,7 @@ const rentalConditions = [
     const completePrice = document.querySelector<HTMLElement>('[data-price="complet"]');
     const consecutivePrice = document.querySelector<HTMLElement>('[data-price="consecutif"]');
     if (completePrice) completePrice.textContent = weekend ? 'CHF 190.–' : 'CHF 150.–';
-    if (consecutivePrice) consecutivePrice.textContent = weekend ? 'CHF 160.– / jour' : 'CHF 120.– / jour';
+    if (consecutivePrice) consecutivePrice.textContent = 'CHF 160.– / jour';
     updateDateAvailability();
     updateSummary();
   };
