@@ -31,7 +31,6 @@ html {
 
 body {
   margin: 0;
-  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   font-family: "Aptos", "Segoe UI", Helvetica, Arial, sans-serif;
@@ -489,8 +488,7 @@ a {
 .details-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
   gap: 0;
 }
 
@@ -661,8 +659,7 @@ a {
 
 .gallery-grid {
   display: grid;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-rows: 260px;
   gap: 2px;
@@ -717,8 +714,7 @@ a {
 
 .interior-gallery-grid {
   display: grid;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 240px;
   gap: 2px;
@@ -1487,8 +1483,7 @@ body.lightbox-open {
   }
 
   .home-calendar {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: 100%;
   }
 
   .section-heading {
@@ -1510,7 +1505,6 @@ body.lightbox-open {
   .gallery-grid {
     display: flex;
     gap: 2px;
-    margin-inline: -14px;
     padding: 0 0 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -1574,7 +1568,6 @@ body.lightbox-open {
   .interior-gallery-grid {
     display: flex;
     gap: 2px;
-    margin-inline: -14px;
     padding: 0 0 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
