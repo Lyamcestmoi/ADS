@@ -87,8 +87,7 @@ const availability = await getAvailability();
           <p class="eyebrow">Avant de réserver</p>
           <h2 id="home-availability-title">Voyez immédiatement<br />les dates encore libres.</h2>
           <p>
-            L’agenda est synchronisé avec les réservations du stand. Cliquez sur
-            une date disponible pour commencer votre demande.
+            Cliquez sur une date disponible pour commencer votre demande.
           </p>
           <a class="button button-primary" href="/reservation/">
             Voir toutes les disponibilités
@@ -101,7 +100,124 @@ const availability = await getAvailability();
             available={availability.available}
             compact
           />
-          <p>Disponibilités indicatives, sous réserve de confirmation par la gérance.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="interieur" class="section" aria-labelledby="interior-title">
+      <div class="shell">
+        <div class="section-heading gallery-heading reveal">
+          <div>
+            <p class="eyebrow">Découvrir le lieu</p>
+            <h2 id="interior-title" class="display-title">L’intérieur<br />du stand</h2>
+          </div>
+          <p class="section-lead">
+            Découvrez la salle, le bar, la cuisine et la cheminée avant de
+            consulter les équipements et les tarifs.
+          </p>
+        </div>
+
+        <div class="interior-gallery-grid reveal">
+          <figure class="interior-photo interior-photo-wide">
+            <img
+              src="/interieur-table-bar.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Grande table dressée devant le bar du stand"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-cheminee.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Cheminée intérieure du stand allumée"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-cuisine.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Cuisine équipée derrière le bar"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-table-1.webp"
+              width="1800"
+              height="1660"
+              loading="lazy"
+              decoding="async"
+              alt="Table préparée le long de la salle"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-table-2.webp"
+              width="1722"
+              height="1500"
+              loading="lazy"
+              decoding="async"
+              alt="Autre disposition de la table dans la salle"
+            />
+          </figure>
+          <figure class="interior-photo interior-photo-wide">
+            <img
+              src="/interieur-bar.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Bar et espace principal du stand"
+            />
+          </figure>
+          <figure class="interior-photo interior-photo-wide">
+            <img
+              src="/interieur-salle.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Vue générale de la salle du stand"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-cuisine-decoration.webp"
+              width="1800"
+              height="1460"
+              loading="lazy"
+              decoding="async"
+              alt="Cuisine et décoration installée sur le bar"
+            />
+          </figure>
+          <figure class="interior-photo">
+            <img
+              src="/interieur-grande-table.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Grande table dressée dans la salle"
+            />
+          </figure>
+          <figure class="interior-photo interior-photo-banner">
+            <img
+              src="/interieur-cheminee-large.webp"
+              width="1800"
+              height="1350"
+              loading="lazy"
+              decoding="async"
+              alt="Vue large de la cheminée intérieure"
+            />
+          </figure>
         </div>
       </div>
     </section>
@@ -238,113 +354,6 @@ const availability = await getAvailability();
           </figure>
         </div>
 
-        <div class="gallery-subheading reveal">
-          <h3>L’intérieur du stand</h3>
-          <p>La salle, la cuisine, le bar et la cheminée.</p>
-        </div>
-
-        <div class="interior-gallery-grid reveal">
-          <figure class="interior-photo interior-photo-wide">
-            <img
-              src="/interieur-table-bar.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Grande table dressée devant le bar du stand"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-cheminee.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Cheminée intérieure du stand allumée"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-cuisine.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Cuisine équipée derrière le bar"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-table-1.webp"
-              width="1800"
-              height="1660"
-              loading="lazy"
-              decoding="async"
-              alt="Table préparée le long de la salle"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-table-2.webp"
-              width="1722"
-              height="1500"
-              loading="lazy"
-              decoding="async"
-              alt="Autre disposition de la table dans la salle"
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-wide">
-            <img
-              src="/interieur-bar.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Bar et espace principal du stand"
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-wide">
-            <img
-              src="/interieur-salle.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Vue générale de la salle du stand"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-cuisine-decoration.webp"
-              width="1800"
-              height="1460"
-              loading="lazy"
-              decoding="async"
-              alt="Cuisine et décoration installée sur le bar"
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-grande-table.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Grande table dressée dans la salle"
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-banner">
-            <img
-              src="/interieur-cheminee-large.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt="Vue large de la cheminée intérieure"
-            />
-          </figure>
-        </div>
       </div>
     </section>
 

@@ -39,6 +39,7 @@ const { bookedDates, available, compact = false } = Astro.props;
       <>
         <span><i class="free"></i>Disponible</span>
         <span><i class="booked"></i>Réservé</span>
+        <span><i class="past"></i>Passé</span>
       </>
     ) : (
       <strong>Disponibilités temporairement indisponibles</strong>
@@ -101,18 +102,20 @@ const { bookedDates, available, compact = false } = Astro.props;
         const iso = dateKey(date);
         const isPast = date < today;
         const isBooked = booked.has(iso);
+        const stateLabel = isPast ? 'passé' : isBooked ? 'réservé' : 'disponible';
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'calendar-day';
         button.dataset.date = iso;
-        button.dataset.state = isBooked ? 'booked' : 'free';
+        button.dataset.state = isPast ? 'past' : isBooked ? 'booked' : 'free';
         button.classList.toggle('outside', outside);
         button.classList.toggle('today', iso === dateKey(today));
         button.classList.toggle('booked', isBooked);
+        button.classList.toggle('past', isPast);
         button.disabled = outside || isPast || isBooked || !available;
         button.setAttribute('role', 'gridcell');
-        button.setAttribute('aria-label', `${date.toLocaleDateString('fr-CH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} — ${isBooked ? 'réservé' : 'disponible'}`);
-        button.innerHTML = `<b>${dayNumber}</b><span>${isBooked ? 'Réservé' : 'Libre'}</span>`;
+        button.setAttribute('aria-label', `${date.toLocaleDateString('fr-CH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} — ${stateLabel}`);
+        button.innerHTML = `<b>${dayNumber}</b><span>${isPast ? 'Passé' : isBooked ? 'Réservé' : 'Libre'}</span>`;
         if (!button.disabled) button.addEventListener('click', () => chooseDate(iso));
         days.append(button);
       }
@@ -152,6 +155,8 @@ const { bookedDates, available, compact = false } = Astro.props;
   :global(.calendar-day span) { margin-top: 3px; color: #39705f; font-size: 10px; font-weight: 800; }
   :global(.calendar-day.booked) { background: #f3e7e4; color: #8a453d; }
   :global(.calendar-day.booked span) { color: #9d5a51; }
+  :global(.calendar-day.past) { background: #e6e7e3; color: #7b817e; opacity: .72; }
+  :global(.calendar-day.past span) { color: #7b817e; }
   :global(.calendar-day.outside) { background: transparent; opacity: .24; }
   :global(.calendar-day:disabled) { cursor: default; }
   :global(.calendar-day.today) { box-shadow: inset 0 0 0 2px var(--yellow); }
@@ -160,6 +165,7 @@ const { bookedDates, available, compact = false } = Astro.props;
   .calendar-legend i { width: 10px; height: 10px; border-radius: 50%; }
   .calendar-legend .free { background: #80ad98; }
   .calendar-legend .booked { background: #bf756a; }
+  .calendar-legend .past { background: #9ca29f; }
   .calendar-legend strong { color: #9d4a40; }
 
   .compact { box-shadow: none; }
@@ -181,6 +187,6 @@ const { bookedDates, available, compact = false } = Astro.props;
     :global(.calendar-day) { min-height: 48px; border-radius: 0; }
     :global(.calendar-day b) { font-size: 15px; }
     :global(.calendar-day span) { display: none; }
-    .calendar-legend { min-height: 50px; padding: 11px 16px; }
+    .calendar-legend { min-height: 50px; gap: 14px; padding: 11px 16px; }
   }
 </style>
