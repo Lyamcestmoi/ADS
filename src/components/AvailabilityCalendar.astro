@@ -135,9 +135,9 @@ const { bookedDates, available, compact = false } = Astro.props;
 </script>
 
 <style>
-  .availability-calendar { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 18px 55px rgba(9,45,41,.07); }
+  .availability-calendar { overflow: hidden; border: 1px solid var(--line); border-radius: 0; background: var(--white); box-shadow: none; }
   .calendar-toolbar { display: grid; grid-template-columns: 48px 1fr 48px; gap: 18px; align-items: center; padding: 24px 28px; border-bottom: 1px solid var(--line); background: var(--forest-900); color: var(--white); }
-  .calendar-toolbar > button { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: transparent; color: inherit; cursor: pointer; }
+  .calendar-toolbar > button { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid rgba(255,255,255,.2); border-radius: 0; background: transparent; color: inherit; cursor: pointer; }
   .calendar-toolbar > button:hover:not(:disabled) { border-color: var(--yellow); background: rgba(255,255,255,.08); }
   .calendar-toolbar > button:disabled { opacity: .28; cursor: default; }
   .calendar-toolbar div { text-align: center; }
@@ -145,8 +145,8 @@ const { bookedDates, available, compact = false } = Astro.props;
   .calendar-toolbar h3 { margin: 3px 0 0; font-size: clamp(22px, 3vw, 31px); font-weight: 550; letter-spacing: -.035em; text-transform: capitalize; }
   .calendar-weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .calendar-weekdays { padding: 16px 18px 10px; color: var(--muted); font-size: 12px; font-weight: 900; text-align: center; text-transform: uppercase; }
-  .calendar-days { gap: 5px; padding: 0 18px 20px; }
-  :global(.calendar-day) { position: relative; display: grid; align-content: center; justify-items: center; min-height: 76px; padding: 8px 3px; border: 1px solid transparent; border-radius: 10px; background: #edf5f0; color: var(--forest-900); cursor: pointer; }
+  .calendar-days { gap: 2px; padding: 0 18px 20px; }
+  :global(.calendar-day) { position: relative; display: grid; align-content: center; justify-items: center; min-height: 76px; padding: 8px 3px; border: 1px solid transparent; border-radius: 0; background: #edf5f0; color: var(--forest-900); cursor: pointer; }
   :global(.calendar-day:hover:not(:disabled)) { border-color: var(--blue); background: var(--blue-soft); transform: translateY(-1px); }
   :global(.calendar-day b) { font-size: 18px; }
   :global(.calendar-day span) { margin-top: 3px; color: #39705f; font-size: 10px; font-weight: 800; }
@@ -167,8 +167,8 @@ const { bookedDates, available, compact = false } = Astro.props;
   .compact .calendar-toolbar > button { width: 40px; height: 40px; }
   .compact .calendar-toolbar h3 { font-size: 23px; }
   .compact .calendar-weekdays { padding: 12px 12px 6px; font-size: 10px; }
-  .compact .calendar-days { gap: 3px; padding: 0 12px 14px; }
-  .compact :global(.calendar-day) { min-height: 52px; border-radius: 8px; }
+  .compact .calendar-days { gap: 2px; padding: 0 12px 14px; }
+  .compact :global(.calendar-day) { min-height: 52px; border-radius: 0; }
   .compact :global(.calendar-day b) { font-size: 15px; }
   .compact :global(.calendar-day span) { display: none; }
   .compact .calendar-legend { min-height: 48px; padding: 10px 20px; }
@@ -177,8 +177,8 @@ const { bookedDates, available, compact = false } = Astro.props;
     .calendar-toolbar { grid-template-columns: 42px 1fr 42px; padding: 18px 14px; }
     .calendar-toolbar > button { width: 42px; height: 42px; }
     .calendar-weekdays { padding-inline: 8px; font-size: 10px; }
-    .calendar-days { gap: 3px; padding: 0 8px 12px; }
-    :global(.calendar-day) { min-height: 48px; border-radius: 7px; }
+    .calendar-days { gap: 2px; padding: 0 8px 12px; }
+    :global(.calendar-day) { min-height: 48px; border-radius: 0; }
     :global(.calendar-day b) { font-size: 15px; }
     :global(.calendar-day span) { display: none; }
     .calendar-legend { min-height: 50px; padding: 11px 16px; }

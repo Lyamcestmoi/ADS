@@ -13,10 +13,10 @@
   --muted: #64736f;
   --line: rgba(21, 49, 45, 0.16);
   --shadow: 0 24px 70px rgba(9, 45, 41, 0.12);
-  --radius-sm: 10px;
-  --radius: 22px;
-  --radius-lg: 34px;
-  --shell: min(1180px, calc(100% - 64px));
+  --radius-sm: 0;
+  --radius: 0;
+  --radius-lg: 0;
+  --shell: min(1380px, calc(100% - 48px));
 }
 
 *,
@@ -31,6 +31,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   font-family: "Aptos", "Segoe UI", Helvetica, Arial, sans-serif;
@@ -206,7 +207,7 @@ a {
   justify-content: center;
   gap: 9px;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 0;
   font-weight: 700;
   text-decoration: none;
   transition:
@@ -495,7 +496,9 @@ a {
 .details-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: 24px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  gap: 0;
 }
 
 .detail-panel {
@@ -612,7 +615,7 @@ a {
 
 .tag {
   padding: 7px 11px;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--blue-soft);
   color: #0a6282;
   font-size: 13px;
@@ -665,9 +668,11 @@ a {
 
 .gallery-grid {
   display: grid;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-rows: 260px;
-  gap: 18px;
+  gap: 2px;
 }
 
 .gallery-item {
@@ -746,9 +751,11 @@ a {
 
 .interior-gallery-grid {
   display: grid;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 240px;
-  gap: 18px;
+  gap: 2px;
 }
 
 .interior-photo {
@@ -787,7 +794,7 @@ a {
   bottom: 14px;
   padding: 7px 11px;
   border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 999px;
+  border-radius: 0;
   background: rgba(9, 45, 41, 0.78);
   color: var(--white);
   content: "Voir en grand";
@@ -1334,7 +1341,7 @@ body.lightbox-open {
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    border-radius: 999px;
+    border-radius: 0;
     background: var(--yellow);
     color: var(--forest-950);
     font-size: 15px;
@@ -1517,6 +1524,15 @@ body.lightbox-open {
     gap: 42px;
   }
 
+  .home-calendar {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .home-calendar > p {
+    padding-inline: 14px;
+  }
+
   .section-heading {
     margin-bottom: 44px;
   }
@@ -1535,9 +1551,9 @@ body.lightbox-open {
 
   .gallery-grid {
     display: flex;
-    gap: 12px;
+    gap: 2px;
     margin-inline: -14px;
-    padding: 0 14px 10px;
+    padding: 0 0 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
@@ -1584,7 +1600,7 @@ body.lightbox-open {
     width: 100%;
     height: 48px;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
+    border-radius: 0;
   }
 
   .lightbox-previous {
@@ -1607,9 +1623,9 @@ body.lightbox-open {
 
   .interior-gallery-grid {
     display: flex;
-    gap: 12px;
+    gap: 2px;
     margin-inline: -14px;
-    padding: 0 14px 10px;
+    padding: 0 0 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
