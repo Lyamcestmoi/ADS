@@ -89,8 +89,9 @@ const { bookedDates, available, compact = false } = Astro.props;
       const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
       const monthLength = new Date(year, month + 1, 0).getDate();
       const previousMonthLength = new Date(year, month, 0).getDate();
+      const visibleCellCount = Math.ceil((firstWeekday + monthLength) / 7) * 7;
 
-      for (let index = 0; index < 42; index += 1) {
+      for (let index = 0; index < visibleCellCount; index += 1) {
         const dayOffset = index - firstWeekday + 1;
         const date = new Date(year, month, dayOffset);
         const outside = dayOffset < 1 || dayOffset > monthLength;
