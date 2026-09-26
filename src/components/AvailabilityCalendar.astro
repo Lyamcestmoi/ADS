@@ -1,13 +1,17 @@
 ---
 import { ChevronLeft, ChevronRight } from '@lucide/astro';
+import { calendarTranslations, localeCodes, pagePaths, type Locale } from '../lib/i18n';
 
 type Props = {
   bookedDates: string[];
   available: boolean;
   compact?: boolean;
+  locale?: Locale;
+  bookingPath?: string;
 };
 
-const { bookedDates, available, compact = false } = Astro.props;
+const { bookedDates, available, compact = false, locale = 'fr', bookingPath = pagePaths.reservation[locale] } = Astro.props;
+const t = calendarTranslations[locale];
 ---
 
 <div
@@ -15,34 +19,37 @@ const { bookedDates, available, compact = false } = Astro.props;
   data-availability-calendar
   data-booked={JSON.stringify(bookedDates)}
   data-calendar-available={String(available)}
+  data-locale={localeCodes[locale]}
+  data-booking-path={bookingPath}
+  data-calendar-texts={JSON.stringify(t)}
 >
   <header class="calendar-toolbar">
-    <button type="button" data-calendar-previous aria-label="Afficher le mois précédent">
+    <button type="button" data-calendar-previous aria-label={t.previous}>
       <ChevronLeft size={21} stroke-width={1.9} aria-hidden="true" />
     </button>
     <div>
-      <span>Disponibilités</span>
+      <span>{t.title}</span>
       <h3 data-calendar-title aria-live="polite"></h3>
     </div>
-    <button type="button" data-calendar-next aria-label="Afficher le mois suivant">
+    <button type="button" data-calendar-next aria-label={t.next}>
       <ChevronRight size={21} stroke-width={1.9} aria-hidden="true" />
     </button>
   </header>
 
   <div class="calendar-weekdays" aria-hidden="true">
-    <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+    {t.weekdays.map((day) => <span>{day}</span>)}
   </div>
-  <div class="calendar-days" data-calendar-days role="grid" aria-label="Calendrier des disponibilités"></div>
+  <div class="calendar-days" data-calendar-days role="grid" aria-label={t.calendarLabel}></div>
 
   <footer class="calendar-legend">
     {available ? (
       <>
-        <span><i class="free"></i>Disponible</span>
-        <span><i class="booked"></i>Réservé</span>
-        <span><i class="past"></i>Passé</span>
+        <span><i class="free"></i>{t.available}</span>
+        <span><i class="booked"></i>{t.booked}</span>
+        <span><i class="past"></i>{t.past}</span>
       </>
     ) : (
-      <strong>Disponibilités temporairement indisponibles</strong>
+      <strong>{t.unavailable}</strong>
     )}
   </footer>
 </div>
@@ -63,6 +70,11 @@ const { bookedDates, available, compact = false } = Astro.props;
     const previous = calendar.querySelector<HTMLButtonElement>('[data-calendar-previous]');
     const next = calendar.querySelector<HTMLButtonElement>('[data-calendar-next]');
     const available = calendar.dataset.calendarAvailable === 'true';
+    const locale = calendar.dataset.locale ?? 'fr-CH';
+    const bookingPath = calendar.dataset.bookingPath ?? '/reservation/';
+    const texts = JSON.parse(calendar.dataset.calendarTexts ?? '{}') as {
+      available: string; booked: string; past: string; freeShort: string;
+    };
     const booked = new Set<string>(JSON.parse(calendar.dataset.booked ?? '[]'));
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -76,12 +88,12 @@ const { bookedDates, available, compact = false } = Astro.props;
         document.querySelector('#booking-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
-      window.location.href = `/reservation/?date=${encodeURIComponent(iso)}#booking-form`;
+      window.location.href = `${bookingPath}?date=${encodeURIComponent(iso)}#booking-form`;
     };
 
     const render = () => {
       if (!title || !days) return;
-      title.textContent = new Intl.DateTimeFormat('fr-CH', { month: 'long', year: 'numeric' }).format(visibleMonth);
+      title.textContent = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(visibleMonth);
       days.replaceChildren();
 
       const year = visibleMonth.getFullYear();
@@ -103,7 +115,7 @@ const { bookedDates, available, compact = false } = Astro.props;
         const iso = dateKey(date);
         const isPast = date < today;
         const isBooked = booked.has(iso);
-        const stateLabel = isPast ? 'passé' : isBooked ? 'réservé' : 'disponible';
+        const stateLabel = isPast ? texts.past : isBooked ? texts.booked : texts.available;
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'calendar-day';
@@ -115,8 +127,8 @@ const { bookedDates, available, compact = false } = Astro.props;
         button.classList.toggle('past', isPast);
         button.disabled = outside || isPast || isBooked || !available;
         button.setAttribute('role', 'gridcell');
-        button.setAttribute('aria-label', `${date.toLocaleDateString('fr-CH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} — ${stateLabel}`);
-        button.innerHTML = `<b>${dayNumber}</b><span>${isPast ? 'Passé' : isBooked ? 'Réservé' : 'Libre'}</span>`;
+        button.setAttribute('aria-label', `${date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} — ${stateLabel}`);
+        button.innerHTML = `<b>${dayNumber}</b><span>${isPast ? texts.past : isBooked ? texts.booked : texts.freeShort}</span>`;
         if (!button.disabled) button.addEventListener('click', () => chooseDate(iso));
         days.append(button);
       }

@@ -1,17 +1,23 @@
 ---
 import '../styles/global.css';
+import { commonTranslations, localeCodes, type Locale } from '../lib/i18n';
 
 interface Props {
   title: string;
   description: string;
   image?: string;
+  locale?: Locale;
+  alternatePaths?: Record<Locale, string>;
 }
 
 const {
   title,
   description,
   image = '/stand.png',
+  locale = 'fr',
+  alternatePaths,
 } = Astro.props;
+const common = commonTranslations[locale];
 
 const canonicalUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site)
@@ -22,7 +28,7 @@ const socialImage = Astro.site
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,9 +37,13 @@ const socialImage = Astro.site
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    {alternatePaths && Object.entries(alternatePaths).map(([language, path]) => (
+      <link rel="alternate" hreflang={localeCodes[language as Locale]} href={Astro.site ? new URL(path, Astro.site) : path} />
+    ))}
+    {alternatePaths && <link rel="alternate" hreflang="x-default" href={Astro.site ? new URL(alternatePaths.fr, Astro.site) : alternatePaths.fr} />}
 
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="fr_CH" />
+    <meta property="og:locale" content={localeCodes[locale].replace('-', '_')} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
@@ -42,7 +52,7 @@ const socialImage = Astro.site
     <link rel="icon" type="image/png" href="/logo.png" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Aller au contenu principal</a>
+    <a class="skip-link" href="#main-content">{common.skip}</a>
     <slot />
   </body>
 </html>

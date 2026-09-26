@@ -228,6 +228,40 @@ a {
   transform-origin: left;
 }
 
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.language-switcher a {
+  display: grid;
+  min-width: 34px;
+  min-height: 34px;
+  place-items: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.language-switcher a:hover,
+.language-switcher a[aria-current='page'] {
+  background: var(--forest-100);
+  color: var(--forest-950);
+}
+
+.site-header-home:not(.is-scrolled) .desktop-language-switcher a {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.site-header-home:not(.is-scrolled) .desktop-language-switcher a:hover,
+.site-header-home:not(.is-scrolled) .desktop-language-switcher a[aria-current='page'] {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--yellow);
+}
+
 .nav-book,
 .button {
   display: inline-flex;
@@ -256,6 +290,24 @@ a {
 .nav-book.active {
   background: var(--blue);
   transform: translateY(-1px);
+}
+
+@media (max-width: 1180px) and (min-width: 961px) {
+  .nav-shell {
+    gap: 18px;
+  }
+
+  .nav-links {
+    gap: 18px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .nav-book {
+    padding-inline: 14px;
+  }
 }
 
 .mobile-menu-toggle,
@@ -788,7 +840,7 @@ a {
   border-radius: 0;
   background: rgba(9, 45, 41, 0.78);
   color: var(--white);
-  content: "Voir en grand";
+  content: attr(data-expand-label);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -1169,6 +1221,10 @@ body.lightbox-open {
     display: none;
   }
 
+  .desktop-language-switcher {
+    display: none;
+  }
+
   .mobile-menu-toggle {
     display: inline-grid;
     width: 48px;
@@ -1329,6 +1385,20 @@ body.lightbox-open {
   .mobile-menu-foot {
     margin-top: auto;
     padding-top: 52px;
+  }
+
+  .mobile-language-switcher {
+    margin-bottom: 20px;
+  }
+
+  .mobile-language-switcher a {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .mobile-language-switcher a:hover,
+  .mobile-language-switcher a[aria-current='page'] {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--yellow);
   }
 
   .mobile-menu-foot p {

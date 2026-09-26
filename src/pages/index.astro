@@ -15,29 +15,20 @@ import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { getAvailability } from '../lib/availability';
+import { commonTranslations, homeTranslations, pagePaths, type Locale } from '../lib/i18n';
 
-const title = 'Location du Stand ADS à Prêles — Plateau de Diesse';
-const description =
-  'Informations, équipements et tarifs pour la location du Stand ADS à Prêles.';
-
-const equipment = [
-  'Environ 70 places assises à l’intérieur',
-  'Capacité de service jusqu’à 70 personnes',
-  'Cuisine équipée : induction, frigo, four et micro-ondes',
-  'Vaisselle pour environ 50 personnes',
-  'Cheminée intérieure — grillades non autorisées',
-  'Braséro / cheminée extérieure avec possibilité de griller',
-  'Quatre portes vitrées avec accès extérieur',
-  'Eau courante, électricité et WC',
-  'Un caddie de bois inclus dans la location',
-  'Zone de parcage délimitée',
-];
+interface Props { locale?: Locale; }
+const { locale = 'fr' } = Astro.props;
+const t = homeTranslations[locale];
+const common = commonTranslations[locale];
+const title = t.title;
+const description = t.description;
 
 const availability = await getAvailability();
 ---
 
-<MainLayout title={title} description={description}>
-  <SiteHeader active="home" />
+<MainLayout title={title} description={description} locale={locale} alternatePaths={pagePaths.home}>
+  <SiteHeader active="home" locale={locale} />
 
   <main id="main-content" tabindex="-1">
     <section class="home-hero" aria-labelledby="hero-title">
@@ -46,36 +37,32 @@ const availability = await getAvailability();
         src="/stand-hero.webp"
         width="1672"
         height="941"
-        alt="Le Stand ADS à Prêles et son environnement naturel"
+        alt={t.alts[0]}
         fetchpriority="high"
       />
       <div class="hero-shade" aria-hidden="true"></div>
 
       <div class="hero-main shell">
-        <p class="kicker">Prêles · Plateau de Diesse</p>
+        <p class="kicker">{t.kicker}</p>
         <h1 id="hero-title" class="hero-title">
-          Le Stand ADS<br />
-          <em>à Prêles.</em>
+          {t.heroTitle}<br />
+          <em>{t.heroEmphasis}</em>
         </h1>
         <p class="hero-copy">
-          Le stand peut être loué pour un repas, une fête de famille ou une
-          rencontre associative. Il compte environ 70 places assises.
+          {t.heroCopy}
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="/reservation/">
-            Faire une demande
+          <a class="button button-primary" href={pagePaths.reservation[locale]}>
+            {common.reserve}
             <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
           </a>
-          <a class="button button-ghost" href="#stand">Voir les équipements</a>
+          <a class="button button-ghost" href="#stand">{t.equipmentButton}</a>
         </div>
       </div>
 
       <div class="hero-facts">
         <div class="facts-grid shell">
-          <div class="fact"><strong>70</strong><span>places assises et capacité de service</span></div>
-          <div class="fact"><strong>≈ 23 h</strong><span>formule jour complet</span></div>
-          <div class="fact"><strong>CHF 90</strong><span>tarif dès</span></div>
-          <div class="fact"><strong>−20 %</strong><span>pour les membres ADS</span></div>
+          {t.facts.map(([value, label]) => <div class="fact"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
       </div>
     </section>
@@ -84,13 +71,11 @@ const availability = await getAvailability();
       <div class="shell home-availability-grid">
         <div class="home-availability-copy reveal">
           <span class="availability-icon"><CalendarDays size={25} stroke-width={1.7} aria-hidden="true" /></span>
-          <p class="eyebrow">Avant de réserver</p>
-          <h2 id="home-availability-title">Voyez immédiatement<br />les dates encore libres.</h2>
-          <p>
-            Cliquez sur une date disponible pour commencer votre demande.
-          </p>
-          <a class="button button-primary" href="/reservation/">
-            Voir toutes les disponibilités
+          <p class="eyebrow">{t.availabilityEyebrow}</p>
+          <h2 id="home-availability-title">{t.availabilityTitle}</h2>
+          <p>{t.availabilityCopy}</p>
+          <a class="button button-primary" href={pagePaths.reservation[locale]}>
+            {t.availabilityButton}
             <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
           </a>
         </div>
@@ -99,6 +84,8 @@ const availability = await getAvailability();
             bookedDates={availability.bookedDates}
             available={availability.available}
             compact
+            locale={locale}
+            bookingPath={pagePaths.reservation[locale]}
           />
         </div>
       </div>
@@ -108,12 +95,11 @@ const availability = await getAvailability();
       <div class="shell">
         <div class="section-heading gallery-heading reveal">
           <div>
-            <p class="eyebrow">Découvrir le lieu</p>
-            <h2 id="interior-title" class="display-title">L’intérieur<br />du stand</h2>
+            <p class="eyebrow">{t.interiorEyebrow}</p>
+            <h2 id="interior-title" class="display-title">{t.interiorTitle}</h2>
           </div>
           <p class="section-lead">
-            Découvrez la salle, le bar, la cuisine et la cheminée avant de
-            consulter les équipements et les tarifs.
+            {t.interiorLead}
           </p>
         </div>
 
@@ -125,7 +111,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Grande table dressée devant le bar du stand"
+              alt={t.alts[1]}
             />
           </figure>
           <figure class="interior-photo">
@@ -135,7 +121,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Cheminée intérieure du stand allumée"
+              alt={t.alts[2]}
             />
           </figure>
           <figure class="interior-photo">
@@ -145,7 +131,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Cuisine équipée derrière le bar"
+              alt={t.alts[3]}
             />
           </figure>
           <figure class="interior-photo">
@@ -155,7 +141,7 @@ const availability = await getAvailability();
               height="1660"
               loading="lazy"
               decoding="async"
-              alt="Table préparée le long de la salle"
+              alt={t.alts[4]}
             />
           </figure>
           <figure class="interior-photo">
@@ -165,7 +151,7 @@ const availability = await getAvailability();
               height="1500"
               loading="lazy"
               decoding="async"
-              alt="Autre disposition de la table dans la salle"
+              alt={t.alts[5]}
             />
           </figure>
           <figure class="interior-photo interior-photo-wide">
@@ -175,7 +161,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Bar et espace principal du stand"
+              alt={t.alts[6]}
             />
           </figure>
           <figure class="interior-photo interior-photo-wide">
@@ -185,7 +171,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Vue générale de la salle du stand"
+              alt={t.alts[7]}
             />
           </figure>
           <figure class="interior-photo">
@@ -195,7 +181,7 @@ const availability = await getAvailability();
               height="1460"
               loading="lazy"
               decoding="async"
-              alt="Cuisine et décoration installée sur le bar"
+              alt={t.alts[8]}
             />
           </figure>
           <figure class="interior-photo">
@@ -205,7 +191,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Grande table dressée dans la salle"
+              alt={t.alts[9]}
             />
           </figure>
           <figure class="interior-photo interior-photo-banner">
@@ -215,7 +201,7 @@ const availability = await getAvailability();
               height="1350"
               loading="lazy"
               decoding="async"
-              alt="Vue large de la cheminée intérieure"
+              alt={t.alts[10]}
             />
           </figure>
         </div>
@@ -226,23 +212,22 @@ const availability = await getAvailability();
       <div class="shell">
         <div class="section-heading reveal">
           <div>
-            <p class="eyebrow">Le stand</p>
-            <h2 class="display-title">Équipements<br />et tarifs</h2>
+            <p class="eyebrow">{t.standEyebrow}</p>
+            <h2 class="display-title">{t.standTitle}</h2>
           </div>
           <p class="section-lead">
-            Le stand dispose d’une cuisine, de vaisselle, de deux cheminées et
-            des installations nécessaires pour organiser votre événement.
+            {t.standLead}
           </p>
         </div>
 
         <div class="details-grid">
           <article class="detail-panel detail-panel-dark reveal">
             <header class="panel-head">
-              <h3>Sur place</h3>
+              <h3>{t.onSite}</h3>
               <span class="panel-index">01</span>
             </header>
             <ul class="equipment-list">
-              {equipment.map((item) => (
+              {t.equipment.map((item) => (
                 <li>
                   <Check size={17} stroke-width={2} aria-hidden="true" />
                   <span>{item}</span>
@@ -253,35 +238,18 @@ const availability = await getAvailability();
 
           <article id="tarifs" class="detail-panel reveal">
             <header class="panel-head">
-              <h3>Tarifs de location</h3>
+              <h3>{t.rentalRates}</h3>
               <span class="panel-index">02</span>
             </header>
             <dl class="price-list">
-              <div class="price-row">
-                <dt>Lundi–jeudi · journée ou soirée</dt>
-                <dd>CHF 90.–</dd>
-              </div>
-              <div class="price-row">
-                <dt>Lundi–jeudi · jour complet</dt>
-                <dd>CHF 150.–</dd>
-              </div>
-              <div class="price-row">
-                <dt>Week-end ou jour férié</dt>
-                <dd>CHF 190.–</dd>
-              </div>
-              <div class="price-row">
-                <dt>Dès 3 jours consécutifs</dt>
-                <dd>CHF 160.– / jour</dd>
-              </div>
+              {t.prices.map(([label, price]) => <div class="price-row"><dt>{label}</dt><dd>{price}</dd></div>)}
             </dl>
             <div class="price-notes">
-              <span class="tag">Caution non-membre · CHF 150.–</span>
-              <span class="tag tag-yellow">Membres ADS · −20 %</span>
+              <span class="tag">{t.deposit}</span>
+              <span class="tag tag-yellow">{t.memberDiscount}</span>
             </div>
-            <div class="options-list" aria-label="Options disponibles">
-              <div class="option-item"><span>Four à pizza</span><strong>+ CHF 50.–</strong></div>
-              <div class="option-item"><span>Bois</span><strong>+ CHF 30.–</strong></div>
-              <div class="option-item"><span>Nettoyage</span><strong>CHF 50.– / h</strong></div>
+            <div class="options-list" aria-label={t.optionsLabel}>
+              {t.options.map(([label, price]) => <div class="option-item"><span>{label}</span><strong>{price}</strong></div>)}
             </div>
           </article>
         </div>
@@ -292,12 +260,11 @@ const availability = await getAvailability();
       <div class="shell">
         <div class="section-heading gallery-heading reveal">
           <div>
-            <p class="eyebrow">Le stand en images</p>
-            <h2 id="gallery-title" class="display-title">Une réception<br />au stand</h2>
+            <p class="eyebrow">{t.galleryEyebrow}</p>
+            <h2 id="gallery-title" class="display-title">{t.galleryTitle}</h2>
           </div>
           <p class="section-lead">
-            La salle et les extérieurs peuvent être aménagés selon l’événement.
-            Voici un exemple de réception organisée au stand.
+            {t.galleryLead}
           </p>
         </div>
 
@@ -309,7 +276,7 @@ const availability = await getAvailability();
               height="1846"
               loading="lazy"
               decoding="async"
-              alt="Extérieur du Stand ADS aménagé pour une réception"
+              alt={t.alts[11]}
             />
           </figure>
           <figure class="gallery-item gallery-item-wide">
@@ -319,7 +286,7 @@ const availability = await getAvailability();
               height="1846"
               loading="lazy"
               decoding="async"
-              alt="Chaises installées à l’extérieur pour une cérémonie"
+              alt={t.alts[12]}
             />
           </figure>
           <figure class="gallery-item gallery-item-room">
@@ -329,7 +296,7 @@ const availability = await getAvailability();
               height="1846"
               loading="lazy"
               decoding="async"
-              alt="Salle du stand préparée avec de longues tables"
+              alt={t.alts[13]}
             />
           </figure>
           <figure class="gallery-item gallery-item-detail">
@@ -339,7 +306,7 @@ const availability = await getAvailability();
               height="1448"
               loading="lazy"
               decoding="async"
-              alt="Décoration florale disposée sur une table"
+              alt={t.alts[14]}
             />
           </figure>
           <figure class="gallery-item gallery-item-banner">
@@ -349,7 +316,7 @@ const availability = await getAvailability();
               height="1200"
               loading="lazy"
               decoding="async"
-              alt="Composition florale installée à l’extérieur du stand"
+              alt={t.alts[15]}
             />
           </figure>
         </div>
@@ -357,33 +324,32 @@ const availability = await getAvailability();
       </div>
     </section>
 
-    <section class="image-story" aria-label="Situation du Stand ADS">
+    <section class="image-story" aria-label={t.locationLabel}>
       <figure>
         <img
           src="/stand.png"
           width="1200"
           height="900"
           loading="lazy"
-          alt="Vue du Stand ADS dans le paysage de Prêles"
+          alt={t.alts[16]}
         />
       </figure>
       <div class="story-card">
         <div>
-          <p class="eyebrow">Emplacement</p>
-          <blockquote>À Prêles, avec vue sur le Chasseral.</blockquote>
+          <p class="eyebrow">{t.locationEyebrow}</p>
+          <blockquote>{t.locationQuote}</blockquote>
         </div>
         <p>
-          Le stand se trouve à Prêles, sur le Plateau de Diesse. Il peut accueillir
-          des fêtes de famille, des repas et des rencontres d’association.
+          {t.locationCopy}
         </p>
       </div>
     </section>
 
     <section class="booking-band">
       <div class="booking-shell">
-        <h2>Vous souhaitez louer le stand&nbsp;?</h2>
-        <a class="button" href="/reservation/">
-          Faire une demande
+        <h2>{t.bookingBand}</h2>
+        <a class="button" href={pagePaths.reservation[locale]}>
+          {common.reserve}
           <ArrowUpRight size={18} stroke-width={1.8} aria-hidden="true" />
         </a>
       </div>
@@ -392,14 +358,14 @@ const availability = await getAvailability();
     <section id="contact" class="section">
       <div class="shell">
         <div class="contact-intro reveal">
-          <p class="eyebrow">Contact</p>
-          <h2 class="display-title">Contacter<br />la gérance</h2>
+          <p class="eyebrow">{t.contactEyebrow}</p>
+          <h2 class="display-title">{t.contactTitle}</h2>
         </div>
         <div class="contact-grid reveal">
           <article class="contact-card">
             <span class="contact-number">01</span>
-            <h3>Gérance & réservations</h3>
-            <p><strong>Mme Daniela Allemann</strong><br />Pour les disponibilités, les réservations et les renseignements.</p>
+            <h3>{t.managementTitle}</h3>
+            <p><strong>{t.managerName}</strong><br />{t.managementCopy}</p>
             <a class="text-link" href="mailto:gerante@ads-preles.ch">
               gerante@ads-preles.ch
               <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
@@ -407,8 +373,8 @@ const availability = await getAvailability();
           </article>
           <article class="contact-card">
             <span class="contact-number">02</span>
-            <h3>Téléphone</h3>
-            <p>La gérance est également joignable par téléphone.</p>
+            <h3>{t.phoneTitle}</h3>
+            <p>{t.phoneCopy}</p>
             <a class="text-link" href="tel:+41786384791">
               <Phone size={16} stroke-width={1.8} aria-hidden="true" />
               078 638 47 91
@@ -416,8 +382,8 @@ const availability = await getAvailability();
           </article>
           <article class="contact-card">
             <span class="contact-number">03</span>
-            <h3>Accès</h3>
-            <p>Stand ADS, 2515 Prêles, dans la commune du Plateau de Diesse.</p>
+            <h3>{t.accessTitle}</h3>
+            <p>{t.accessCopy}</p>
             <a
               class="text-link"
               href="https://www.google.com/maps/search/?api=1&query=Stand+ADS+Prêles"
@@ -425,7 +391,7 @@ const availability = await getAvailability();
               rel="noopener noreferrer"
             >
               <MapPin size={16} stroke-width={1.8} aria-hidden="true" />
-              Ouvrir l’itinéraire
+              {t.route}
             </a>
           </article>
         </div>
@@ -433,12 +399,12 @@ const availability = await getAvailability();
     </section>
   </main>
 
-  <dialog id="image-lightbox" class="image-lightbox" aria-label="Photo agrandie">
-    <button class="lightbox-close" type="button" aria-label="Fermer la photo">
+  <dialog id="image-lightbox" class="image-lightbox" aria-label={t.photoDialog} data-expand-label={t.expand}>
+    <button class="lightbox-close" type="button" aria-label={t.closePhoto}>
       <X size={30} stroke-width={1.7} aria-hidden="true" />
     </button>
 
-    <button class="lightbox-nav lightbox-previous" type="button" aria-label="Photo précédente">
+    <button class="lightbox-nav lightbox-previous" type="button" aria-label={t.previousPhoto}>
       <ChevronLeft size={34} stroke-width={1.6} aria-hidden="true" />
     </button>
 
@@ -450,12 +416,12 @@ const availability = await getAvailability();
       </figcaption>
     </figure>
 
-    <button class="lightbox-nav lightbox-next" type="button" aria-label="Photo suivante">
+    <button class="lightbox-nav lightbox-next" type="button" aria-label={t.nextPhoto}>
       <ChevronRight size={34} stroke-width={1.6} aria-hidden="true" />
     </button>
   </dialog>
 
-  <SiteFooter />
+  <SiteFooter locale={locale} />
 </MainLayout>
 
 <script>
@@ -481,6 +447,7 @@ const availability = await getAvailability();
   }
 
   const lightbox = document.querySelector<HTMLDialogElement>('#image-lightbox');
+  const expandLabel = lightbox?.dataset.expandLabel ?? 'Agrandir';
   const lightboxImage = lightbox?.querySelector<HTMLImageElement>('.lightbox-image');
   const lightboxCaption = lightbox?.querySelector<HTMLElement>('.lightbox-caption');
   const lightboxCounter = lightbox?.querySelector<HTMLElement>('.lightbox-counter');
@@ -525,7 +492,8 @@ const availability = await getAvailability();
     figure.setAttribute('tabindex', '0');
     figure.setAttribute('aria-haspopup', 'dialog');
     figure.setAttribute('aria-controls', 'image-lightbox');
-    figure.setAttribute('aria-label', `Agrandir : ${image.alt}`);
+    figure.dataset.expandLabel = expandLabel;
+    figure.setAttribute('aria-label', `${expandLabel} : ${image.alt}`);
     figure.addEventListener('click', () => openLightbox(index));
     figure.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {

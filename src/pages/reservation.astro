@@ -9,73 +9,42 @@ import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { getAvailability, googleCalendarUrl } from '../lib/availability';
+import { localeCodes, pagePaths, reservationTranslations, type Locale } from '../lib/i18n';
 
-const title = 'Contrat de réservation — Stand ADS Prêles';
-const description =
-  'Formulaire et contrat de location du Stand ADS à Prêles.';
+interface Props { locale?: Locale; }
+const { locale = 'fr' } = Astro.props;
+const t = reservationTranslations[locale];
+const title = t.title;
+const description = t.description;
 
 const availability = await getAvailability();
 const syncedLabel = availability.syncedAt
-  ? new Intl.DateTimeFormat('fr-CH', {
+  ? new Intl.DateTimeFormat(localeCodes[locale], {
       dateStyle: 'short',
       timeStyle: 'short',
       timeZone: 'Europe/Zurich',
     }).format(new Date(availability.syncedAt))
   : null;
 
-const rentalConditions = [
-  {
-    title: 'Durée et tarifs',
-    text: 'Un jour complet correspond à environ 23 h, de 10 h à 9 h le lendemain. Les jours fériés sont facturés comme le week-end.',
-  },
-  {
-    title: 'Conditions hivernales',
-    text: 'Le déneigement éventuel est à la charge du locataire. Par grand froid, l’eau peut être coupée et les WC mis hors service.',
-  },
-  {
-    title: 'Déchets et brasero',
-    text: 'Les grillades sont interdites à l’intérieur et autorisées uniquement au braséro / à la cheminée extérieure. L’évacuation des déchets et le nettoyage du braséro sont à la charge du locataire.',
-  },
-  {
-    title: 'Utilisation du stand',
-    text: 'La sous-location est interdite. Les membres ADS bénéficient d’une réduction de 20 % sur la location.',
-  },
-  {
-    title: 'Annulation',
-    text: 'Dans le mois précédant la location, 50 % du montant versé est retenu à titre de dédommagement.',
-  },
-  {
-    title: 'Responsabilité',
-    text: 'L’ADS décline toute responsabilité en cas d’incendie, vol ou accident. Le locataire confirme disposer d’une assurance RC.',
-  },
-  {
-    title: 'Paiement',
-    text: 'Après acceptation de la demande, la gérance transmet les coordonnées bancaires et le délai de paiement. La réservation est confirmée après réception du paiement.',
-  },
-  {
-    title: 'Respect du site',
-    text: 'Le locataire s’engage à préserver la nature et les activités agricoles et forestières, puis à remettre les lieux dans leur état initial.',
-  },
-];
+const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: conditionTitle, text }));
 ---
 
-<MainLayout title={title} description={description}>
-  <SiteHeader active="reservation" />
+<MainLayout title={title} description={description} locale={locale} alternatePaths={pagePaths.reservation}>
+  <SiteHeader active="reservation" locale={locale} />
 
-  <main id="main-content" class="booking-page" tabindex="-1">
+  <main id="main-content" class="booking-page" tabindex="-1" data-runtime-i18n={JSON.stringify(t.runtime)} data-locale-code={localeCodes[locale]}>
     <section class="booking-hero">
       <div class="reservation-shell booking-hero-grid">
         <div>
-          <a class="back-link" href="/">
+          <a class="back-link" href={pagePaths.home[locale]}>
             <ArrowLeft size={17} stroke-width={1.8} aria-hidden="true" />
-            Retour au stand
+            {t.back}
           </a>
-          <p class="booking-eyebrow">Contrat de location</p>
-          <h1>Réserver le Stand ADS.</h1>
+          <p class="booking-eyebrow">{t.contract}</p>
+          <h1>{t.heroTitle}</h1>
         </div>
         <p class="booking-lead">
-          Remplissez le formulaire. À la fin, vous pourrez enregistrer le contrat
-          en PDF et l’envoyer à la gérance.
+          {t.heroLead}
         </p>
       </div>
     </section>
@@ -84,10 +53,10 @@ const rentalConditions = [
       <div class="reservation-shell">
         <div class="availability-heading">
           <div>
-            <p class="booking-eyebrow">Disponibilités</p>
-            <h2 id="availability-title">Consulter l’agenda</h2>
+            <p class="booking-eyebrow">{t.availability}</p>
+            <h2 id="availability-title">{t.calendarTitle}</h2>
           </div>
-          <p>Choisissez une date libre : elle sera automatiquement reportée dans le formulaire.</p>
+          <p>{t.calendarLead}</p>
         </div>
 
         <div class="availability-layout">
@@ -95,28 +64,27 @@ const rentalConditions = [
             <AvailabilityCalendar
               bookedDates={availability.bookedDates}
               available={availability.available}
+              locale={locale}
+              bookingPath={pagePaths.reservation[locale]}
             />
           </div>
 
-          <aside class="availability-guide" aria-label="Comment effectuer une demande">
+          <aside class="availability-guide" aria-label={t.guideLabel}>
             <div>
-              <p class="booking-eyebrow">Comment réserver</p>
-              <h3>Une demande en trois étapes</h3>
+              <p class="booking-eyebrow">{t.howTo}</p>
+              <h3>{t.guideTitle}</h3>
             </div>
             <ol>
-              <li><span>01</span><p><strong>Choisissez une date libre</strong> dans le calendrier.</p></li>
-              <li><span>02</span><p><strong>Complétez le formulaire</strong> et vérifiez le tarif calculé.</p></li>
-              <li><span>03</span><p><strong>Enregistrez le contrat en PDF</strong> puis envoyez-le à la gérance.</p></li>
+              {t.guide.map(([strong, rest], index) => <li><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{strong}</strong> {rest}</p></li>)}
             </ol>
             <div class="availability-note" role="note">
               <Info size={20} stroke-width={1.8} aria-hidden="true" />
               <p>
-                La demande devient définitive après confirmation de la gérance
-                et réception du paiement.
-                {syncedLabel && <small>Agenda mis à jour le {syncedLabel}.</small>}
+                {t.confirmation}
+                {syncedLabel && <small>{t.updated} {syncedLabel}.</small>}
               </p>
               <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
-                Ouvrir l’agenda Google
+                {t.openGoogle}
               </a>
             </div>
           </aside>
@@ -124,13 +92,9 @@ const rentalConditions = [
       </div>
     </section>
 
-    <nav class="progress" aria-label="Progression de la réservation">
+    <nav class="progress" aria-label={t.progressLabel}>
       <div class="reservation-shell progress-grid">
-        <button class="progress-step active" type="button" data-go-step="0" aria-current="step"><span>01</span><strong>Date & période</strong></button>
-        <button class="progress-step" type="button" data-go-step="1"><span>02</span><strong>Options</strong></button>
-        <button class="progress-step" type="button" data-go-step="2"><span>03</span><strong>Coordonnées</strong></button>
-        <button class="progress-step" type="button" data-go-step="3"><span>04</span><strong>Conditions</strong></button>
-        <button class="progress-step" type="button" data-go-step="4"><span>05</span><strong>Récapitulatif</strong></button>
+        {t.progress.map((label, index) => <button class:list={['progress-step', { active: index === 0 }]} type="button" data-go-step={index} aria-current={index === 0 ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong></button>)}
       </div>
     </nav>
 
@@ -140,151 +104,151 @@ const rentalConditions = [
           <div class="privacy-note" role="note">
             <ShieldCheck size={22} stroke-width={1.8} aria-hidden="true" />
             <div>
-              <strong>Vos données restent dans votre navigateur</strong>
-              <span>Aucune donnée n’est envoyée par ce site. Vous devrez enregistrer le contrat en PDF et l’envoyer vous-même à la gérance.</span>
+              <strong>{t.privacyTitle}</strong>
+              <span>{t.privacyCopy}</span>
             </div>
           </div>
 
           <section class="form-step active" data-step="0" aria-labelledby="step-title-0">
             <header class="step-header">
               <span class="step-number">01</span>
-              <div><h2 id="step-title-0">Date & période</h2><p>Après avoir consulté l’agenda ci-dessus, indiquez la date, la durée et le nombre de personnes.</p></div>
+              <div><h2 id="step-title-0">{t.step0Title}</h2><p>{t.step0Copy}</p></div>
             </header>
 
             <div class="field-grid two-cols">
               <label class="field">
-                <span>Date de début *</span>
+                <span>{t.startDate}</span>
                 <input id="date-field" name="date" type="date" required aria-describedby="date-availability-feedback" />
-                <small id="date-availability-feedback">Sélectionnez une date verte dans le calendrier ou saisissez-la ici.</small>
+                <small id="date-availability-feedback">{t.dateHelp}</small>
               </label>
               <label class="check-card holiday-card">
                 <input id="holiday-field" name="jour_ferie" type="checkbox" />
-                <span><strong>Jour férié</strong><small>Applique le tarif week-end</small></span>
+                <span><strong>{t.holiday}</strong><small>{t.holidayHelp}</small></span>
               </label>
             </div>
 
             <fieldset class="plain-fieldset">
-              <legend>Période souhaitée *</legend>
+              <legend>{t.period}</legend>
               <div class="period-grid">
                 <button class="period-card" type="button" data-period="journee" aria-pressed="false">
                   <CalendarDays size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>Journée</strong><span>10 h → 17 h</span><b data-price="journee">CHF 90.–</b>
+                  <strong>{t.day}</strong><span>{t.dayTime}</span><b data-price="journee">CHF 90.–</b>
                 </button>
                 <button class="period-card" type="button" data-period="soiree" aria-pressed="false">
                   <Sparkles size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>Soirée</strong><span>18 h → 9 h</span><b data-price="soiree">CHF 90.–</b>
+                  <strong>{t.evening}</strong><span>{t.eveningTime}</span><b data-price="soiree">CHF 90.–</b>
                 </button>
                 <button class="period-card" type="button" data-period="complet" aria-pressed="false">
                   <CircleDollarSign size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>Jour complet</strong><span>10 h → 9 h · environ 23 h</span><b data-price="complet">CHF 150.–</b>
+                  <strong>{t.fullDay}</strong><span>{t.fullDayTime}</span><b data-price="complet">CHF 150.–</b>
                 </button>
                 <button class="period-card" type="button" data-period="consecutif" aria-pressed="false">
                   <CalendarDays size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>3 jours consécutifs ou plus</strong><span>Tarif calculé par jour</span><b data-price="consecutif">CHF 160.– / jour</b>
+                  <strong>{t.consecutive}</strong><span>{t.perDay}</span><b data-price="consecutif">{t.consecutivePrice}</b>
                 </button>
               </div>
-              <p id="period-help" class="field-hint">Le week-end et les jours fériés, seules les formules « jour complet » et « 3 jours ou plus » sont proposées.</p>
+              <p id="period-help" class="field-hint">{t.periodHelp}</p>
             </fieldset>
 
             <div id="days-group" class="field hidden">
-              <label for="days-field">Nombre de jours consécutifs *</label>
+              <label for="days-field">{t.days}</label>
               <input id="days-field" name="nombre_jours" type="number" min="3" max="30" value="3" />
             </div>
 
             <div class="participants-row">
               <div class="field">
-                <label for="people-field">Nombre de personnes *</label>
+                <label for="people-field">{t.people}</label>
                 <div class="counter">
-                  <button type="button" data-counter="-1" aria-label="Retirer une personne">−</button>
+                  <button type="button" data-counter="-1" aria-label={t.removePerson}>−</button>
                   <input id="people-field" name="participants" type="number" min="1" max="70" value="20" required />
-                  <button type="button" data-counter="1" aria-label="Ajouter une personne">+</button>
+                  <button type="button" data-counter="1" aria-label={t.addPerson}>+</button>
                 </div>
               </div>
-              <div class="capacity-note"><Users size={22} stroke-width={1.7} aria-hidden="true" /><span><strong>70 places assises</strong> · capacité maximale de 70 personnes</span></div>
+              <div class="capacity-note"><Users size={22} stroke-width={1.7} aria-hidden="true" /><span><strong>{t.capacity}</strong> · {t.capacityCopy}</span></div>
             </div>
 
             <p id="error-step-0" class="step-error" data-error-step="0" role="alert"></p>
-            <div class="step-actions end"><button class="action primary" type="button" data-next-step>Continuer <ChevronRight size={18} aria-hidden="true" /></button></div>
+            <div class="step-actions end"><button class="action primary" type="button" data-next-step>{t.continue} <ChevronRight size={18} aria-hidden="true" /></button></div>
           </section>
 
           <section class="form-step" data-step="1" aria-labelledby="step-title-1">
             <header class="step-header">
               <span class="step-number">02</span>
-              <div><h2 id="step-title-1">Options & services</h2><p>Sélectionnez les options dont vous avez besoin.</p></div>
+              <div><h2 id="step-title-1">{t.step1Title}</h2><p>{t.step1Copy}</p></div>
             </header>
 
             <div class="option-list">
               <label class="option-row member-option">
                 <input id="member-field" name="membre_ads" type="checkbox" />
                 <span class="option-icon"><UserRound size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Membre ADS</strong><small>Réduction de 20 % sur la location de base</small></span>
+                <span class="option-copy"><strong>{t.member}</strong><small>{t.memberHelp}</small></span>
                 <b>−20 %</b><span class="option-check"><Check size={17} /></span>
               </label>
               <div id="caution-row" class="option-row automatic-option applied" role="status" aria-live="polite">
                 <span class="option-icon"><KeyRound size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Caution non-membre</strong><small>Appliquée automatiquement et remboursée si tout est en ordre</small></span>
+                <span class="option-copy"><strong>{t.deposit}</strong><small>{t.depositHelp}</small></span>
                 <b id="caution-status">+ CHF 150.–</b><span class="option-check"><Check size={17} /></span>
               </div>
               <label class="option-row">
                 <input id="pizza-field" name="four_pizza" type="checkbox" />
                 <span class="option-icon"><Pizza size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Four à pizza</strong><small>Demi-caddie de bois supplémentaire inclus</small></span>
+                <span class="option-copy"><strong>{t.pizza}</strong><small>{t.pizzaHelp}</small></span>
                 <b>+ CHF 50.–</b><span class="option-check"><Check size={17} /></span>
               </label>
               <label class="option-row">
                 <input id="wood-field" name="bois" type="checkbox" />
                 <span class="option-icon"><Flame size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Bois supplémentaire</strong><small>Pour la période hivernale</small></span>
+                <span class="option-copy"><strong>{t.wood}</strong><small>{t.woodHelp}</small></span>
                 <b>+ CHF 30.–</b><span class="option-check"><Check size={17} /></span>
               </label>
               <label class="option-row">
                 <input id="cleaning-field" name="nettoyage_locataire" type="checkbox" checked />
                 <span class="option-icon"><Sparkles size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>Nettoyage par le locataire</strong><small>Sinon, CHF 50.–/h seront facturés par la gérance</small></span>
-                <b>Inclus</b><span class="option-check"><Check size={17} /></span>
+                <span class="option-copy"><strong>{t.cleaning}</strong><small>{t.cleaningHelp}</small></span>
+                <b>{t.includedPrice}</b><span class="option-check"><Check size={17} /></span>
               </label>
             </div>
 
-            <div class="included-note"><Info size={20} stroke-width={1.8} aria-hidden="true" /><span><strong>Inclus :</strong> un caddie de bois, eau, électricité, cuisine équipée, cheminée intérieure sans grillades, places assises et vaisselle.</span></div>
+            <div class="included-note"><Info size={20} stroke-width={1.8} aria-hidden="true" /><span><strong>{t.included}</strong> {t.includedCopy}</span></div>
             <div class="step-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> Retour</button>
-              <button class="action primary" type="button" data-next-step>Continuer <ChevronRight size={18} aria-hidden="true" /></button>
+              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
+              <button class="action primary" type="button" data-next-step>{t.continue} <ChevronRight size={18} aria-hidden="true" /></button>
             </div>
           </section>
 
           <section class="form-step" data-step="2" aria-labelledby="step-title-2">
             <header class="step-header">
               <span class="step-number">03</span>
-              <div><h2 id="step-title-2">Coordonnées du locataire</h2><p>Indiquez les coordonnées de la personne responsable du contrat.</p></div>
+              <div><h2 id="step-title-2">{t.step2Title}</h2><p>{t.step2Copy}</p></div>
             </header>
 
             <div class="field-grid two-cols">
-              <label class="field"><span>Prénom *</span><input id="first-name" name="prenom" autocomplete="given-name" required /></label>
-              <label class="field"><span>Nom *</span><input id="last-name" name="nom" autocomplete="family-name" required /></label>
-              <label class="field full"><span>Adresse *</span><input id="address-field" name="adresse" autocomplete="street-address" required /></label>
-              <label class="field postal-field"><span>Code postal *</span><input id="postal-field" name="npa" inputmode="numeric" autocomplete="postal-code" maxlength="6" required /></label>
-              <label class="field"><span>Localité *</span><input id="city-field" name="localite" autocomplete="address-level2" required /></label>
-              <label class="field"><span>Téléphone *</span><input id="phone-field" name="telephone" type="tel" autocomplete="tel" required /></label>
-              <label class="field"><span>Adresse e-mail</span><input id="email-field" name="email" type="email" autocomplete="email" /></label>
+              <label class="field"><span>{t.firstName}</span><input id="first-name" name="prenom" autocomplete="given-name" required /></label>
+              <label class="field"><span>{t.lastName}</span><input id="last-name" name="nom" autocomplete="family-name" required /></label>
+              <label class="field full"><span>{t.address}</span><input id="address-field" name="adresse" autocomplete="street-address" required /></label>
+              <label class="field postal-field"><span>{t.postal}</span><input id="postal-field" name="npa" inputmode="numeric" autocomplete="postal-code" maxlength="6" required /></label>
+              <label class="field"><span>{t.city}</span><input id="city-field" name="localite" autocomplete="address-level2" required /></label>
+              <label class="field"><span>{t.phone}</span><input id="phone-field" name="telephone" type="tel" autocomplete="tel" required /></label>
+              <label class="field"><span>{t.email}</span><input id="email-field" name="email" type="email" autocomplete="email" /></label>
               <label class="field full">
-                <span>IBAN pour la restitution de la caution</span>
+                <span>{t.iban}</span>
                 <input id="client-iban" name="iban_client" inputmode="text" autocomplete="off" placeholder="CH00 0000 0000 0000 0000 0" aria-describedby="iban-help" />
-                <small id="iban-help">Obligatoire pour les non-membres afin de permettre le remboursement de la caution.</small>
+                <small id="iban-help">{t.ibanHelp}</small>
               </label>
-              <label class="field full"><span>Remarques</span><textarea id="remarks-field" name="remarques" rows="4"></textarea></label>
+              <label class="field full"><span>{t.remarks}</span><textarea id="remarks-field" name="remarques" rows="4"></textarea></label>
             </div>
 
             <p id="error-step-2" class="step-error" data-error-step="2" role="alert"></p>
             <div class="step-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> Retour</button>
-              <button class="action primary" type="button" data-next-step>Continuer <ChevronRight size={18} aria-hidden="true" /></button>
+              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
+              <button class="action primary" type="button" data-next-step>{t.continue} <ChevronRight size={18} aria-hidden="true" /></button>
             </div>
           </section>
 
           <section class="form-step" data-step="3" aria-labelledby="step-title-3">
             <header class="step-header">
               <span class="step-number">04</span>
-              <div><h2 id="step-title-3">Conditions de location</h2><p>Lisez les conditions, confirmez votre accord, puis signez.</p></div>
+              <div><h2 id="step-title-3">{t.step3Title}</h2><p>{t.step3Copy}</p></div>
             </header>
 
             <ol class="conditions-list">
@@ -299,69 +263,69 @@ const rentalConditions = [
             <label class="acceptance-row">
               <input id="conditions-accept" name="conditions_accept" type="checkbox" />
               <span>
-                <strong>J’ai lu et j’accepte l’ensemble des conditions de location.</strong>
-                <small>Cette confirmation vaut pour les huit conditions présentées ci-dessus.</small>
+                <strong>{t.accept}</strong>
+                <small>{t.acceptHelp}</small>
               </span>
             </label>
 
             <div class="signature-field">
               <div class="signature-head">
-                <div><strong>Signature du locataire *</strong><span>Signez avec la souris, le doigt ou le stylet.</span></div>
-                <button id="clear-signature" type="button"><RotateCcw size={16} aria-hidden="true" /> Effacer</button>
+                <div><strong>{t.signature}</strong><span>{t.signatureDraw}</span></div>
+                <button id="clear-signature" type="button"><RotateCcw size={16} aria-hidden="true" /> {t.clear}</button>
               </div>
-              <canvas id="signature-canvas" width="1000" height="220" aria-label="Zone de signature manuscrite">
-                Zone de signature manuscrite. Une alternative textuelle est disponible ci-dessous.
+              <canvas id="signature-canvas" width="1000" height="220" aria-label={t.signatureCanvas}>
+                {t.signatureFallback}
               </canvas>
             </div>
 
             <label class="field signature-alternative">
-              <span>Alternative accessible à la signature manuscrite</span>
+              <span>{t.signatureAlternative}</span>
               <input id="signature-text" name="signature_text" autocomplete="name" aria-describedby="signature-help" />
-              <small id="signature-help">Si vous ne pouvez pas dessiner votre signature, saisissez ici votre nom complet pour confirmer votre acceptation.</small>
+              <small id="signature-help">{t.signatureHelp}</small>
             </label>
 
             <p id="error-step-3" class="step-error" data-error-step="3" role="alert"></p>
             <div class="step-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> Retour</button>
-              <button class="action primary" type="button" data-next-step>Vérifier le contrat <ChevronRight size={18} aria-hidden="true" /></button>
+              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
+              <button class="action primary" type="button" data-next-step>{t.verify} <ChevronRight size={18} aria-hidden="true" /></button>
             </div>
           </section>
 
           <section class="form-step recap-step" data-step="4" aria-labelledby="step-title-4">
             <header class="print-contract-header">
-              <img src="/logo.png" width="72" height="72" alt="Logo de l’ADS" />
+              <img src="/logo.png" width="72" height="72" alt={t.logoAlt} />
               <div>
                 <span>Amicale Du Stand · Prêles</span>
-                <h1>Contrat de location</h1>
+                <h1>{t.contract}</h1>
                 <p>Stand ADS · 2515 Prêles · Plateau de Diesse</p>
               </div>
               <dl>
-                <div><dt>Date de location</dt><dd id="print-header-date">–</dd></div>
-                <div><dt>Document préparé le</dt><dd id="print-created-date">–</dd></div>
+                <div><dt>{t.rentalDate}</dt><dd id="print-header-date">–</dd></div>
+                <div><dt>{t.preparedOn}</dt><dd id="print-created-date">–</dd></div>
               </dl>
             </header>
 
             <header class="step-header">
               <span class="step-number">05</span>
-              <div><h2 id="step-title-4">Récapitulatif du contrat</h2><p>Vérifiez les informations avant d’imprimer le document.</p></div>
+              <div><h2 id="step-title-4">{t.step4Title}</h2><p>{t.step4Copy}</p></div>
             </header>
 
             <div class="recap-grid">
               <section class="recap-block">
-                <h3>Location</h3>
-                <dl><div><dt>Date</dt><dd id="recap-date">–</dd></div><div><dt>Période</dt><dd id="recap-period">–</dd></div><div><dt>Participants</dt><dd id="recap-people">–</dd></div></dl>
+                <h3>{t.rental}</h3>
+                <dl><div><dt>{t.date}</dt><dd id="recap-date">–</dd></div><div><dt>{t.periodLabel}</dt><dd id="recap-period">–</dd></div><div><dt>{t.participants}</dt><dd id="recap-people">–</dd></div></dl>
               </section>
               <section class="recap-block">
-                <h3>Locataire</h3>
-                <dl><div><dt>Responsable</dt><dd id="recap-name">–</dd></div><div><dt>Adresse</dt><dd id="recap-address">–</dd></div><div><dt>Contact</dt><dd id="recap-contact">–</dd></div><div id="recap-iban-row"><dt>IBAN caution</dt><dd id="recap-iban">–</dd></div><div id="recap-remarks-row"><dt>Remarques</dt><dd id="recap-remarks">–</dd></div></dl>
+                <h3>{t.tenant}</h3>
+                <dl><div><dt>{t.responsible}</dt><dd id="recap-name">–</dd></div><div><dt>{t.address.replace(' *', '')}</dt><dd id="recap-address">–</dd></div><div><dt>{t.contact}</dt><dd id="recap-contact">–</dd></div><div id="recap-iban-row"><dt>{t.depositIban}</dt><dd id="recap-iban">–</dd></div><div id="recap-remarks-row"><dt>{t.remarks}</dt><dd id="recap-remarks">–</dd></div></dl>
               </section>
-              <section class="recap-block full"><h3>Options</h3><ul id="recap-options"></ul></section>
+              <section class="recap-block full"><h3>{t.options}</h3><ul id="recap-options"></ul></section>
               <section class="payment-box recap-payment">
-                <div><span>Après acceptation de la demande</span><strong>La gérance communiquera les informations de paiement</strong></div>
-                <div class="payment-total"><span>Total calculé</span><strong id="recap-total">CHF –</strong></div>
+                <div><span>{t.afterApproval}</span><strong>{t.paymentInfo}</strong></div>
+                <div class="payment-total"><span>{t.calculatedTotal}</span><strong id="recap-total">CHF –</strong></div>
               </section>
               <section class="recap-block full print-conditions">
-                <h3>Conditions de location acceptées</h3>
+                <h3>{t.acceptedConditions}</h3>
                 <ol>
                   {rentalConditions.map((condition, index) => (
                     <li><span>{index + 1}.</span><p><strong>{condition.title} :</strong> {condition.text}</p></li>
@@ -370,22 +334,22 @@ const rentalConditions = [
               </section>
               <section class="recap-block full signature-recap">
                 <div>
-                  <h3>Signature et acceptation</h3>
-                  <p>Le locataire <strong id="recap-signer">–</strong> confirme avoir lu et accepté l’ensemble des conditions de location.</p>
+                  <h3>{t.signatureAcceptance}</h3>
+                  <p>{t.signerConfirmsBefore} <strong id="recap-signer">–</strong> {t.signerConfirmsAfter}</p>
                 </div>
-                <img id="recap-signature" alt="Signature manuscrite du locataire" />
+                <img id="recap-signature" alt={t.handwrittenAlt} />
                 <p id="recap-signature-text" class="typed-signature hidden"></p>
               </section>
             </div>
-            <div class="send-note"><Mail size={22} stroke-width={1.8} aria-hidden="true" /><p>Imprimez d’abord ce contrat en PDF, puis joignez-le à votre e-mail pour <strong>Mme Daniela Allemann</strong> à <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>.</p></div>
+            <div class="send-note"><Mail size={22} stroke-width={1.8} aria-hidden="true" /><p>{t.sendNoteBefore} <strong>{t.managerName}</strong> · <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a>.</p></div>
             <div class="step-actions recap-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> Modifier</button>
-              <button id="email-contract" class="action secondary" type="button"><Mail size={18} aria-hidden="true" /> Préparer l’e-mail</button>
-              <button id="print-contract" class="action primary" type="button"><Printer size={18} aria-hidden="true" /> Imprimer / PDF</button>
+              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.edit}</button>
+              <button id="email-contract" class="action secondary" type="button"><Mail size={18} aria-hidden="true" /> {t.prepareEmail}</button>
+              <button id="print-contract" class="action primary" type="button"><Printer size={18} aria-hidden="true" /> {t.printPdf}</button>
             </div>
 
             <footer class="print-contract-footer">
-              <strong>Gérance · Mme Daniela Allemann</strong>
+              <strong>{t.management} · {t.managerName}</strong>
               <span>078 638 47 91 · gerante@ads-preles.ch</span>
               <span>Stand ADS · 2515 Prêles</span>
             </footer>
@@ -394,19 +358,19 @@ const rentalConditions = [
 
         <aside class="booking-sidebar">
           <section class="summary-card">
-            <header><p class="booking-eyebrow">Résumé</p><h2>Votre location</h2><span id="summary-date">Aucune date sélectionnée</span></header>
+            <header><p class="booking-eyebrow">{t.summary}</p><h2>{t.yourRental}</h2><span id="summary-date">{t.noDate}</span></header>
             <dl>
-              <div><dt>Période</dt><dd id="summary-period">–</dd></div>
-              <div><dt>Personnes</dt><dd id="summary-people">20</dd></div>
-              <div><dt>Location de base</dt><dd id="summary-base">–</dd></div>
-              <div><dt>Options</dt><dd id="summary-options">CHF 0.–</dd></div>
-              <div id="summary-discount-row" class="discount-row hidden"><dt>Réduction membre</dt><dd id="summary-discount">–</dd></div>
+              <div><dt>{t.periodLabel}</dt><dd id="summary-period">–</dd></div>
+              <div><dt>{t.persons}</dt><dd id="summary-people">20</dd></div>
+              <div><dt>{t.baseRental}</dt><dd id="summary-base">–</dd></div>
+              <div><dt>{t.options}</dt><dd id="summary-options">CHF 0.–</dd></div>
+              <div id="summary-discount-row" class="discount-row hidden"><dt>{t.memberDiscount}</dt><dd id="summary-discount">–</dd></div>
             </dl>
-            <div class="summary-total"><span>Total indicatif</span><strong id="summary-total">CHF –</strong></div>
-            <p>Le montant définitif sera confirmé par la gérance.</p>
+            <div class="summary-total"><span>{t.indicativeTotal}</span><strong id="summary-total">CHF –</strong></div>
+            <p>{t.finalAmount}</p>
           </section>
           <section class="manager-card">
-            <p class="booking-eyebrow">Contact</p><h3>Mme Daniela Allemann</h3>
+            <p class="booking-eyebrow">{t.contact}</p><h3>{t.managerName}</h3>
             <a href="tel:+41786384791"><Phone size={17} aria-hidden="true" />078 638 47 91</a>
             <a href="mailto:gerante@ads-preles.ch"><Mail size={17} aria-hidden="true" />gerante@ads-preles.ch</a>
           </section>
@@ -414,13 +378,16 @@ const rentalConditions = [
       </div>
     </section>
   </main>
-  <SiteFooter />
+  <SiteFooter locale={locale} />
 </MainLayout>
 
 <script>
   type Period = 'journee' | 'soiree' | 'complet' | 'consecutif';
 
   const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const bookingRoot = byId<HTMLElement>('main-content');
+  const i18n = JSON.parse(bookingRoot.dataset.runtimeI18n ?? '{}') as Record<string, any>;
+  const localeCode = bookingRoot.dataset.localeCode ?? 'fr-CH';
   const steps = Array.from(document.querySelectorAll<HTMLElement>('.form-step'));
   const progressSteps = Array.from(document.querySelectorAll<HTMLButtonElement>('.progress-step'));
   const periodCards = Array.from(document.querySelectorAll<HTMLButtonElement>('.period-card'));
@@ -454,10 +421,10 @@ const rentalConditions = [
   let drawing = false;
 
   const periodLabels: Record<Period, string> = {
-    journee: 'Journée · 10 h à 17 h',
-    soiree: 'Soirée · 18 h à 9 h',
-    complet: 'Jour complet · environ 23 h',
-    consecutif: '3 jours consécutifs ou plus',
+    journee: i18n.periodLabels[0],
+    soiree: i18n.periodLabels[1],
+    complet: i18n.periodLabels[2],
+    consecutif: i18n.periodLabels[3],
   };
 
   const localToday = () => {
@@ -474,8 +441,7 @@ const rentalConditions = [
 
   const formatDate = (value: string) => {
     if (!value) return '–';
-    const [year, month, day] = value.split('-');
-    return `${day}.${month}.${year}`;
+    return new Intl.DateTimeFormat(localeCode).format(new Date(`${value}T12:00:00`));
   };
 
   const formatAmount = (value: number) => `CHF ${value.toFixed(2)}`;
@@ -498,12 +464,12 @@ const rentalConditions = [
 
   const updateDateAvailability = () => {
     const conflict = conflictingDate();
-    dateField.setCustomValidity(conflict ? 'Cette date est déjà réservée.' : '');
+    dateField.setCustomValidity(conflict ? i18n.conflict : '');
     dateAvailabilityFeedback.textContent = conflict
-      ? `${formatDate(conflict)} est déjà réservé${selectedPeriod === 'consecutif' ? ' dans cette période' : ''}. Choisissez une autre date.`
+      ? `${formatDate(conflict)} ${selectedPeriod === 'consecutif' ? i18n.conflictPeriod : i18n.conflictSingle}`
       : calendarAvailable
-        ? 'Cette date apparaît disponible. La gérance doit encore confirmer la demande.'
-        : 'La disponibilité sera confirmée par la gérance.';
+        ? i18n.available
+        : i18n.unavailable;
     dateAvailabilityFeedback.classList.toggle('date-conflict', Boolean(conflict));
   };
 
@@ -521,9 +487,9 @@ const rentalConditions = [
   };
 
   const updateSummary = () => {
-    byId('summary-date').textContent = dateField.value ? formatDate(dateField.value) : 'Aucune date sélectionnée';
+    byId('summary-date').textContent = dateField.value ? formatDate(dateField.value) : i18n.noDate;
     byId('summary-period').textContent = selectedPeriod ? periodLabels[selectedPeriod] : '–';
-    byId('summary-people').textContent = `${peopleField.value || 1} pers.`;
+    byId('summary-people').textContent = `${peopleField.value || 1} ${i18n.personShort}`;
     const result = calculate();
     byId('summary-base').textContent = result ? formatAmount(result.base) : '–';
     byId('summary-options').textContent = result ? formatAmount(result.options) : 'CHF 0.00';
@@ -546,9 +512,7 @@ const rentalConditions = [
       }
     });
     const completePrice = document.querySelector<HTMLElement>('[data-price="complet"]');
-    const consecutivePrice = document.querySelector<HTMLElement>('[data-price="consecutif"]');
     if (completePrice) completePrice.textContent = weekend ? 'CHF 190.–' : 'CHF 150.–';
-    if (consecutivePrice) consecutivePrice.textContent = 'CHF 160.– / jour';
     updateDateAvailability();
     updateSummary();
   };
@@ -605,28 +569,28 @@ const rentalConditions = [
   const validateStep = (step: number) => {
     clearStepError(step);
     if (step === 0) {
-      if (!dateField.value) return invalidate(step, dateField, 'Sélectionnez une date de location.');
+      if (!dateField.value) return invalidate(step, dateField, i18n.selectDate);
       const conflict = conflictingDate();
-      if (conflict) return invalidate(step, dateField, `La date du ${formatDate(conflict)} est déjà réservée.`);
+      if (conflict) return invalidate(step, dateField, `${i18n.dateBookedBefore} ${formatDate(conflict)} ${i18n.dateBookedAfter}`);
       if (!selectedPeriod) {
         const firstPeriod = periodCards.find((card) => !card.disabled) ?? periodCards[0];
-        return invalidate(step, firstPeriod, 'Sélectionnez une période disponible.');
+        return invalidate(step, firstPeriod, i18n.selectPeriod);
       }
-      if (selectedPeriod === 'consecutif' && Number(daysField.value) < 3) return invalidate(step, daysField, 'La formule consécutive nécessite au moins trois jours.');
-      if (Number(peopleField.value) < 1 || Number(peopleField.value) > 70) return invalidate(step, peopleField, 'Le nombre de personnes doit être compris entre 1 et 70.');
+      if (selectedPeriod === 'consecutif' && Number(daysField.value) < 3) return invalidate(step, daysField, i18n.minimumDays);
+      if (Number(peopleField.value) < 1 || Number(peopleField.value) > 70) return invalidate(step, peopleField, i18n.peopleRange);
     }
     if (step === 2) {
       const required = ['first-name', 'last-name', 'address-field', 'postal-field', 'city-field', 'phone-field'].map((id) => byId<HTMLInputElement>(id));
       const missing = required.find((field) => !field.value.trim());
-      if (missing) return invalidate(step, missing, 'Complétez tous les champs obligatoires.');
+      if (missing) return invalidate(step, missing, i18n.required);
       const email = byId<HTMLInputElement>('email-field');
-      if (email.value && !email.checkValidity()) return invalidate(step, email, 'Saisissez une adresse e-mail valide.');
-      if (!memberField.checked && !clientIbanField.value.trim()) return invalidate(step, clientIbanField, 'L’IBAN est requis pour rembourser la caution des non-membres.');
+      if (email.value && !email.checkValidity()) return invalidate(step, email, i18n.validEmail);
+      if (!memberField.checked && !clientIbanField.value.trim()) return invalidate(step, clientIbanField, i18n.ibanRequired);
     }
     if (step === 3) {
-      if (!conditionsAccept.checked) return invalidate(step, conditionsAccept, 'Confirmez avoir lu et accepté l’ensemble des conditions.');
+      if (!conditionsAccept.checked) return invalidate(step, conditionsAccept, i18n.acceptRequired);
       if ((!signatureStarted || signaturePoints < 5) && !signatureTextField.value.trim()) {
-        return invalidate(step, signatureTextField, 'Dessinez votre signature ou saisissez votre nom complet dans le champ alternatif.');
+        return invalidate(step, signatureTextField, i18n.signatureRequired);
       }
     }
     return true;
@@ -634,11 +598,11 @@ const rentalConditions = [
 
   const optionTexts = () => {
     const options: string[] = [];
-    if (memberField.checked) options.push('Membre ADS : réduction de 20 %');
-    if (!memberField.checked) options.push('Caution non-membre obligatoire : CHF 150.–');
-    if (pizzaField.checked) options.push('Four à pizza : CHF 50.–');
-    if (woodField.checked) options.push('Bois supplémentaire : CHF 30.–');
-    options.push(cleaningField.checked ? 'Nettoyage effectué par le locataire' : 'Nettoyage à facturer : CHF 50.–/h');
+    if (memberField.checked) options.push(i18n.optionMember);
+    if (!memberField.checked) options.push(i18n.optionDeposit);
+    if (pizzaField.checked) options.push(i18n.optionPizza);
+    if (woodField.checked) options.push(i18n.optionWood);
+    options.push(cleaningField.checked ? i18n.cleaningTenant : i18n.cleaningInvoice);
     return options;
   };
 
@@ -654,17 +618,17 @@ const rentalConditions = [
     const remarks = byId<HTMLTextAreaElement>('remarks-field').value.trim();
     const days = Math.max(3, Number(daysField.value) || 3);
     byId('recap-date').textContent = formatDate(dateField.value);
-    byId('recap-period').textContent = selectedPeriod ? `${periodLabels[selectedPeriod]}${selectedPeriod === 'consecutif' ? ` · ${days} jours` : ''}` : '–';
-    byId('recap-people').textContent = `${peopleField.value} personnes`;
+    byId('recap-period').textContent = selectedPeriod ? `${periodLabels[selectedPeriod]}${selectedPeriod === 'consecutif' ? ` · ${days} ${i18n.daysWord}` : ''}` : '–';
+    byId('recap-people').textContent = `${peopleField.value} ${i18n.peopleWord}`;
     byId('recap-name').textContent = `${firstName} ${lastName}`.trim();
     byId('recap-signer').textContent = `${firstName} ${lastName}`.trim();
     byId('print-header-date').textContent = formatDate(dateField.value);
-    byId('print-created-date').textContent = new Intl.DateTimeFormat('fr-CH').format(new Date());
+    byId('print-created-date').textContent = new Intl.DateTimeFormat(localeCode).format(new Date());
     byId('recap-address').textContent = `${address}, ${postal} ${city}`;
     byId('recap-contact').textContent = [phone, email].filter(Boolean).join(' · ');
-    byId('recap-iban').textContent = iban || 'Non renseigné';
+    byId('recap-iban').textContent = iban || i18n.notProvided;
     byId('recap-iban-row').classList.toggle('hidden', memberField.checked && !iban);
-    byId('recap-remarks').textContent = remarks || 'Aucune';
+    byId('recap-remarks').textContent = remarks || i18n.noRemarks;
     byId('recap-remarks-row').classList.toggle('hidden', !remarks);
     const optionList = byId<HTMLUListElement>('recap-options');
     optionList.replaceChildren();
@@ -723,11 +687,11 @@ const rentalConditions = [
     const applies = !memberField.checked;
     cautionRow.classList.toggle('applied', applies);
     cautionRow.classList.toggle('waived', !applies);
-    cautionStatus.textContent = applies ? '+ CHF 150.–' : 'Non applicable';
+    cautionStatus.textContent = applies ? i18n.depositApplied : i18n.depositWaived;
     clientIbanField.required = applies;
     ibanHelp.textContent = applies
-      ? 'Obligatoire pour les non-membres afin de permettre le remboursement de la caution.'
-      : 'Facultatif pour les membres ADS, qui ne versent pas de caution.';
+      ? i18n.ibanRequired
+      : i18n.ibanMember;
   };
 
   document.querySelectorAll<HTMLInputElement>('.option-row input').forEach((input) => {
@@ -749,8 +713,8 @@ const rentalConditions = [
     const name = `${byId<HTMLInputElement>('first-name').value} ${byId<HTMLInputElement>('last-name').value}`.trim();
     const period = selectedPeriod ? periodLabels[selectedPeriod] : '';
     const result = calculate();
-    const subject = `Contrat de location du Stand ADS — ${formatDate(dateField.value)} — ${name}`;
-    const body = ['Bonjour Mme Allemann,', '', 'Veuillez trouver mon contrat de location en pièce jointe.', '', `Date : ${formatDate(dateField.value)}`, `Période : ${period}`, `Nombre de personnes : ${peopleField.value}`, `Total indicatif : ${result ? formatAmount(result.total) : 'à confirmer'}`, '', 'Meilleures salutations,', name].join('\n');
+    const subject = `${i18n.emailSubject} — ${formatDate(dateField.value)} — ${name}`;
+    const body = [i18n.hello, '', i18n.attachment, '', `${i18n.date} : ${formatDate(dateField.value)}`, `${i18n.period} : ${period}`, `${i18n.people} : ${peopleField.value}`, `${i18n.total} : ${result ? formatAmount(result.total) : i18n.confirm}`, '', i18n.regards, name].join('\n');
     window.location.href = `mailto:gerante@ads-preles.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 

@@ -1,4 +1,12 @@
 ---
+import { commonTranslations, pagePaths, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'fr' } = Astro.props;
+const t = commonTranslations[locale];
 const year = new Date().getFullYear();
 ---
 
@@ -8,26 +16,26 @@ const year = new Date().getFullYear();
       <img src="/logo.png" width="52" height="52" alt="" />
       <div>
         <strong>Stand ADS</strong>
-        <span>Location de salle à Prêles</span>
+        <span>{t.footerRental}</span>
       </div>
     </div>
 
     <div class="footer-links">
-      <a href="/">Accueil</a>
-      <a href="/reservation/">Réservation</a>
-      <a href="/accessibilite/">Accessibilité</a>
-      <a href="mailto:gerante@ads-preles.ch">Gérance</a>
+      <a href={pagePaths.home[locale]}>{t.home}</a>
+      <a href={pagePaths.reservation[locale]}>{t.reserve}</a>
+      <a href={pagePaths.accessibility[locale]}>{t.accessibility}</a>
+      <a href="mailto:gerante@ads-preles.ch">{t.management}</a>
       <a
         href="https://www.leplateaudediesse.ch/locations-de-salles/Stand-ADS-Preles"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Site communal
+        {t.municipalSite}
       </a>
     </div>
 
     <div class="footer-meta">
-      <span>2515 Prêles · Berne</span>
+      <span>{t.footerPlace}</span>
       <span>© {year} Amicale Du Stand</span>
     </div>
   </div>

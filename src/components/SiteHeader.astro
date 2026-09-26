@@ -1,16 +1,21 @@
 ---
 import { ArrowRight, ArrowUpRight, Menu, X } from '@lucide/astro';
+import { commonTranslations, locales, pagePaths, type Locale } from '../lib/i18n';
 
 interface Props {
   active?: 'home' | 'reservation' | 'accessibility';
+  locale?: Locale;
 }
 
-const { active } = Astro.props;
+const { active, locale = 'fr' } = Astro.props;
+const t = commonTranslations[locale];
+const currentPage = active ?? 'home';
+const languagePaths = pagePaths[currentPage];
 ---
 
 <header class:list={['site-header', { 'site-header-home': active === 'home' }]}>
-  <nav class="nav-shell" aria-label="Navigation principale">
-    <a href="/" class="brand" aria-label="Stand ADS — Accueil">
+  <nav class="nav-shell" aria-label={t.mainNavigation}>
+    <a href={pagePaths.home[locale]} class="brand" aria-label={`Stand ADS — ${t.home}`}>
       <img src="/logo.png" width="46" height="46" alt="" />
       <span>
         <strong>Stand ADS</strong>
@@ -19,26 +24,34 @@ const { active } = Astro.props;
     </a>
 
     <div class="nav-links">
-      <a href="/" class:list={{ active: active === 'home' }}>Accueil</a>
-      <a href="/#stand">Le stand</a>
-      <a href="/#tarifs">Tarifs</a>
-      <a href="/#contact">Contact</a>
+      <a href={pagePaths.home[locale]} class:list={{ active: active === 'home' }}>{t.home}</a>
+      <a href={`${pagePaths.home[locale]}#stand`}>{t.venue}</a>
+      <a href={`${pagePaths.home[locale]}#tarifs`}>{t.rates}</a>
+      <a href={`${pagePaths.home[locale]}#contact`}>{t.contact}</a>
+    </div>
+
+    <div class="language-switcher desktop-language-switcher" role="group" aria-label={t.language}>
+      {locales.map((language) => (
+        <a href={languagePaths[language]} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined}>{language.toUpperCase()}</a>
+      ))}
     </div>
 
     <a
-      href="/reservation/"
+      href={pagePaths.reservation[locale]}
       class:list={['nav-book', { active: active === 'reservation' }]}
     >
-      Réserver
+      {t.reserve}
       <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
     </a>
 
     <button
       class="mobile-menu-toggle"
       type="button"
-      aria-label="Ouvrir le menu"
+      aria-label={t.openMenu}
       aria-controls="mobile-menu"
       aria-expanded="false"
+      data-open-label={t.openMenu}
+      data-close-label={t.closeMenu}
     >
       <Menu size={30} stroke-width={1.7} aria-hidden="true" />
     </button>
@@ -50,13 +63,13 @@ const { active } = Astro.props;
   class="mobile-menu"
   role="dialog"
   aria-modal="true"
-  aria-label="Menu principal"
+  aria-label={t.mainMenu}
   aria-hidden="true"
   inert
 >
   <div class="mobile-menu-inner">
     <div class="mobile-menu-head">
-      <a href="/" class="mobile-menu-brand" aria-label="Stand ADS — Accueil">
+      <a href={pagePaths.home[locale]} class="mobile-menu-brand" aria-label={`Stand ADS — ${t.home}`}>
         <img src="/logo.png" width="48" height="48" alt="" />
         <span>
           <strong>Stand ADS</strong>
@@ -64,30 +77,35 @@ const { active } = Astro.props;
         </span>
       </a>
 
-      <button class="mobile-menu-close" type="button" aria-label="Fermer le menu">
+      <button class="mobile-menu-close" type="button" aria-label={t.closeMenu}>
         <X size={32} stroke-width={1.6} aria-hidden="true" />
       </button>
     </div>
 
-    <nav class="mobile-menu-links" aria-label="Navigation mobile">
-      <a href="/" class:list={{ active: active === 'home' }}>
-        <span>Accueil</span><span aria-hidden="true">01</span>
+    <nav class="mobile-menu-links" aria-label={t.mobileNavigation}>
+      <a href={pagePaths.home[locale]} class:list={{ active: active === 'home' }}>
+        <span>{t.home}</span><span aria-hidden="true">01</span>
       </a>
-      <a href="/#stand">
-        <span>Le stand</span><span aria-hidden="true">02</span>
+      <a href={`${pagePaths.home[locale]}#stand`}>
+        <span>{t.venue}</span><span aria-hidden="true">02</span>
       </a>
-      <a href="/#tarifs">
-        <span>Tarifs</span><span aria-hidden="true">03</span>
+      <a href={`${pagePaths.home[locale]}#tarifs`}>
+        <span>{t.rates}</span><span aria-hidden="true">03</span>
       </a>
-      <a href="/#contact">
-        <span>Contact</span><span aria-hidden="true">04</span>
+      <a href={`${pagePaths.home[locale]}#contact`}>
+        <span>{t.contact}</span><span aria-hidden="true">04</span>
       </a>
     </nav>
 
     <div class="mobile-menu-foot">
-      <p>Location du Stand ADS à Prêles</p>
-      <a href="/reservation/" class="mobile-menu-book">
-        Faire une demande de réservation
+      <div class="language-switcher mobile-language-switcher" role="group" aria-label={t.language}>
+        {locales.map((language) => (
+          <a href={languagePaths[language]} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined}>{language.toUpperCase()}</a>
+        ))}
+      </div>
+      <p>{t.rental}</p>
+      <a href={pagePaths.reservation[locale]} class="mobile-menu-book">
+        {t.mobileReserve}
         <ArrowRight size={20} stroke-width={1.8} aria-hidden="true" />
       </a>
     </div>
@@ -100,6 +118,13 @@ const { active } = Astro.props;
   const openButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
   const closeButton = document.querySelector<HTMLButtonElement>('.mobile-menu-close');
   let focusBeforeMenu: HTMLElement | null = null;
+
+  document.querySelectorAll<HTMLAnchorElement>('.language-switcher a').forEach((link) => {
+    const target = new URL(link.href, window.location.origin);
+    target.search = window.location.search;
+    target.hash = window.location.hash;
+    link.href = `${target.pathname}${target.search}${target.hash}`;
+  });
 
   if (homeHeader) {
     const updateHeader = () => {
@@ -117,7 +142,7 @@ const { active } = Astro.props;
     menu.setAttribute('aria-hidden', String(!open));
     menu.toggleAttribute('inert', !open);
     openButton.setAttribute('aria-expanded', String(open));
-    openButton.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    openButton.setAttribute('aria-label', open ? openButton.dataset.closeLabel ?? '' : openButton.dataset.openLabel ?? '');
     document.body.classList.toggle('mobile-menu-open', open);
 
     if (open) {
