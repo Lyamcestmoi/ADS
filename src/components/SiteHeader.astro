@@ -2,10 +2,10 @@
 import { ArrowRight, ArrowUpRight, Menu, X } from '@lucide/astro';
 
 interface Props {
-  active?: 'home' | 'reservation';
+  active?: 'home' | 'reservation' | 'accessibility';
 }
 
-const { active = 'home' } = Astro.props;
+const { active } = Astro.props;
 ---
 
 <header class:list={['site-header', { 'site-header-home': active === 'home' }]}>
@@ -45,7 +45,15 @@ const { active = 'home' } = Astro.props;
   </nav>
 </header>
 
-<aside id="mobile-menu" class="mobile-menu" aria-hidden="true" inert>
+<aside
+  id="mobile-menu"
+  class="mobile-menu"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu principal"
+  aria-hidden="true"
+  inert
+>
   <div class="mobile-menu-inner">
     <div class="mobile-menu-head">
       <a href="/" class="mobile-menu-brand" aria-label="Stand ADS — Accueil">
@@ -91,6 +99,7 @@ const { active = 'home' } = Astro.props;
   const menu = document.querySelector<HTMLElement>('#mobile-menu');
   const openButton = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
   const closeButton = document.querySelector<HTMLButtonElement>('.mobile-menu-close');
+  let focusBeforeMenu: HTMLElement | null = null;
 
   if (homeHeader) {
     const updateHeader = () => {
@@ -112,9 +121,11 @@ const { active = 'home' } = Astro.props;
     document.body.classList.toggle('mobile-menu-open', open);
 
     if (open) {
+      focusBeforeMenu = document.activeElement instanceof HTMLElement ? document.activeElement : openButton;
       closeButton?.focus();
-    } else if (document.activeElement === closeButton) {
-      openButton.focus();
+    } else {
+      focusBeforeMenu?.focus();
+      focusBeforeMenu = null;
     }
   };
 
@@ -126,8 +137,30 @@ const { active = 'home' } = Astro.props;
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && menu?.classList.contains('is-open')) {
+    if (!menu?.classList.contains('is-open')) return;
+
+    if (event.key === 'Escape') {
       setMenuOpen(false);
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      const focusable = Array.from(
+        menu.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => !element.hasAttribute('hidden'));
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   });
 

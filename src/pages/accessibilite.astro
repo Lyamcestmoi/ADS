@@ -1,0 +1,153 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+const title = 'Accessibilité — Amicale du Stand à Prêles';
+const description = 'Informations sur l’accessibilité du site de location du Stand ADS à Prêles.';
+---
+
+<MainLayout title={title} description={description}>
+  <SiteHeader active="accessibility" />
+
+  <main id="main-content" class="accessibility-page" tabindex="-1">
+    <div class="shell accessibility-layout">
+      <header>
+        <p class="eyebrow">Informations</p>
+        <h1>Accessibilité du site</h1>
+        <p class="accessibility-lead">
+          L’Amicale du Stand souhaite rendre les informations et la demande de
+          réservation utilisables par le plus grand nombre de personnes.
+        </p>
+      </header>
+
+      <section aria-labelledby="commitment-title">
+        <h2 id="commitment-title">Notre démarche</h2>
+        <p>
+          Le site est développé en visant les recommandations WCAG 2.1 de niveau AA.
+          Il est notamment conçu pour être parcouru au clavier, agrandi et consulté
+          avec les technologies d’assistance courantes.
+        </p>
+      </section>
+
+      <section aria-labelledby="features-title">
+        <h2 id="features-title">Fonctionnalités disponibles</h2>
+        <ul>
+          <li>navigation au clavier et indicateur de focus visible ;</li>
+          <li>lien d’accès direct au contenu principal ;</li>
+          <li>textes alternatifs pour les images informatives ;</li>
+          <li>calendrier dont les états sont annoncés en toutes lettres ;</li>
+          <li>réduction des animations selon les préférences de l’appareil ;</li>
+          <li>messages d’erreur associés aux champs du formulaire.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="contact-accessibility-title">
+        <h2 id="contact-accessibility-title">Signaler une difficulté</h2>
+        <p>
+          Si une information ou une fonctionnalité reste difficile d’accès,
+          contactez la gérance en indiquant la page et le problème rencontré.
+        </p>
+        <p class="accessibility-contact">
+          <a href="mailto:gerante@ads-preles.ch">gerante@ads-preles.ch</a><br />
+          <a href="tel:+41786384791">078 638 47 91</a>
+        </p>
+      </section>
+
+      <p class="accessibility-update">Dernière mise à jour : 26 septembre 2026.</p>
+    </div>
+  </main>
+
+  <SiteFooter />
+</MainLayout>
+
+<style>
+  .accessibility-page {
+    min-height: 70vh;
+    padding: clamp(72px, 9vw, 120px) 0;
+    background: var(--paper);
+  }
+
+  .accessibility-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+    gap: 0;
+  }
+
+  header,
+  section,
+  .accessibility-update {
+    padding: clamp(26px, 4vw, 48px);
+    border: 1px solid var(--line);
+  }
+
+  header {
+    grid-column: 1 / -1;
+    background: var(--forest-950);
+    color: var(--white);
+  }
+
+  header h1 {
+    max-width: 850px;
+    margin: 12px 0 20px;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .accessibility-lead {
+    max-width: 720px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: clamp(18px, 2vw, 22px);
+  }
+
+  section h2 {
+    margin: 0 0 16px;
+    color: var(--forest-900);
+    font-size: clamp(24px, 3vw, 34px);
+    letter-spacing: -0.035em;
+  }
+
+  section p,
+  section li {
+    color: var(--muted);
+  }
+
+  section p:last-child,
+  section ul {
+    margin-bottom: 0;
+  }
+
+  section ul {
+    padding-left: 21px;
+  }
+
+  .accessibility-contact a {
+    color: var(--forest-900);
+    font-weight: 800;
+  }
+
+  .accessibility-update {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  @media (max-width: 760px) {
+    .accessibility-page {
+      padding: 40px 0 64px;
+    }
+
+    .accessibility-layout {
+      grid-template-columns: 1fr;
+    }
+
+    header,
+    .accessibility-update {
+      grid-column: auto;
+    }
+  }
+</style>

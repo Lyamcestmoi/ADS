@@ -39,7 +39,7 @@ const availability = await getAvailability();
 <MainLayout title={title} description={description}>
   <SiteHeader active="home" />
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="home-hero" aria-labelledby="hero-title">
       <img
         class="hero-media"
@@ -523,6 +523,8 @@ const availability = await getAvailability();
     figure.classList.add('is-expandable');
     figure.setAttribute('role', 'button');
     figure.setAttribute('tabindex', '0');
+    figure.setAttribute('aria-haspopup', 'dialog');
+    figure.setAttribute('aria-controls', 'image-lightbox');
     figure.setAttribute('aria-label', `Agrandir : ${image.alt}`);
     figure.addEventListener('click', () => openLightbox(index));
     figure.addEventListener('keydown', (event) => {
