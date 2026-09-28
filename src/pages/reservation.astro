@@ -49,49 +49,6 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       </div>
     </section>
 
-    <section class="availability-section" aria-labelledby="availability-title">
-      <div class="reservation-shell">
-        <div class="availability-heading">
-          <div>
-            <p class="booking-eyebrow">{t.availability}</p>
-            <h2 id="availability-title">{t.calendarTitle}</h2>
-          </div>
-          <p>{t.calendarLead}</p>
-        </div>
-
-        <div class="availability-layout">
-          <div class="availability-calendar-panel">
-            <AvailabilityCalendar
-              bookedDates={availability.bookedDates}
-              available={availability.available}
-              locale={locale}
-              bookingPath={pagePaths.reservation[locale]}
-            />
-          </div>
-
-          <aside class="availability-guide" aria-label={t.guideLabel}>
-            <div>
-              <p class="booking-eyebrow">{t.howTo}</p>
-              <h3>{t.guideTitle}</h3>
-            </div>
-            <ol>
-              {t.guide.map(([strong, rest], index) => <li><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{strong}</strong> {rest}</p></li>)}
-            </ol>
-            <div class="availability-note" role="note">
-              <Info size={20} stroke-width={1.8} aria-hidden="true" />
-              <p>
-                {t.confirmation}
-                {syncedLabel && <small>{t.updated} {syncedLabel}.</small>}
-              </p>
-              <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
-                {t.openGoogle}
-              </a>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
     <nav class="progress" aria-label={t.progressLabel}>
       <div class="reservation-shell progress-grid">
         {t.progress.map((label, index) => <button class:list={['progress-step', { active: index === 0 }]} type="button" data-go-step={index} aria-current={index === 0 ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong></button>)}
@@ -375,6 +332,49 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
             <a href="mailto:gerante@ads-preles.ch"><Mail size={17} aria-hidden="true" />gerante@ads-preles.ch</a>
           </section>
         </aside>
+      </div>
+    </section>
+
+    <section class="availability-section" aria-labelledby="availability-title">
+      <div class="reservation-shell">
+        <div class="availability-heading">
+          <div>
+            <p class="booking-eyebrow">{t.availability}</p>
+            <h2 id="availability-title">{t.calendarTitle}</h2>
+          </div>
+          <p>{t.calendarLead}</p>
+        </div>
+
+        <div class="availability-layout">
+          <div class="availability-calendar-panel">
+            <AvailabilityCalendar
+              bookedDates={availability.bookedDates}
+              available={availability.available}
+              locale={locale}
+              bookingPath={pagePaths.reservation[locale]}
+            />
+          </div>
+
+          <aside class="availability-guide" aria-label={t.guideLabel}>
+            <div>
+              <p class="booking-eyebrow">{t.howTo}</p>
+              <h3>{t.guideTitle}</h3>
+            </div>
+            <ol>
+              {t.guide.map(([strong, rest], index) => <li><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{strong}</strong> {rest}</p></li>)}
+            </ol>
+            <div class="availability-note" role="note">
+              <Info size={20} stroke-width={1.8} aria-hidden="true" />
+              <p>
+                {t.confirmation}
+                {syncedLabel && <small>{t.updated} {syncedLabel}.</small>}
+              </p>
+              <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
+                {t.openGoogle}
+              </a>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
   </main>
@@ -739,17 +739,17 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .booking-hero h1 { max-width: 720px; margin: 0; font-size: clamp(48px, 5.5vw, 70px); font-weight: 500; letter-spacing: -.055em; line-height: .94; }
   .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.78); font-size: 18px; line-height: 1.55; }
 
-  .availability-section { padding: 46px 0 54px; border-bottom: 1px solid var(--line); background: var(--paper); }
+  .availability-section { padding: 38px 0 46px; border-top: 1px solid var(--line); background: var(--paper); }
   .availability-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .75fr); gap: 48px; align-items: end; margin-bottom: 24px; }
-  .availability-heading h2 { margin: 0; color: var(--forest-900); font-size: clamp(34px, 4vw, 50px); font-weight: 550; letter-spacing: -.05em; line-height: 1; }
+  .availability-heading h2 { margin: 0; color: var(--forest-900); font-size: clamp(30px, 3.2vw, 42px); font-weight: 550; letter-spacing: -.05em; line-height: 1; }
   .availability-heading > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
-  .availability-layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; align-items: stretch; }
+  .availability-layout { display: grid; grid-template-columns: minmax(0, 760px) minmax(300px, 1fr); align-items: stretch; }
   .availability-calendar-panel { min-width: 0; }
   .availability-calendar-panel :global(.availability-calendar) { height: 100%; }
   .availability-calendar-panel :global(.calendar-toolbar) { padding: 17px 20px; }
   .availability-calendar-panel :global(.calendar-weekdays) { padding: 11px 12px 7px; font-size: 10px; }
   .availability-calendar-panel :global(.calendar-days) { gap: 2px; padding: 0 12px 13px; }
-  .availability-calendar-panel :global(.calendar-day) { min-height: 52px; padding-block: 5px; }
+  .availability-calendar-panel :global(.calendar-day) { min-height: 46px; padding-block: 4px; }
   .availability-calendar-panel :global(.calendar-day b) { font-size: 16px; }
   .availability-calendar-panel :global(.calendar-day span) { margin-top: 1px; }
   .availability-calendar-panel :global(.calendar-legend) { min-height: 48px; padding: 10px 18px; }
@@ -780,7 +780,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .progress-step.done { color: var(--forest-900); }
   .progress-step:disabled { cursor: default; opacity: .72; }
 
-  .booking-content { padding: 26px 0 82px; }
+  .booking-content { padding: 26px 0 54px; }
   .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
   .form-card { min-width: 0; padding: clamp(24px, 3vw, 38px); border: 1px solid var(--line); border-radius: 0; background: var(--paper); box-shadow: none; }
   .privacy-note, .included-note, .send-note { display: flex; gap: 14px; align-items: flex-start; padding: 17px 18px; border-radius: var(--radius-sm); }
