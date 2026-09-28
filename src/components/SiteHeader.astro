@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, ArrowUpRight, Menu, X } from '@lucide/astro';
+import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from '@lucide/astro';
 import { commonTranslations, locales, pagePaths, type Locale } from '../lib/i18n';
 
 interface Props {
@@ -11,6 +11,11 @@ const { active, locale = 'fr' } = Astro.props;
 const t = commonTranslations[locale];
 const currentPage = active ?? 'home';
 const languagePaths = pagePaths[currentPage];
+const languageNames: Record<Locale, string> = {
+  fr: 'Français',
+  de: 'Deutsch',
+  en: 'English',
+};
 ---
 
 <header class:list={['site-header', { 'site-header-home': active === 'home' }]}>
@@ -30,11 +35,26 @@ const languagePaths = pagePaths[currentPage];
       <a href={`${pagePaths.home[locale]}#contact`}>{t.contact}</a>
     </div>
 
-    <div class="language-switcher desktop-language-switcher" role="group" aria-label={t.language}>
-      {locales.map((language) => (
-        <a href={languagePaths[language]} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined}>{language.toUpperCase()}</a>
-      ))}
-    </div>
+    <details class="desktop-language-switcher language-dropdown">
+      <summary aria-label={`${t.language} : ${languageNames[locale]}`}>
+        <span>{locale.toUpperCase()}</span>
+        <ChevronDown size={15} stroke-width={2} aria-hidden="true" />
+      </summary>
+      <div class="language-dropdown-menu" role="group" aria-label={t.language}>
+        {locales.map((language) => (
+          <a
+            href={languagePaths[language]}
+            lang={language}
+            hreflang={language}
+            aria-current={language === locale ? 'page' : undefined}
+            data-language-link
+          >
+            <span aria-hidden="true">{language.toUpperCase()}</span>
+            <strong>{languageNames[language]}</strong>
+          </a>
+        ))}
+      </div>
+    </details>
 
     <a
       href={pagePaths.reservation[locale]}
@@ -100,7 +120,7 @@ const languagePaths = pagePaths[currentPage];
     <div class="mobile-menu-foot">
       <div class="language-switcher mobile-language-switcher" role="group" aria-label={t.language}>
         {locales.map((language) => (
-          <a href={languagePaths[language]} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined}>{language.toUpperCase()}</a>
+          <a href={languagePaths[language]} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link>{language.toUpperCase()}</a>
         ))}
       </div>
       <p>{t.rental}</p>
@@ -119,11 +139,26 @@ const languagePaths = pagePaths[currentPage];
   const closeButton = document.querySelector<HTMLButtonElement>('.mobile-menu-close');
   let focusBeforeMenu: HTMLElement | null = null;
 
-  document.querySelectorAll<HTMLAnchorElement>('.language-switcher a').forEach((link) => {
+  document.querySelectorAll<HTMLAnchorElement>('[data-language-link]').forEach((link) => {
     const target = new URL(link.href, window.location.origin);
     target.search = window.location.search;
     target.hash = window.location.hash;
     link.href = `${target.pathname}${target.search}${target.hash}`;
+  });
+
+  const languageDropdown = document.querySelector<HTMLDetailsElement>('.language-dropdown');
+
+  document.addEventListener('click', (event) => {
+    if (languageDropdown?.open && event.target instanceof Node && !languageDropdown.contains(event.target)) {
+      languageDropdown.open = false;
+    }
+  });
+
+  languageDropdown?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      languageDropdown.open = false;
+      languageDropdown.querySelector<HTMLElement>('summary')?.focus();
+    }
   });
 
   if (homeHeader) {

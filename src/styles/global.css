@@ -252,12 +252,94 @@ a {
   color: var(--forest-950);
 }
 
-.site-header-home:not(.is-scrolled) .desktop-language-switcher a {
-  color: rgba(255, 255, 255, 0.76);
+.language-dropdown {
+  position: relative;
 }
 
-.site-header-home:not(.is-scrolled) .desktop-language-switcher a:hover,
-.site-header-home:not(.is-scrolled) .desktop-language-switcher a[aria-current='page'] {
+.language-dropdown summary {
+  display: flex;
+  min-width: 64px;
+  min-height: 42px;
+  padding: 0 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  list-style: none;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.language-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.language-dropdown summary:hover,
+.language-dropdown[open] summary {
+  border-color: var(--forest-900);
+  background: var(--forest-100);
+}
+
+.language-dropdown summary svg {
+  transition: transform 180ms ease;
+}
+
+.language-dropdown[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.language-dropdown-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 178px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  box-shadow: 0 18px 42px rgba(13, 43, 35, 0.16);
+}
+
+.language-dropdown-menu a {
+  display: grid;
+  min-height: 44px;
+  padding: 0 10px;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+  color: var(--ink);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.language-dropdown-menu a > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.language-dropdown-menu a > strong {
+  font-weight: 700;
+}
+
+.language-dropdown-menu a:hover,
+.language-dropdown-menu a[aria-current='page'] {
+  background: var(--forest-100);
+  color: var(--forest-950);
+}
+
+.site-header-home:not(.is-scrolled) .language-dropdown summary {
+  border-color: rgba(255, 255, 255, 0.32);
+  color: var(--white);
+}
+
+.site-header-home:not(.is-scrolled) .language-dropdown summary:hover,
+.site-header-home:not(.is-scrolled) .language-dropdown[open] summary {
+  border-color: rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.14);
   color: var(--yellow);
 }
