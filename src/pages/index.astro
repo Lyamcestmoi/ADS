@@ -145,10 +145,32 @@ const availability = await getAvailability();
             />
           </figure>
         </div>
-        <a class="gallery-more-link" href="#galerie">
-          {t.viewAllPhotos}
-          <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
-        </a>
+        <details class="interior-gallery-more reveal">
+          <summary class="gallery-more-link">
+            {t.viewAllPhotos}
+            <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
+          </summary>
+          <div class="interior-gallery-grid interior-gallery-extra">
+            <figure class="interior-photo">
+              <img src="/interieur-table-2.webp" width="1722" height="1500" loading="lazy" decoding="async" alt={t.alts[5]} />
+            </figure>
+            <figure class="interior-photo interior-photo-wide">
+              <img src="/interieur-bar.webp" width="1800" height="1350" loading="lazy" decoding="async" alt={t.alts[6]} />
+            </figure>
+            <figure class="interior-photo interior-photo-wide">
+              <img src="/interieur-salle.webp" width="1800" height="1350" loading="lazy" decoding="async" alt={t.alts[7]} />
+            </figure>
+            <figure class="interior-photo">
+              <img src="/interieur-cuisine-decoration.webp" width="1800" height="1460" loading="lazy" decoding="async" alt={t.alts[8]} />
+            </figure>
+            <figure class="interior-photo">
+              <img src="/interieur-grande-table.webp" width="1800" height="1350" loading="lazy" decoding="async" alt={t.alts[9]} />
+            </figure>
+            <figure class="interior-photo interior-photo-banner">
+              <img src="/interieur-cheminee-large.webp" width="1800" height="1350" loading="lazy" decoding="async" alt={t.alts[10]} />
+            </figure>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -212,71 +234,7 @@ const availability = await getAvailability();
           </p>
         </div>
 
-        <h3 class="gallery-subtitle">{t.galleryInteriorTitle}</h3>
-        <div class="interior-gallery-grid reveal">
-          <figure class="interior-photo">
-            <img
-              src="/interieur-table-2.webp"
-              width="1722"
-              height="1500"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[5]}
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-wide">
-            <img
-              src="/interieur-bar.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[6]}
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-wide">
-            <img
-              src="/interieur-salle.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[7]}
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-cuisine-decoration.webp"
-              width="1800"
-              height="1460"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[8]}
-            />
-          </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-grande-table.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[9]}
-            />
-          </figure>
-          <figure class="interior-photo interior-photo-banner">
-            <img
-              src="/interieur-cheminee-large.webp"
-              width="1800"
-              height="1350"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[10]}
-            />
-          </figure>
-        </div>
-
-        <h3 class="gallery-subtitle gallery-subtitle-events">{t.galleryEventTitle}</h3>
+        <h3 class="gallery-subtitle">{t.galleryEventTitle}</h3>
         <div class="gallery-grid reveal">
           <figure class="gallery-item gallery-item-tall">
             <img

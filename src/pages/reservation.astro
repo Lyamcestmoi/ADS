@@ -2,7 +2,7 @@
 import {
   ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight,
   CircleDollarSign, Flame, Info, KeyRound, Mail, Phone, Pizza,
-  Printer, RotateCcw, ShieldCheck, Sparkles, UserRound, Users,
+  Printer, RotateCcw, ShieldCheck, Sparkles, UserRound, Users, X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
@@ -59,6 +59,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
           <strong data-mobile-step-title>{t.progress[0]}</strong>
         </div>
         <div class="mobile-progress-track" aria-hidden="true"><i data-mobile-progress-bar></i></div>
+        <div class="mobile-price"><span>{t.indicativeTotal}</span><strong id="mobile-summary-total">CHF –</strong></div>
       </div>
     </nav>
 
@@ -85,10 +86,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
                 <input id="date-field" name="date" type="date" required aria-describedby="date-availability-feedback" />
                 <div class="date-field-help">
                   <small id="date-availability-feedback">{t.dateHelp}</small>
-                  <a href="#availability-title">
+                  <button type="button" data-open-calendar>
                     <CalendarDays size={16} stroke-width={1.8} aria-hidden="true" />
                     {t.viewAvailability}
-                  </a>
+                  </button>
                 </div>
               </label>
               <label class="check-card holiday-card">
@@ -180,15 +181,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
             </div>
 
             <div class="included-note"><Info size={20} stroke-width={1.8} aria-hidden="true" /><span><strong>{t.included}</strong> {t.includedCopy}</span></div>
-            <div class="step-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
-              <button class="action primary" type="button" data-next-step>{t.continue} <ChevronRight size={18} aria-hidden="true" /></button>
-            </div>
           </section>
 
-          <section class="form-step" data-step="2" aria-labelledby="step-title-2">
-            <header class="step-header">
-              <span class="step-number">03</span>
+          <section class="form-step grouped-step" data-step="2" aria-labelledby="step-title-2">
+            <header class="step-header subsection-header">
               <div><h2 id="step-title-2">{t.step2Title}</h2><p>{t.step2Copy}</p></div>
             </header>
 
@@ -208,7 +204,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
               <label class="field full"><span>{t.remarks}</span><textarea id="remarks-field" name="remarques" rows="4"></textarea></label>
             </div>
 
-            <p id="error-step-2" class="step-error" data-error-step="2" role="alert"></p>
+            <p id="error-step-1" class="step-error" data-error-step="1" role="alert"></p>
             <div class="step-actions">
               <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
               <button class="action primary" type="button" data-next-step>{t.continue} <ChevronRight size={18} aria-hidden="true" /></button>
@@ -217,18 +213,21 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
           <section class="form-step" data-step="3" aria-labelledby="step-title-3">
             <header class="step-header">
-              <span class="step-number">04</span>
+              <span class="step-number">03</span>
               <div><h2 id="step-title-3">{t.step3Title}</h2><p>{t.step3Copy}</p></div>
             </header>
 
-            <ol class="conditions-list">
-              {rentalConditions.map((condition, index) => (
-                <li class="condition-row">
-                  <span class="condition-number">{String(index + 1).padStart(2, '0')}</span>
-                  <p><strong>{condition.title} :</strong> {condition.text}</p>
-                </li>
-              ))}
-            </ol>
+            <details class="conditions-disclosure">
+              <summary>{t.conditionsSummary}<ChevronRight size={18} aria-hidden="true" /></summary>
+              <ol class="conditions-list">
+                {rentalConditions.map((condition, index) => (
+                  <li class="condition-row">
+                    <span class="condition-number">{String(index + 1).padStart(2, '0')}</span>
+                    <p><strong>{condition.title} :</strong> {condition.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </details>
 
             <label class="acceptance-row">
               <input id="conditions-accept" name="conditions_accept" type="checkbox" />
@@ -254,14 +253,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
               <small id="signature-help">{t.signatureHelp}</small>
             </label>
 
-            <p id="error-step-3" class="step-error" data-error-step="3" role="alert"></p>
-            <div class="step-actions">
-              <button class="action secondary" type="button" data-prev-step><ChevronLeft size={18} aria-hidden="true" /> {t.backButton}</button>
-              <button class="action primary" type="button" data-next-step>{t.verify} <ChevronRight size={18} aria-hidden="true" /></button>
-            </div>
+            <p id="error-step-2" class="step-error" data-error-step="2" role="alert"></p>
           </section>
 
-          <section class="form-step recap-step" data-step="4" aria-labelledby="step-title-4">
+          <section class="form-step recap-step grouped-step" data-step="4" aria-labelledby="step-title-4">
             <header class="print-contract-header">
               <img src="/logo-transparent.png" width="72" height="72" alt={t.logoAlt} />
               <div>
@@ -275,8 +270,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
               </dl>
             </header>
 
-            <header class="step-header">
-              <span class="step-number">05</span>
+            <header class="step-header subsection-header recap-heading">
               <div><h2 id="step-title-4">{t.step4Title}</h2><p>{t.step4Copy}</p></div>
             </header>
 
@@ -348,48 +342,30 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       </div>
     </section>
 
-    <section class="availability-section" aria-labelledby="availability-title">
-      <div class="reservation-shell">
-        <div class="availability-heading">
-          <div>
-            <p class="booking-eyebrow">{t.availability}</p>
-            <h2 id="availability-title">{t.calendarTitle}</h2>
-          </div>
-          <p>{t.calendarLead}</p>
+    <dialog id="availability-dialog" class="availability-dialog" aria-labelledby="availability-title">
+      <div class="availability-dialog-header">
+        <div>
+          <p class="booking-eyebrow">{t.availability}</p>
+          <h2 id="availability-title">{t.calendarTitle}</h2>
         </div>
-
-        <div class="availability-layout">
-          <div class="availability-calendar-panel">
-            <AvailabilityCalendar
-              bookedDates={availability.bookedDates}
-              available={availability.available}
-              locale={locale}
-              bookingPath={pagePaths.reservation[locale]}
-            />
-          </div>
-
-          <aside class="availability-guide" aria-label={t.guideLabel}>
-            <div>
-              <p class="booking-eyebrow">{t.howTo}</p>
-              <h3>{t.guideTitle}</h3>
-            </div>
-            <ol>
-              {t.guide.map(([strong, rest], index) => <li><span>{String(index + 1).padStart(2, '0')}</span><p><strong>{strong}</strong> {rest}</p></li>)}
-            </ol>
-            <div class="availability-note" role="note">
-              <Info size={20} stroke-width={1.8} aria-hidden="true" />
-              <p>
-                {t.confirmation}
-                {syncedLabel && <small>{t.updated} {syncedLabel}.</small>}
-              </p>
-              <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
-                {t.openGoogle}
-              </a>
-            </div>
-          </aside>
-        </div>
+        <button type="button" data-close-calendar aria-label={t.closeCalendar}>
+          <X size={22} stroke-width={1.8} aria-hidden="true" />
+        </button>
       </div>
-    </section>
+      <p class="availability-dialog-lead">{t.calendarLead}</p>
+      <div class="availability-calendar-panel">
+        <AvailabilityCalendar
+          bookedDates={availability.bookedDates}
+          available={availability.available}
+          locale={locale}
+          bookingPath={pagePaths.reservation[locale]}
+        />
+      </div>
+      <div class="availability-dialog-footer" role="note">
+        <p>{t.confirmation}{syncedLabel && <small>{t.updated} {syncedLabel}.</small>}</p>
+        <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">{t.openGoogle}</a>
+      </div>
+    </dialog>
   </main>
   <SiteFooter locale={locale} />
 </MainLayout>
@@ -401,7 +377,12 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const bookingRoot = byId<HTMLElement>('main-content');
   const i18n = JSON.parse(bookingRoot.dataset.runtimeI18n ?? '{}') as Record<string, any>;
   const localeCode = bookingRoot.dataset.localeCode ?? 'fr-CH';
-  const steps = Array.from(document.querySelectorAll<HTMLElement>('.form-step'));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('.form-step'));
+  const stages = [
+    sections.filter((section) => section.dataset.step === '0'),
+    sections.filter((section) => section.dataset.step === '1' || section.dataset.step === '2'),
+    sections.filter((section) => section.dataset.step === '3' || section.dataset.step === '4'),
+  ];
   const progressSteps = Array.from(document.querySelectorAll<HTMLButtonElement>('.progress-step'));
   const mobileStep = document.querySelector<HTMLElement>('[data-mobile-step]');
   const mobileStepTitle = document.querySelector<HTMLElement>('[data-mobile-step-title]');
@@ -410,6 +391,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const dateField = byId<HTMLInputElement>('date-field');
   const dateAvailabilityFeedback = byId<HTMLElement>('date-availability-feedback');
   const calendarRoot = document.querySelector<HTMLElement>('[data-availability-calendar]');
+  const availabilityDialog = byId<HTMLDialogElement>('availability-dialog');
   const calendarAvailable = calendarRoot?.dataset.calendarAvailable === 'true';
   const bookedDates = new Set<string>(JSON.parse(calendarRoot?.dataset.booked ?? '[]'));
   const holidayField = byId<HTMLInputElement>('holiday-field');
@@ -510,6 +492,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     byId('summary-base').textContent = result ? formatAmount(result.base) : '–';
     byId('summary-options').textContent = result ? formatAmount(result.options) : 'CHF 0.00';
     byId('summary-total').textContent = result ? formatAmount(result.total) : 'CHF –';
+    byId('mobile-summary-total').textContent = result ? formatAmount(result.total) : 'CHF –';
     const discountRow = byId('summary-discount-row');
     discountRow.classList.toggle('hidden', !result || result.discount === 0);
     byId('summary-discount').textContent = result ? `− ${formatAmount(result.discount)}` : '–';
@@ -534,9 +517,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   };
 
   const showStep = (index: number, moveFocus = false) => {
-    currentStep = Math.max(0, Math.min(index, steps.length - 1));
+    currentStep = Math.max(0, Math.min(index, stages.length - 1));
     maxReached = Math.max(maxReached, currentStep);
-    steps.forEach((step, i) => step.classList.toggle('active', i === currentStep));
+    sections.forEach((section) => section.classList.remove('active'));
+    stages[currentStep]?.forEach((section) => section.classList.add('active'));
     progressSteps.forEach((step, i) => {
       step.classList.toggle('active', i === currentStep);
       step.classList.toggle('done', i < currentStep);
@@ -546,11 +530,11 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     });
     if (mobileStep) mobileStep.textContent = String(currentStep + 1);
     if (mobileStepTitle) mobileStepTitle.textContent = progressSteps[currentStep]?.querySelector('strong')?.textContent ?? '';
-    if (mobileProgressBar) mobileProgressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
-    if (currentStep === 4) renderRecap();
+    if (mobileProgressBar) mobileProgressBar.style.width = `${((currentStep + 1) / stages.length) * 100}%`;
+    if (currentStep === 2) renderRecap();
     document.querySelector('.progress')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     if (moveFocus) {
-      const heading = steps[currentStep]?.querySelector<HTMLElement>('h2');
+      const heading = stages[currentStep]?.[0]?.querySelector<HTMLElement>('h2');
       heading?.setAttribute('tabindex', '-1');
       window.setTimeout(() => heading?.focus(), 250);
     }
@@ -564,14 +548,14 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const clearStepError = (step: number) => {
     setStepError(step, '');
     const errorId = `error-step-${step}`;
-    steps[step]?.querySelectorAll<HTMLElement>('[aria-invalid="true"]').forEach((control) => {
+    stages[step]?.forEach((section) => section.querySelectorAll<HTMLElement>('[aria-invalid="true"]').forEach((control) => {
       control.removeAttribute('aria-invalid');
       const describedBy = (control.getAttribute('aria-describedby') ?? '')
         .split(/\s+/)
         .filter((id) => id && id !== errorId);
       if (describedBy.length > 0) control.setAttribute('aria-describedby', describedBy.join(' '));
       else control.removeAttribute('aria-describedby');
-    });
+    }));
   };
 
   const invalidate = (step: number, control: HTMLElement, message: string) => {
@@ -598,7 +582,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       if (selectedPeriod === 'consecutif' && Number(daysField.value) < 3) return invalidate(step, daysField, i18n.minimumDays);
       if (Number(peopleField.value) < 1 || Number(peopleField.value) > 70) return invalidate(step, peopleField, i18n.peopleRange);
     }
-    if (step === 2) {
+    if (step === 1) {
       const required = ['first-name', 'last-name', 'address-field', 'postal-field', 'city-field', 'phone-field'].map((id) => byId<HTMLInputElement>(id));
       const missing = required.find((field) => !field.value.trim());
       if (missing) return invalidate(step, missing, i18n.required);
@@ -606,7 +590,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       if (email.value && !email.checkValidity()) return invalidate(step, email, i18n.validEmail);
       if (!memberField.checked && !clientIbanField.value.trim()) return invalidate(step, clientIbanField, i18n.ibanRequired);
     }
-    if (step === 3) {
+    if (step === 2) {
       if (!conditionsAccept.checked) return invalidate(step, conditionsAccept, i18n.acceptRequired);
       if ((!signatureStarted || signaturePoints < 5) && !signatureTextField.value.trim()) {
         return invalidate(step, signatureTextField, i18n.signatureRequired);
@@ -727,8 +711,27 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   document.querySelectorAll<HTMLButtonElement>('[data-next-step]').forEach((button) => button.addEventListener('click', () => { if (validateStep(currentStep)) showStep(currentStep + 1, true); }));
   document.querySelectorAll<HTMLButtonElement>('[data-prev-step]').forEach((button) => button.addEventListener('click', () => showStep(currentStep - 1, true)));
   progressSteps.forEach((button) => button.addEventListener('click', () => { const target = Number(button.dataset.goStep); if (target <= maxReached) showStep(target, true); }));
-  byId('print-contract').addEventListener('click', () => window.print());
+  document.querySelectorAll<HTMLButtonElement>('[data-open-calendar]').forEach((button) => {
+    button.addEventListener('click', () => availabilityDialog.showModal());
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-close-calendar]').forEach((button) => {
+    button.addEventListener('click', () => availabilityDialog.close());
+  });
+  availabilityDialog.addEventListener('click', (event) => {
+    if (event.target === availabilityDialog) availabilityDialog.close();
+  });
+  calendarRoot?.addEventListener('click', (event) => {
+    const day = (event.target as HTMLElement).closest<HTMLButtonElement>('.calendar-day');
+    if (day && !day.disabled && day.dataset.state === 'free') availabilityDialog.close();
+  });
+  byId('print-contract').addEventListener('click', () => {
+    if (!validateStep(2)) return;
+    renderRecap();
+    window.print();
+  });
   byId('email-contract').addEventListener('click', () => {
+    if (!validateStep(2)) return;
+    renderRecap();
     const name = `${byId<HTMLInputElement>('first-name').value} ${byId<HTMLInputElement>('last-name').value}`.trim();
     const period = selectedPeriod ? periodLabels[selectedPeriod] : '';
     const result = calculate();
@@ -758,13 +761,15 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .booking-hero h1 { max-width: 720px; margin: 0; font-size: clamp(36px, 4.2vw, 52px); font-weight: 500; letter-spacing: -.05em; line-height: .98; }
   .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.78); font-size: 16px; line-height: 1.45; }
 
-  .availability-section { padding: 38px 0 46px; border-top: 1px solid var(--line); background: var(--paper); }
-  .availability-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .75fr); gap: 48px; align-items: end; margin-bottom: 24px; }
-  .availability-heading h2 { margin: 0; color: var(--forest-900); font-size: clamp(30px, 3.2vw, 42px); font-weight: 550; letter-spacing: -.05em; line-height: 1; }
-  .availability-heading > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
-  .availability-layout { display: grid; grid-template-columns: minmax(0, 760px) minmax(300px, 1fr); align-items: stretch; }
+  .availability-dialog { width: min(760px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; background: var(--paper); color: var(--ink); box-shadow: 0 28px 90px rgba(8, 35, 31, .35); }
+  .availability-dialog::backdrop { background: rgba(7, 29, 26, .72); backdrop-filter: blur(5px); }
+  .availability-dialog-header { display: flex; justify-content: space-between; gap: 24px; align-items: center; padding: 22px 24px 12px; }
+  .availability-dialog-header h2 { margin: 0; color: var(--forest-900); font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -.045em; line-height: 1; }
+  .availability-dialog-header button { display: grid; flex: 0 0 auto; place-items: center; width: 46px; height: 46px; border: 1px solid var(--line); background: var(--white); color: var(--forest-900); cursor: pointer; }
+  .availability-dialog-header button:hover { border-color: var(--forest-900); }
+  .availability-dialog-lead { margin: 0; padding: 0 24px 18px; color: var(--muted); font-size: 15px; line-height: 1.5; }
   .availability-calendar-panel { min-width: 0; }
-  .availability-calendar-panel :global(.availability-calendar) { height: 100%; }
+  .availability-calendar-panel :global(.availability-calendar) { border-inline: 0; }
   .availability-calendar-panel :global(.calendar-toolbar) { padding: 17px 20px; }
   .availability-calendar-panel :global(.calendar-weekdays) { padding: 11px 12px 7px; font-size: 10px; }
   .availability-calendar-panel :global(.calendar-days) { gap: 2px; padding: 0 12px 13px; }
@@ -772,22 +777,13 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .availability-calendar-panel :global(.calendar-day b) { font-size: 16px; }
   .availability-calendar-panel :global(.calendar-day span) { margin-top: 1px; }
   .availability-calendar-panel :global(.calendar-legend) { min-height: 48px; padding: 10px 18px; }
-  .availability-guide { display: flex; flex-direction: column; padding: 26px 28px; background: var(--forest-900); color: var(--white); }
-  .availability-guide h3 { max-width: 280px; margin: 0; font-size: 28px; font-weight: 550; letter-spacing: -.035em; line-height: 1.05; }
-  .availability-guide ol { margin: 25px 0; padding: 0; list-style: none; }
-  .availability-guide li { display: grid; grid-template-columns: 30px 1fr; gap: 11px; padding: 13px 0; border-top: 1px solid rgba(255,255,255,.14); }
-  .availability-guide li:last-child { border-bottom: 1px solid rgba(255,255,255,.14); }
-  .availability-guide li > span { color: var(--yellow); font-size: 11px; font-weight: 900; }
-  .availability-guide li p { margin: 0; color: rgba(255,255,255,.7); font-size: 14px; line-height: 1.45; }
-  .availability-guide li strong { color: var(--white); }
-  .availability-note { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin-top: auto; padding-top: 18px; color: var(--white); }
-  .availability-note svg { flex: 0 0 auto; color: var(--yellow); }
-  .availability-note p { margin: 0; color: rgba(255,255,255,.68); font-size: 13px; line-height: 1.45; }
-  .availability-note p small { display: block; margin-top: 5px; color: rgba(255,255,255,.46); }
-  .availability-note a { grid-column: 2; color: var(--yellow); font-size: 13px; font-weight: 800; }
+  .availability-dialog-footer { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 15px 24px 18px; }
+  .availability-dialog-footer p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+  .availability-dialog-footer small { display: block; margin-top: 3px; }
+  .availability-dialog-footer a { flex: 0 0 auto; color: var(--blue); font-size: 13px; font-weight: 800; }
 
   .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(16px); }
-  .progress-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-inline: 1px solid var(--line); }
+  .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-inline: 1px solid var(--line); }
   .progress-step { min-height: 64px; padding: 10px 18px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); text-align: left; cursor: pointer; transition: background 160ms ease, color 160ms ease; }
   .progress-step:first-child { border-left: 0; }
   .progress-step:last-child { border-right: 0; }
@@ -812,11 +808,14 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
   .form-step { display: none; }
   .form-step.active { display: block; animation: step-in 260ms ease both; }
+  .form-step.active + .form-step.active { margin-top: 0; }
   @keyframes step-in { from { opacity: 0; transform: translateY(8px); } }
   .step-header { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; margin-bottom: 26px; }
   .step-number { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yellow); color: var(--forest-950); font-size: 12px; font-weight: 900; }
   .step-header h2 { margin: 0; color: var(--forest-900); font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -.045em; line-height: 1.05; }
   .step-header p { margin: 7px 0 0; color: var(--muted); font-size: 16px; }
+  .subsection-header { grid-template-columns: 1fr; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .subsection-header h2 { font-size: clamp(24px, 3vw, 31px); }
 
   .field-grid { display: grid; gap: 16px; }
   .two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -827,8 +826,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .field small { color: var(--muted); font-size: 14px; }
   .field small.date-conflict { color: #a62f28; font-weight: 700; }
   .date-field-help { display: flex; flex-wrap: wrap; gap: 7px 14px; align-items: center; justify-content: space-between; }
-  .date-field-help a { display: inline-flex; flex: 0 0 auto; gap: 6px; align-items: center; color: var(--blue); font-size: 13px; font-weight: 800; text-decoration: none; }
-  .date-field-help a:hover { color: var(--forest-900); text-decoration: underline; }
+  .date-field-help button { display: inline-flex; flex: 0 0 auto; gap: 6px; align-items: center; padding: 0; border: 0; background: transparent; color: var(--blue); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+  .date-field-help button:hover { color: var(--forest-900); text-decoration: underline; }
   input, textarea { width: 100%; min-height: 54px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 0; background: var(--white); color: var(--ink); font-size: 16px; }
   textarea { resize: vertical; }
   input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(17,135,178,.12); }
@@ -878,7 +877,13 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .automatic-option.applied .option-check { border-color: var(--blue); background: var(--blue); color: var(--white); }
   .included-note { margin-top: 22px; background: #fbf1bd; color: #594b08; font-size: 15px; line-height: 1.5; }
 
-  .conditions-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .conditions-disclosure { border: 1px solid var(--line); background: var(--white); }
+  .conditions-disclosure > summary { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 17px 18px; color: var(--forest-900); font-size: 15px; font-weight: 800; cursor: pointer; list-style: none; }
+  .conditions-disclosure > summary::-webkit-details-marker { display: none; }
+  .conditions-disclosure > summary svg { flex: 0 0 auto; transition: transform 180ms ease; }
+  .conditions-disclosure[open] > summary { border-bottom: 1px solid var(--line); }
+  .conditions-disclosure[open] > summary svg { transform: rotate(90deg); }
+  .conditions-list { display: grid; gap: 8px; margin: 0; padding: 12px; list-style: none; }
   .condition-row { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; padding: 13px 14px; border: 1px solid var(--line); border-radius: 0; background: var(--white); }
   .condition-number { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--forest-100); color: var(--forest-900); font-size: 11px; font-weight: 900; }
   .condition-row p { margin: 3px 0 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
@@ -964,11 +969,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .recap-actions [data-prev-step] { order: -1; margin-right: auto; }
 
   @media (max-width: 1020px) {
-    .booking-hero-grid, .booking-layout, .availability-heading, .availability-layout { grid-template-columns: 1fr; }
-    .availability-heading { gap: 20px; }
-    .availability-guide { display: grid; grid-template-columns: minmax(220px, .65fr) 1fr; gap: 24px; }
-    .availability-guide ol { margin: 0; }
-    .availability-note { grid-column: 1 / -1; margin-top: 0; padding-top: 4px; }
+    .booking-hero-grid, .booking-layout { grid-template-columns: 1fr; }
     .booking-sidebar { position: static; grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 760px) {
@@ -976,19 +977,18 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .booking-hero-grid { gap: 14px; }
     .back-link { margin-bottom: 12px; }
     .booking-lead { font-size: 15px; }
-    .availability-section { padding: 36px 0 42px; }
     .availability-calendar-panel :global(.calendar-day) { min-height: 46px; }
-    .availability-guide { display: flex; padding: 22px 14px; }
-    .availability-guide ol { margin: 22px 0; }
-    .availability-note { margin-top: 0; padding-top: 4px; }
     .progress { top: 72px; }
     .progress-grid { display: none; }
-    .mobile-progress { display: grid; grid-template-columns: 1fr minmax(100px, .7fr); gap: 18px; align-items: center; min-height: 60px; padding-block: 9px; }
+    .mobile-progress { display: grid; grid-template-columns: 1fr minmax(92px, .55fr) auto; gap: 16px; align-items: center; min-height: 60px; padding-block: 9px; }
     .mobile-progress span, .mobile-progress strong { display: block; }
     .mobile-progress span { color: var(--blue); font-size: 11px; font-weight: 900; }
     .mobile-progress strong { margin-top: 3px; color: var(--forest-900); font-size: 15px; }
     .mobile-progress-track { height: 5px; overflow: hidden; background: var(--line); }
-    .mobile-progress-track i { display: block; width: 20%; height: 100%; background: var(--blue); transition: width 180ms ease; }
+    .mobile-progress-track i { display: block; width: 33.333%; height: 100%; background: var(--blue); transition: width 180ms ease; }
+    .mobile-price { padding-left: 14px; border-left: 1px solid var(--line); text-align: right; }
+    .mobile-price span { color: var(--muted); font-size: 9px; }
+    .mobile-price strong { margin-top: 2px; font-size: 14px; white-space: nowrap; }
     .booking-content { padding: 16px 0 64px; }
     .two-cols, .period-grid, .participants-row, .recap-grid, .booking-sidebar { grid-template-columns: 1fr; }
     .full { grid-column: auto; }
@@ -1001,6 +1001,11 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     #recap-signature, .typed-signature { border-top: 1px solid var(--line); border-left: 0; }
     .payment-box { grid-template-columns: 1fr; }
     .payment-total { text-align: left; }
+    .step-actions { position: sticky; bottom: 0; z-index: 20; margin-inline: calc(-1 * clamp(24px, 3vw, 38px)); padding: 14px clamp(24px, 3vw, 38px); border-top: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(12px); }
+    .availability-dialog { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; }
+    .availability-dialog-header { padding: 18px 16px 10px; }
+    .availability-dialog-lead { padding: 0 16px 14px; }
+    .availability-dialog-footer { align-items: flex-start; flex-direction: column; padding: 14px 16px 18px; }
   }
   @media (max-width: 520px) {
     .form-card { padding: 20px 16px; border-radius: 0; }
@@ -1013,6 +1018,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .recap-actions [data-prev-step] { order: 0; margin-right: 0; }
     .action { width: 100%; }
     .recap-block dl div { grid-template-columns: 1fr; gap: 2px; }
+    .step-actions { margin-inline: -16px; padding-inline: 16px; }
+    .mobile-progress { grid-template-columns: 1fr auto; gap: 10px; }
+    .mobile-progress-track { grid-column: 1 / -1; grid-row: 2; }
+    .mobile-price { grid-column: 2; grid-row: 1; }
   }
   @page { size: A4 portrait; margin: 12mm 14mm 14mm; }
   @media print {

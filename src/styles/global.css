@@ -916,11 +916,29 @@ a {
   font-size: 15px;
   font-weight: 800;
   text-decoration: none;
+  cursor: pointer;
+  list-style: none;
+}
+
+.gallery-more-link::-webkit-details-marker {
+  display: none;
 }
 
 .gallery-more-link:hover {
   border-color: var(--forest-900);
   color: var(--blue);
+}
+
+.interior-gallery-more[open] .gallery-more-link svg {
+  transform: rotate(90deg);
+}
+
+.interior-gallery-more .gallery-more-link svg {
+  transition: transform 180ms ease;
+}
+
+.interior-gallery-extra {
+  margin-top: 24px;
 }
 
 .interior-photo {
