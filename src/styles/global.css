@@ -820,6 +820,18 @@ a {
   margin-bottom: 56px;
 }
 
+.gallery-subtitle {
+  margin: 0 0 18px;
+  color: var(--forest-900);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 550;
+  letter-spacing: -0.035em;
+}
+
+.gallery-subtitle-events {
+  margin-top: 64px;
+}
+
 .gallery-grid {
   display: grid;
   width: 100%;
@@ -881,6 +893,34 @@ a {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 240px;
   gap: 2px;
+}
+
+.interior-gallery-preview {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 260px;
+}
+
+.interior-gallery-preview .interior-photo-wide,
+.interior-gallery-preview .interior-photo-banner {
+  grid-column: span 1;
+}
+
+.gallery-more-link {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  margin-top: 24px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--blue);
+  color: var(--forest-900);
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.gallery-more-link:hover {
+  border-color: var(--forest-900);
+  color: var(--blue);
 }
 
 .interior-photo {
@@ -1578,6 +1618,15 @@ body.lightbox-open {
   .interior-gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: 280px;
+  }
+
+  .interior-gallery-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .interior-gallery-preview .interior-photo-wide,
+  .interior-gallery-preview .interior-photo-banner {
+    grid-column: span 1;
   }
 
   .interior-photo-wide,
