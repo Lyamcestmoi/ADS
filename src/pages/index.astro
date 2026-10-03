@@ -11,10 +11,8 @@ import {
   X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
-import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { getAvailability } from '../lib/availability';
 import { commonTranslations, homeTranslations, pagePaths, type Locale } from '../lib/i18n';
 
 interface Props { locale?: Locale; }
@@ -24,7 +22,6 @@ const common = commonTranslations[locale];
 const title = t.title;
 const description = t.description;
 
-const availability = await getAvailability();
 ---
 
 <MainLayout title={title} description={description} locale={locale} alternatePaths={pagePaths.home}>
@@ -68,26 +65,17 @@ const availability = await getAvailability();
     </section>
 
     <section class="home-availability" aria-labelledby="home-availability-title">
-      <div class="shell home-availability-grid">
+      <div class="shell home-availability-compact">
+        <span class="availability-icon"><CalendarDays size={25} stroke-width={1.7} aria-hidden="true" /></span>
         <div class="home-availability-copy reveal">
-          <span class="availability-icon"><CalendarDays size={25} stroke-width={1.7} aria-hidden="true" /></span>
           <p class="eyebrow">{t.availabilityEyebrow}</p>
           <h2 id="home-availability-title">{t.availabilityTitle}</h2>
           <p>{t.availabilityCopy}</p>
-          <a class="button button-primary" href={pagePaths.reservation[locale]}>
-            {t.availabilityButton}
-            <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
-          </a>
         </div>
-        <div class="home-calendar reveal">
-          <AvailabilityCalendar
-            bookedDates={availability.bookedDates}
-            available={availability.available}
-            compact
-            locale={locale}
-            bookingPath={pagePaths.reservation[locale]}
-          />
-        </div>
+        <a class="button button-primary" href={pagePaths.reservation[locale]}>
+          {t.availabilityButton}
+          <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
+        </a>
       </div>
     </section>
 
@@ -98,9 +86,6 @@ const availability = await getAvailability();
             <p class="eyebrow">{t.interiorEyebrow}</p>
             <h2 id="interior-title" class="display-title">{t.interiorTitle}</h2>
           </div>
-          <p class="section-lead">
-            {t.interiorLead}
-          </p>
         </div>
 
         <div class="interior-gallery-grid interior-gallery-preview reveal">
@@ -134,16 +119,6 @@ const availability = await getAvailability();
               alt={t.alts[3]}
             />
           </figure>
-          <figure class="interior-photo">
-            <img
-              src="/interieur-table-1.webp"
-              width="1800"
-              height="1660"
-              loading="lazy"
-              decoding="async"
-              alt={t.alts[4]}
-            />
-          </figure>
         </div>
         <details class="interior-gallery-more reveal">
           <summary class="gallery-more-link">
@@ -151,6 +126,9 @@ const availability = await getAvailability();
             <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
           </summary>
           <div class="interior-gallery-grid interior-gallery-extra">
+            <figure class="interior-photo">
+              <img src="/interieur-table-1.webp" width="1800" height="1660" loading="lazy" decoding="async" alt={t.alts[4]} />
+            </figure>
             <figure class="interior-photo">
               <img src="/interieur-table-2.webp" width="1722" height="1500" loading="lazy" decoding="async" alt={t.alts[5]} />
             </figure>
@@ -181,9 +159,6 @@ const availability = await getAvailability();
             <p class="eyebrow">{t.standEyebrow}</p>
             <h2 class="display-title">{t.standTitle}</h2>
           </div>
-          <p class="section-lead">
-            {t.standLead}
-          </p>
         </div>
 
         <div class="details-grid">
@@ -192,14 +167,22 @@ const availability = await getAvailability();
               <h3>{t.onSite}</h3>
               <span class="panel-index">01</span>
             </header>
-            <ul class="equipment-list">
-              {t.equipment.map((item) => (
+            <ul class="equipment-list equipment-list-primary">
+              {t.equipment.slice(0, 6).map((item) => (
                 <li>
                   <Check size={17} stroke-width={2} aria-hidden="true" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
+            <details class="equipment-more">
+              <summary>{t.moreEquipment}<ArrowRight size={16} aria-hidden="true" /></summary>
+              <ul class="equipment-list equipment-list-extra">
+                {t.equipment.slice(6).map((item) => (
+                  <li><Check size={17} stroke-width={2} aria-hidden="true" /><span>{item}</span></li>
+                ))}
+              </ul>
+            </details>
           </article>
 
           <article id="tarifs" class="detail-panel reveal">
@@ -229,13 +212,11 @@ const availability = await getAvailability();
             <p class="eyebrow">{t.galleryEyebrow}</p>
             <h2 id="gallery-title" class="display-title">{t.galleryTitle}</h2>
           </div>
-          <p class="section-lead">
-            {t.galleryLead}
-          </p>
         </div>
 
-        <h3 class="gallery-subtitle">{t.galleryEventTitle}</h3>
-        <div class="gallery-grid reveal">
+        <details class="reception-gallery reveal">
+          <summary>{t.viewReceptionPhotos}<ArrowRight size={18} aria-hidden="true" /></summary>
+          <div class="gallery-grid">
           <figure class="gallery-item gallery-item-tall">
             <img
               src="/event-exterieur-confidentiel.webp"
@@ -286,29 +267,9 @@ const availability = await getAvailability();
               alt={t.alts[15]}
             />
           </figure>
-        </div>
+          </div>
+        </details>
 
-      </div>
-    </section>
-
-    <section class="image-story" aria-label={t.locationLabel}>
-      <figure>
-        <img
-          src="/stand.png"
-          width="1200"
-          height="900"
-          loading="lazy"
-          alt={t.alts[16]}
-        />
-      </figure>
-      <div class="story-card">
-        <div>
-          <p class="eyebrow">{t.locationEyebrow}</p>
-          <blockquote>{t.locationQuote}</blockquote>
-        </div>
-        <p>
-          {t.locationCopy}
-        </p>
       </div>
     </section>
 
@@ -330,27 +291,22 @@ const availability = await getAvailability();
         </div>
         <div class="contact-grid reveal">
           <article class="contact-card">
-            <span class="contact-number">01</span>
             <h3>{t.managementTitle}</h3>
-            <p><strong>{t.managerName}</strong><br />{t.managementCopy}</p>
+            <p><strong>{t.managerName}</strong></p>
             <a class="text-link" href="mailto:gerante@ads-preles.ch">
               gerante@ads-preles.ch
               <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
             </a>
           </article>
           <article class="contact-card">
-            <span class="contact-number">02</span>
             <h3>{t.phoneTitle}</h3>
-            <p>{t.phoneCopy}</p>
             <a class="text-link" href="tel:+41786384791">
               <Phone size={16} stroke-width={1.8} aria-hidden="true" />
               078 638 47 91
             </a>
           </article>
           <article class="contact-card">
-            <span class="contact-number">03</span>
             <h3>{t.accessTitle}</h3>
-            <p>{t.accessCopy}</p>
             <a
               class="text-link"
               href="https://www.google.com/maps/search/?api=1&query=Stand+ADS+Prêles"
