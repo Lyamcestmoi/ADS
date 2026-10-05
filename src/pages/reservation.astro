@@ -2,7 +2,7 @@
 import {
   ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight,
   CircleDollarSign, Flame, Info, KeyRound, Mail, Phone, Pizza,
-  Printer, RotateCcw, ShieldCheck, Sparkles, UserRound, Users, X,
+  Printer, RotateCcw, Sparkles, UserRound, Users, X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
@@ -66,14 +66,6 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     <section class="booking-content">
       <div class="reservation-shell booking-layout">
         <form id="booking-form" class="form-card" novalidate>
-          <div class="privacy-note" role="note">
-            <ShieldCheck size={22} stroke-width={1.8} aria-hidden="true" />
-            <div>
-              <strong>{t.privacyTitle}</strong>
-              <span>{t.privacyCopy}</span>
-            </div>
-          </div>
-
           <section class="form-step active" data-step="0" aria-labelledby="step-title-0">
             <header class="step-header">
               <span class="step-number">01</span>
@@ -799,12 +791,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .booking-content { padding: 26px 0 54px; }
   .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
   .form-card { min-width: 0; padding: clamp(24px, 3vw, 38px); border: 1px solid var(--line); border-radius: 0; background: var(--paper); box-shadow: none; }
-  .privacy-note, .included-note, .send-note { display: flex; gap: 12px; align-items: flex-start; padding: 15px 17px; border-radius: var(--radius-sm); }
-  .privacy-note { margin-bottom: 20px; align-items: center; border: 1px solid #bad6c7; background: #e8f1ec; color: var(--forest-900); }
-  .privacy-note svg, .included-note svg, .send-note svg { flex: 0 0 auto; margin-top: 2px; }
-  .privacy-note div { display: flex; flex-wrap: wrap; gap: 3px 7px; align-items: baseline; }
-  .privacy-note strong, .privacy-note span { display: inline; }
-  .privacy-note span { color: var(--muted); font-size: 13px; line-height: 1.4; }
+  .included-note, .send-note { display: flex; gap: 12px; align-items: flex-start; padding: 15px 17px; border-radius: var(--radius-sm); }
+  .included-note svg, .send-note svg { flex: 0 0 auto; margin-top: 2px; }
 
   .form-step { display: none; }
   .form-step.active { display: block; animation: step-in 260ms ease both; }
@@ -1027,7 +1015,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   @media print {
     :global(html), :global(body) { background: #fff !important; color: #15312d !important; }
     :global(body) { font-size: 10pt; line-height: 1.35; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-    :global(.site-header), :global(.site-footer), .booking-hero, .progress, .booking-sidebar, .privacy-note, .step-actions, .send-note { display: none !important; }
+    :global(.site-header), :global(.site-footer), .booking-hero, .progress, .booking-sidebar, .step-actions, .send-note { display: none !important; }
     .booking-page, .booking-content { background: #fff !important; padding: 0 !important; }
     .reservation-shell, .booking-layout { width: 100% !important; display: block !important; }
     .form-card { padding: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
