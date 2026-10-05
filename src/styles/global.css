@@ -491,7 +491,7 @@ a {
 
 .home-availability-compact {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 24px;
   align-items: center;
 }
@@ -505,17 +505,6 @@ a {
 
 .home-availability-copy {
   max-width: 520px;
-}
-
-.availability-icon {
-  width: 54px;
-  height: 54px;
-  margin-bottom: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--yellow);
-  color: var(--forest-950);
 }
 
 .home-availability-copy h2 {
@@ -1710,7 +1699,7 @@ body.lightbox-open {
   }
 
   .home-availability-compact {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: 1fr;
     gap: 16px;
   }
 
