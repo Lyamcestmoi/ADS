@@ -40,7 +40,6 @@ const description = t.description;
       <div class="hero-shade" aria-hidden="true"></div>
 
       <div class="hero-main shell">
-        <p class="kicker">{t.kicker}</p>
         <h1 id="hero-title" class="hero-title">
           {t.heroTitle}<br />
           <em>{t.heroEmphasis}</em>
@@ -53,13 +52,6 @@ const description = t.description;
             {common.reserve}
             <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
           </a>
-          <a class="button button-ghost" href="#stand">{t.equipmentButton}</a>
-        </div>
-      </div>
-
-      <div class="hero-facts">
-        <div class="facts-grid shell">
-          {t.facts.map(([value, label]) => <div class="fact"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
       </div>
     </section>

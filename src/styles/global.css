@@ -402,7 +402,7 @@ a {
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr;
   align-items: stretch;
   overflow: hidden;
   background: var(--forest-950);
@@ -436,25 +436,6 @@ a {
   flex-direction: column;
   justify-content: center;
   padding: 130px 0 72px;
-}
-
-.kicker {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 22px;
-  color: currentColor;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.kicker::before {
-  width: 34px;
-  height: 2px;
-  background: var(--yellow);
-  content: "";
 }
 
 .hero-title {
@@ -501,58 +482,6 @@ a {
 .button-primary:hover {
   background: var(--white);
   transform: translateY(-2px);
-}
-
-.button-ghost {
-  border-color: rgba(255, 255, 255, 0.42);
-  color: var(--white);
-}
-
-.button-ghost:hover {
-  border-color: var(--white);
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-
-.hero-facts {
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(9, 45, 41, 0.62);
-  backdrop-filter: blur(12px);
-}
-
-.facts-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.fact {
-  min-height: 110px;
-  padding: 24px 28px;
-  border-right: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.fact:first-child {
-  padding-left: 0;
-}
-
-.fact:last-child {
-  border-right: 0;
-}
-
-.fact strong {
-  display: block;
-  color: var(--yellow);
-  font-size: 30px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-}
-
-.fact span {
-  color: rgba(255, 255, 255, 0.66);
-  font-size: 15px;
-  line-height: 1.35;
 }
 
 .home-availability {
@@ -1645,23 +1574,6 @@ body.lightbox-open {
     min-height: 100svh;
   }
 
-  .facts-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .fact:nth-child(2) {
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .fact:nth-child(-n + 2) {
-    border-bottom: 0;
-  }
-
-  .fact:nth-child(3) {
-    padding-left: 28px;
-    border-right: 0;
-  }
-
   .section-heading,
   .details-grid,
   .image-story,
@@ -1764,8 +1676,8 @@ body.lightbox-open {
   }
 
   .home-hero {
-    min-height: 88vh;
-    min-height: 88svh;
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   .hero-main {
@@ -1787,19 +1699,6 @@ body.lightbox-open {
 
   .button {
     width: 100%;
-  }
-
-  .fact {
-    min-height: 94px;
-    padding: 18px 14px;
-  }
-
-  .fact:nth-child(3) {
-    padding-left: 14px;
-  }
-
-  .fact strong {
-    font-size: 23px;
   }
 
   .section {
