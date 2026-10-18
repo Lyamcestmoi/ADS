@@ -523,6 +523,11 @@ a {
   line-height: 1.5;
 }
 
+.home-availability-copy .button {
+  width: fit-content;
+  margin-top: 28px;
+}
+
 .home-availability-copy .button-primary {
   background: var(--forest-900);
   color: var(--white);
@@ -530,6 +535,14 @@ a {
 
 .home-availability-copy .button-primary:hover {
   background: var(--blue);
+}
+
+.home-calendar-disclosure > summary {
+  display: none;
+}
+
+.calendar-summary-open {
+  display: none;
 }
 
 .section {
@@ -1713,6 +1726,50 @@ body.lightbox-open {
 
   .home-calendar {
     width: 100%;
+  }
+
+  .home-availability-copy .button {
+    width: 100%;
+  }
+
+  .home-calendar-disclosure > summary {
+    display: flex;
+    min-height: 56px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 18px;
+    border: 1px solid var(--forest-900);
+    color: var(--forest-900);
+    font-size: 15px;
+    font-weight: 800;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .home-calendar-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .home-calendar-disclosure > summary svg {
+    flex: 0 0 auto;
+    transition: transform 180ms ease;
+  }
+
+  .home-calendar-disclosure[open] > summary svg {
+    transform: rotate(90deg);
+  }
+
+  .home-calendar-disclosure[open] .calendar-summary-closed {
+    display: none;
+  }
+
+  .home-calendar-disclosure[open] .calendar-summary-open {
+    display: inline;
+  }
+
+  .home-calendar-panel {
+    margin-top: 12px;
   }
 
   .section-heading {

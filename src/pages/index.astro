@@ -10,8 +10,10 @@ import {
   X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { getAvailability } from '../lib/availability';
 import { commonTranslations, homeTranslations, pagePaths, type Locale } from '../lib/i18n';
 
 interface Props { locale?: Locale; }
@@ -20,6 +22,7 @@ const t = homeTranslations[locale];
 const common = commonTranslations[locale];
 const title = t.title;
 const description = t.description;
+const availability = await getAvailability();
 
 ---
 
@@ -56,16 +59,34 @@ const description = t.description;
     </section>
 
     <section class="home-availability" aria-labelledby="home-availability-title">
-      <div class="shell home-availability-compact">
+      <div class="shell home-availability-grid">
         <div class="home-availability-copy reveal">
           <p class="eyebrow">{t.availabilityEyebrow}</p>
           <h2 id="home-availability-title">{t.availabilityTitle}</h2>
           <p>{t.availabilityCopy}</p>
+          <a class="button button-primary" href={pagePaths.reservation[locale]}>
+            {t.availabilityButton}
+            <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
+          </a>
         </div>
-        <a class="button button-primary" href={pagePaths.reservation[locale]}>
-          {t.availabilityButton}
-          <ArrowRight size={18} stroke-width={1.8} aria-hidden="true" />
-        </a>
+        <div class="home-calendar reveal">
+          <details class="home-calendar-disclosure" data-home-calendar-disclosure open>
+            <summary>
+              <span class="calendar-summary-closed">{t.showCalendar}</span>
+              <span class="calendar-summary-open">{t.hideCalendar}</span>
+              <ChevronRight size={19} stroke-width={1.9} aria-hidden="true" />
+            </summary>
+            <div class="home-calendar-panel">
+              <AvailabilityCalendar
+                bookedDates={availability.bookedDates}
+                available={availability.available}
+                compact
+                locale={locale}
+                bookingPath={pagePaths.reservation[locale]}
+              />
+            </div>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -336,6 +357,14 @@ const description = t.description;
 
   <SiteFooter locale={locale} />
 </MainLayout>
+
+<script>
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    document.querySelectorAll<HTMLDetailsElement>('[data-home-calendar-disclosure]').forEach((calendar) => {
+      calendar.open = false;
+    });
+  }
+</script>
 
 <script>
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
