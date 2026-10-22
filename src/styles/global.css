@@ -665,8 +665,7 @@ a {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-.equipment-more > summary,
-.reception-gallery > summary {
+.equipment-more > summary {
   display: inline-flex;
   gap: 9px;
   align-items: center;
@@ -677,8 +676,7 @@ a {
   list-style: none;
 }
 
-.equipment-more > summary::-webkit-details-marker,
-.reception-gallery > summary::-webkit-details-marker {
+.equipment-more > summary::-webkit-details-marker {
   display: none;
 }
 
@@ -688,13 +686,11 @@ a {
   padding: 17px 30px;
 }
 
-.equipment-more > summary svg,
-.reception-gallery > summary svg {
+.equipment-more > summary svg {
   transition: transform 180ms ease;
 }
 
-.equipment-more[open] > summary svg,
-.reception-gallery[open] > summary svg {
+.equipment-more[open] > summary svg {
   transform: rotate(90deg);
 }
 
@@ -798,16 +794,6 @@ a {
 
 .gallery-section {
   background: var(--paper);
-}
-
-.reception-gallery > summary {
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--blue);
-  color: var(--forest-900);
-}
-
-.reception-gallery .gallery-grid {
-  margin-top: 28px;
 }
 
 .gallery-heading {
