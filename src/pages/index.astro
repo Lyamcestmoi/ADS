@@ -15,6 +15,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { getAvailability } from '../lib/availability';
 import { commonTranslations, homeTranslations, pagePaths, type Locale } from '../lib/i18n';
+import { bookingTranslations } from '../lib/booking-translations';
 
 interface Props { locale?: Locale; }
 const { locale = 'fr' } = Astro.props;
@@ -207,6 +208,7 @@ const availability = await getAvailability();
             <div class="price-notes">
               <span class="tag">{t.deposit}</span>
               <span class="tag tag-yellow">{t.memberDiscount}</span>
+              <a class="tag" href="mailto:gerante@ads-preles.ch">{bookingTranslations[locale].donor}</a>
             </div>
             <div class="options-list" aria-label={t.optionsLabel}>
               {t.options.map(([label, price]) => <div class="option-item"><span>{label}</span><strong>{price}</strong></div>)}

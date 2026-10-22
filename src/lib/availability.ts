@@ -82,16 +82,19 @@ const parseBookedDates = (source: string) => {
   return [...booked].filter((date) => date >= minimum).sort();
 };
 
-const loadAvailability = async (): Promise<AvailabilityData> => {
+export const loadAvailability = async (strict = false): Promise<AvailabilityData> => {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
+  const timeout = setTimeout(() => controller.abort(), strict ? 15_000 : 30_000);
 
   try {
     const response = await fetch(icalUrl, { signal: controller.signal });
     if (!response.ok) throw new Error(`Google Calendar returned ${response.status}`);
+    const source = await response.text();
+    // Do not accept bookings over an unexpanded recurring event in the shared API.
+    if (strict && /(?:^|\n)(?:RRULE|RDATE)[;:]/.test(unfoldIcal(source))) throw new Error('Recurring calendar events require expansion before accepting online options');
 
     return {
-      bookedDates: parseBookedDates(await response.text()),
+      bookedDates: parseBookedDates(source),
       syncedAt: new Date().toISOString(),
       available: true,
     };

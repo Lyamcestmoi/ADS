@@ -1,0 +1,16 @@
+{
+  "name": "ads-reservations",
+  "main": "worker.ts",
+  "compatibility_date": "2026-10-22",
+  "vars": {
+    "SITE_ORIGIN": "https://ads-preles.ch"
+  },
+  "triggers": { "crons": ["*/15 * * * *"] },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "ads-reservations",
+    // Replace with the identifier returned by your own D1 creation command.
+    "database_id": "REPLACE_WITH_YOUR_DATABASE_ID",
+    "migrations_dir": "migrations"
+  }]
+}

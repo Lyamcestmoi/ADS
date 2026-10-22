@@ -1,0 +1,118 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+const apiUrl = (import.meta.env.PUBLIC_BOOKING_API_URL ?? '').replace(/\/$/, '');
+---
+<MainLayout title="Gérance — ADS" description="Gestion privée des réservations et des membres ADS.">
+  <main id="main-content" class="management shell" data-api-url={apiUrl}>
+    <a href="/">← Retour au site</a>
+    <h1>Gérance ADS</h1>
+    <p id="management-feedback" role="status" aria-live="polite">{apiUrl ? 'Connectez-vous pour accéder aux réservations et à la liste privée des membres.' : 'Le service de réservation partagé doit être configuré avant de pouvoir utiliser cette page.'}</p>
+    {apiUrl && <>
+      <form id="management-login"><label>Clé d’administration<input id="admin-token" type="password" autocomplete="off" required /></label><button type="submit">Se connecter</button></form>
+      <div id="management-panels" hidden>
+        <button id="management-logout" type="button">Se déconnecter</button>
+        <section><h2>Liste privée des membres</h2><p>Le code personnel est affiché une seule fois. Transmettez-le individuellement au membre. Ne publiez pas la liste ni les codes sur GitHub.</p>
+          <form id="member-editor">
+            <label>Nom complet<input id="edit-member-name" required maxlength="200" /></label>
+            <label>E-mail<input id="edit-member-email" type="email" required /></label>
+            <label class="inline"><input id="edit-member-active" type="checkbox" checked />Membre actif</label>
+            <label class="inline"><input id="edit-member-reset" type="checkbox" />Générer un nouveau code personnel</label>
+            <button type="submit">Enregistrer le membre</button>
+          </form>
+          <label id="new-member-code-label" hidden>Code personnel à transmettre au membre<input id="new-member-code" readonly autocomplete="off" /></label>
+          <div class="table-scroll"><table><thead><tr><th>Nom</th><th>E-mail</th><th>Statut</th><th>Action</th></tr></thead><tbody id="members-list"></tbody></table></div>
+        </section>
+        <section><h2>Réservations</h2><p>Vérifiez l’entrée du paiement sur le compte bancaire ou dans TWINT avant de marquer une réservation comme payée. Une capture d’écran envoyée par le client ne remplace pas ce contrôle.</p>
+          <button id="management-refresh" type="button">Actualiser</button><div id="reservations-list"></div>
+        </section>
+      </div>
+    </>}
+  </main>
+</MainLayout>
+<script>
+  const root = document.querySelector<HTMLElement>('.management')!;
+  const apiUrl = root.dataset.apiUrl ?? '';
+  let token = '';
+  const feedback = document.querySelector<HTMLElement>('#management-feedback')!;
+  const field = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const call = async (path: string, method = 'GET', value?: unknown) => {
+    const response = await fetch(`${apiUrl}${path}`, { method, cache: 'no-store', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: value === undefined ? undefined : JSON.stringify(value), signal: AbortSignal.timeout(20_000) });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error ?? 'service_unavailable');
+    return data;
+  };
+  const errorText = (error: unknown) => {
+    const code = error instanceof Error ? error.message : '';
+    return code === 'unauthorized' ? 'Clé d’administration incorrecte.' : code === 'payment_mismatch' ? 'Le montant reçu ou la référence ne correspond pas. Vérifiez le paiement.' : code === 'expired' ? 'Cette option a expiré : contrôlez la disponibilité avant de traiter ce paiement.' : code === 'payment_reference_used' ? 'Cette référence de paiement a déjà été utilisée.' : 'Opération impossible. Vérifiez la connexion et la configuration du service.';
+  };
+  const text = (tag: string, value: string) => { const element = document.createElement(tag); element.textContent = value; return element; };
+  const load = async () => {
+    const [members, reservations] = await Promise.all([call('/admin/members'), call('/admin/reservations')]);
+    const memberRows = document.querySelector('#members-list')!; memberRows.replaceChildren();
+    for (const member of members) {
+      const row = document.createElement('tr');
+      for (const value of [member.full_name, member.email, member.active ? 'Actif' : 'Inactif']) row.append(text('td', value));
+      const cell = document.createElement('td'), button = document.createElement('button'); button.type = 'button'; button.textContent = 'Modifier';
+      button.addEventListener('click', () => { field('edit-member-name').value = member.full_name; field('edit-member-email').value = member.email; field('edit-member-active').checked = Boolean(member.active); field('edit-member-reset').checked = false; field('edit-member-name').focus(); });
+      cell.append(button); row.append(cell); memberRows.append(row);
+    }
+    const list = document.querySelector('#reservations-list')!; list.replaceChildren();
+    for (const reservation of reservations) {
+      const article = document.createElement('article');
+      const contract = JSON.parse(reservation.contract_json);
+      article.append(text('h3', `${reservation.start_date} · ${contract.tenant.firstName} ${contract.tenant.lastName}`));
+      article.append(text('p', `Référence : ${reservation.id}`));
+      article.append(text('p', `${reservation.status} · CHF ${(reservation.amount_cents / 100).toFixed(2)} · ${reservation.payment_method}`));
+      article.append(text('p', `Échéance : ${new Intl.DateTimeFormat('fr-CH', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Zurich' }).format(new Date(reservation.expires_at))}`));
+      if (reservation.status === 'held') {
+        const form = document.createElement('form');
+        const amountLabel = text('label', 'Montant effectivement reçu (CHF)'), amount = document.createElement('input'); amount.type = 'number'; amount.step = '.01'; amount.min = '0'; amount.required = true; amountLabel.append(amount);
+        const referenceLabel = text('label', 'Référence de la transaction bancaire ou TWINT'), reference = document.createElement('input'); reference.required = true; reference.minLength = 3; referenceLabel.append(reference);
+        const submit = text('button', 'Confirmer le paiement reçu') as HTMLButtonElement; submit.type = 'submit';
+        form.append(amountLabel, referenceLabel, submit);
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault(); submit.disabled = true;
+          try { await call(`/admin/reservations/${encodeURIComponent(reservation.id)}/payment`, 'POST', { amountCents: Math.round(Number(amount.value) * 100), paymentReference: reference.value.trim() }); feedback.textContent = 'Paiement enregistré et réservation confirmée.'; await load(); }
+          catch (error) { feedback.textContent = errorText(error); } finally { submit.disabled = false; }
+        });
+        article.append(form);
+      }
+      list.append(article);
+    }
+  };
+  document.querySelector<HTMLFormElement>('#management-login')?.addEventListener('submit', async (event) => {
+    event.preventDefault(); token = field('admin-token').value;
+    try { await load(); document.querySelector<HTMLElement>('#management-panels')!.hidden = false; document.querySelector<HTMLElement>('#management-login')!.hidden = true; field('admin-token').value = ''; feedback.textContent = 'Connexion active. La clé reste uniquement en mémoire jusqu’à la fermeture ou la déconnexion.'; }
+    catch (error) { token = ''; feedback.textContent = errorText(error); }
+  });
+  document.querySelector('#management-logout')?.addEventListener('click', () => { token = ''; document.querySelector<HTMLElement>('#management-panels')!.hidden = true; document.querySelector<HTMLElement>('#management-login')!.hidden = false; document.querySelector('#members-list')!.replaceChildren(); document.querySelector('#reservations-list')!.replaceChildren(); field('new-member-code').value = ''; feedback.textContent = 'Déconnecté.'; });
+  document.querySelector<HTMLFormElement>('#member-editor')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const result = await call('/admin/members', 'PUT', { name: field('edit-member-name').value.trim(), email: field('edit-member-email').value.trim(), active: field('edit-member-active').checked, resetCode: field('edit-member-reset').checked });
+      field('new-member-code').value = result.code ?? ''; document.querySelector<HTMLElement>('#new-member-code-label')!.hidden = !result.code;
+      feedback.textContent = 'Membre enregistré.'; await load();
+    } catch (error) { feedback.textContent = errorText(error); }
+  });
+  document.querySelector('#management-refresh')?.addEventListener('click', () => { load().catch((error) => { feedback.textContent = errorText(error); }); });
+</script>
+<style>
+  .management { max-width: 1100px; padding-block: 40px 80px; }
+  h1 { font-size: clamp(32px, 5vw, 52px); }
+  section { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+  form { display: grid; gap: 14px; max-width: 680px; margin-block: 20px; }
+  label { display: grid; gap: 7px; font-weight: 700; font-size: 14px; }
+  label.inline { display: flex; align-items: center; }
+  label.inline input { width: 18px; height: 18px; padding: 0; }
+  input { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 0; }
+  button { padding: 12px 16px; border: 1px solid var(--forest-900); border-radius: 0; background: var(--forest-900); color: var(--white); cursor: pointer; }
+  button:disabled { opacity: .55; cursor: default; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px; border-bottom: 1px solid var(--line); text-align: left; }
+  td { overflow-wrap: anywhere; }
+  article { margin-top: 18px; padding: 20px; border: 1px solid var(--line); }
+  article p { overflow-wrap: anywhere; }
+  #management-feedback { padding: 16px; background: #edf5f0; }
+  [hidden] { display: none !important; }
+</style>

@@ -10,10 +10,15 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { getAvailability, googleCalendarUrl } from '../lib/availability';
 import { localeCodes, pagePaths, reservationTranslations, type Locale } from '../lib/i18n';
+import { bookingTranslations } from '../lib/booking-translations';
+import { bernHolidays } from '../lib/booking-rules';
 
 interface Props { locale?: Locale; }
 const { locale = 'fr' } = Astro.props;
 const t = reservationTranslations[locale];
+const b = bookingTranslations[locale];
+const apiUrl = (import.meta.env.PUBLIC_BOOKING_API_URL ?? '').replace(/\/$/, '');
+const holidayYears = [new Date().getFullYear(), new Date().getFullYear() + 1];
 const title = t.title;
 const description = t.description;
 
@@ -32,7 +37,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 <MainLayout title={title} description={description} locale={locale} alternatePaths={pagePaths.reservation}>
   <SiteHeader active="reservation" locale={locale} />
 
-  <main id="main-content" class="booking-page" tabindex="-1" data-runtime-i18n={JSON.stringify(t.runtime)} data-locale-code={localeCodes[locale]}>
+  <main id="main-content" class="booking-page" tabindex="-1" data-runtime-i18n={JSON.stringify(t.runtime)} data-booking-locale={locale} data-api-url={apiUrl} data-locale-code={localeCodes[locale]}>
     <section class="booking-hero">
       <div class="reservation-shell booking-hero-grid">
         <div>
@@ -84,11 +89,14 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
                   </button>
                 </div>
               </label>
-              <label class="check-card holiday-card">
-                <input id="holiday-field" name="jour_ferie" type="checkbox" />
-                <span><strong>{t.holiday}</strong><small>{t.holidayHelp}</small></span>
-              </label>
+              <div class="holiday-card holiday-detected" role="status" aria-live="polite">
+                <strong>{t.holiday}</strong><p id="holiday-status">{b.holidayAutomatic}</p>
+              </div>
             </div>
+            <details class="holiday-list">
+              <summary>{b.holidayTitle}</summary>
+              {holidayYears.map((year) => <section><h3>{year}</h3><ul>{bernHolidays(year, locale).map((holiday) => <li><time datetime={holiday.date}>{new Intl.DateTimeFormat(localeCodes[locale], { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${holiday.date}T12:00:00Z`))}</time><span>{holiday.name}</span></li>)}</ul></section>)}
+            </details>
 
             <fieldset class="plain-fieldset">
               <legend>{t.period}</legend>
@@ -141,12 +149,11 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
             </header>
 
             <div class="option-list">
-              <label class="option-row member-option">
-                <input id="member-field" name="membre_ads" type="checkbox" />
+              <div class="option-row member-option">
                 <span class="option-icon"><UserRound size={22} stroke-width={1.8} /></span>
-                <span class="option-copy"><strong>{t.member}</strong><small>{t.memberHelp}</small></span>
-                <b>−20 %</b><span class="option-check"><Check size={17} /></span>
-              </label>
+                <span class="option-copy"><strong>{t.member}</strong><small>{b.memberHelp}</small></span>
+                <b>−20 %</b>
+              </div>
               <div id="caution-row" class="option-row automatic-option applied" role="status" aria-live="polite">
                 <span class="option-icon"><KeyRound size={22} stroke-width={1.8} /></span>
                 <span class="option-copy"><strong>{t.deposit}</strong><small>{t.depositHelp}</small></span>
@@ -195,6 +202,16 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
               </label>
               <label class="field full"><span>{t.remarks}</span><textarea id="remarks-field" name="remarques" rows="4"></textarea></label>
             </div>
+
+            <details class="membership-verification">
+              <summary>{b.memberVerify}</summary>
+              <p>{b.memberHelp}</p>
+              {apiUrl ? <>
+                <label class="field"><span>{b.memberCode}</span><input id="member-code" type="password" autocomplete="off" maxlength="100" /></label>
+                <button id="verify-member" type="button" class="action secondary">{b.memberVerify}</button>
+              </> : <p>{b.memberUnavailable}</p>}
+              <p id="member-feedback" role="status" aria-live="polite"></p>
+            </details>
 
             <p id="error-step-1" class="step-error" data-error-step="1" role="alert"></p>
             <div class="step-actions">
@@ -276,17 +293,27 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
                 <dl><div><dt>{t.responsible}</dt><dd id="recap-name">–</dd></div><div><dt>{t.address.replace(' *', '')}</dt><dd id="recap-address">–</dd></div><div><dt>{t.contact}</dt><dd id="recap-contact">–</dd></div><div id="recap-iban-row"><dt>{t.depositIban}</dt><dd id="recap-iban">–</dd></div><div id="recap-remarks-row"><dt>{t.remarks}</dt><dd id="recap-remarks">–</dd></div></dl>
               </section>
               <section class="recap-block full"><h3>{t.options}</h3><ul id="recap-options"></ul></section>
-              <section class="payment-box recap-payment" aria-labelledby="twint-payment-title">
-                <div class="twint-payment-copy">
-                  <span id="twint-payment-title">{t.afterApproval}</span>
-                  <strong>{t.paymentInfo}</strong>
-                  <p><b>{t.twintReference} :</b> <span id="twint-reference">{t.twintReferenceHint}</span></p>
-                  <small>{t.twintConfirmation}</small>
+              <section class="reservation-hold recap-payment" aria-labelledby="hold-title">
+                <h3 id="hold-title">{b.holdTitle}</h3>
+                <p>{b.holdHelp}</p>
+                <p id="hold-feedback" role="status" aria-live="polite">{apiUrl ? b.paymentHelp : b.holdManual}</p>
+                <dl id="hold-receipt" class="hidden"><div><dt>{b.holdId}</dt><dd id="hold-reference">–</dd></div><div><dt>{b.holdUntil}</dt><dd id="hold-deadline">–</dd></div></dl>
+                {apiUrl && <button id="register-hold" type="button" class="action primary">{b.holdSubmit}</button>}
+                {apiUrl && <button id="refresh-hold" type="button" class="action secondary hidden">{b.statusRefresh}</button>}
+              </section>
+              <section class="payment-box recap-payment" aria-labelledby="payment-title">
+                <div class="payment-copy">
+                  <h3 id="payment-title">{b.paymentTitle}</h3>
+                  <fieldset class="payment-methods"><legend class="sr-only">{b.paymentTitle}</legend>
+                    <label><input type="radio" name="payment-method" value="ebanking" checked />{b.ebanking}</label>
+                    <label><input type="radio" name="payment-method" value="twint" />{b.twint}</label>
+                  </fieldset>
+                  <p>{b.paymentHelp}</p>
+                  <div id="bank-payment"><strong>{b.bankAccount}</strong><p>{b.bankIban} : <b class="bank-iban">CH37 0900 0000 1711 4870 5</b></p></div>
+                  <div id="twint-payment" class="hidden"><p>{b.twintHelp}</p><a id="twint-payment-link" class="hidden" target="_blank" rel="noopener noreferrer">{b.payTwint}</a></div>
+                  <p><b>{b.reference} :</b> <span id="payment-reference">–</span></p>
+                  <small>{b.paymentNotConfirmed}</small>
                 </div>
-                <a class="twint-qr-card" href="/twint-qr.png" target="_blank" rel="noopener">
-                  <img src="/twint-qr.png" width="920" height="1340" alt={t.twintAlt} />
-                  <span>{t.twintOpen}</span>
-                </a>
                 <div class="payment-total"><span>{t.calculatedTotal}</span><strong id="recap-total">CHF –</strong></div>
               </section>
               <section class="recap-block full print-conditions">
@@ -372,12 +399,17 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 </MainLayout>
 
 <script>
+  import { holidayForDate, rentalPrice, swissToday, weekendRate, type Rental } from '../lib/booking-rules';
+  import { bookingTranslations } from '../lib/booking-translations';
   type Period = 'journee' | 'soiree' | 'complet' | 'consecutif';
 
   const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const bookingRoot = byId<HTMLElement>('main-content');
   const i18n = JSON.parse(bookingRoot.dataset.runtimeI18n ?? '{}') as Record<string, any>;
   const localeCode = bookingRoot.dataset.localeCode ?? 'fr-CH';
+  const locale = (bookingRoot.dataset.bookingLocale ?? 'fr') as 'fr' | 'de' | 'en';
+  const b = bookingTranslations[locale];
+  const apiUrl = bookingRoot.dataset.apiUrl ?? '';
   const sections = Array.from(document.querySelectorAll<HTMLElement>('.form-step'));
   const stages = [
     sections.filter((section) => section.dataset.step === '0'),
@@ -393,13 +425,12 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const dateAvailabilityFeedback = byId<HTMLElement>('date-availability-feedback');
   const calendarRoot = document.querySelector<HTMLElement>('[data-availability-calendar]');
   const availabilityDialog = byId<HTMLDialogElement>('availability-dialog');
-  const calendarAvailable = calendarRoot?.dataset.calendarAvailable === 'true';
-  const bookedDates = new Set<string>(JSON.parse(calendarRoot?.dataset.booked ?? '[]'));
-  const holidayField = byId<HTMLInputElement>('holiday-field');
+  let calendarAvailable = !apiUrl && calendarRoot?.dataset.calendarAvailable === 'true';
+  let bookedDates = new Set<string>(JSON.parse(calendarRoot?.dataset.booked ?? '[]'));
   const daysField = byId<HTMLInputElement>('days-field');
   const daysGroup = byId<HTMLElement>('days-group');
   const peopleField = byId<HTMLInputElement>('people-field');
-  const memberField = byId<HTMLInputElement>('member-field');
+  const memberCodeField = document.querySelector<HTMLInputElement>('#member-code');
   const cautionRow = byId<HTMLElement>('caution-row');
   const cautionStatus = byId<HTMLElement>('caution-status');
   const clientIbanField = byId<HTMLInputElement>('client-iban');
@@ -418,6 +449,22 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   let signatureStarted = false;
   let signaturePoints = 0;
   let drawing = false;
+  let verifiedMember: { email: string; name: string; code: string } | null = null;
+  let hold: { id: string; expiresAt: string; status: string; amountCents: number; paymentMethod: string } | null = null;
+  const newId = () => {
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6]! & 15) | 64; bytes[8] = (bytes[8]! & 63) | 128;
+    const hex = Array.from(bytes, (value) => value.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  };
+  const requestId = newId();
+  const receiptToken = newId();
+  let twintPaymentUrl: string | null = null;
+
+  const selectedPayment = () => document.querySelector<HTMLInputElement>('[name="payment-method"]:checked')?.value === 'twint' ? 'twint' : 'ebanking';
+  const memberIdentity = () => ({ email: byId<HTMLInputElement>('email-field').value.trim().toLowerCase(), name: `${byId<HTMLInputElement>('first-name').value.trim()} ${byId<HTMLInputElement>('last-name').value.trim()}` });
+  const isMember = () => Boolean(verifiedMember && verifiedMember.email === memberIdentity().email && verifiedMember.name === memberIdentity().name && verifiedMember.code === memberCodeField?.value.trim());
+  const rental = (): Rental => ({ date: dateField.value, period: selectedPeriod!, days: selectedPeriod === 'consecutif' ? Math.max(3, Number(daysField.value) || 3) : 1, people: Number(peopleField.value), pizza: pizzaField.checked, wood: woodField.checked, cleaning: cleaningField.checked });
 
   const periodLabels: Record<Period, string> = {
     journee: i18n.periodLabels[0],
@@ -426,17 +473,9 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     consecutif: i18n.periodLabels[3],
   };
 
-  const localToday = () => {
-    const now = new Date();
-    return [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
-  };
+  const localToday = () => swissToday();
 
-  const isWeekendRate = () => {
-    if (holidayField.checked) return true;
-    if (!dateField.value) return false;
-    const date = new Date(`${dateField.value}T12:00:00`);
-    return date.getDay() === 0 || date.getDay() === 6;
-  };
+  const isWeekendRate = () => weekendRate(dateField.value);
 
   const formatDate = (value: string) => {
     if (!value) return '–';
@@ -474,15 +513,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
   const calculate = () => {
     if (!selectedPeriod) return null;
-    const weekend = isWeekendRate();
-    const days = Math.max(3, Number(daysField.value) || 3);
-    let base = 0;
-    if (selectedPeriod === 'consecutif') base = days * 160;
-    if (selectedPeriod === 'complet') base = weekend ? 190 : 150;
-    if (selectedPeriod === 'journee' || selectedPeriod === 'soiree') base = 90;
-    const discount = memberField.checked ? base * 0.2 : 0;
-    const options = (!memberField.checked ? 150 : 0) + (pizzaField.checked ? 50 : 0) + (woodField.checked ? 30 : 0);
-    return { base, discount, options, total: base - discount + options };
+    const cents = rentalPrice(rental(), isMember());
+    return { base: cents.base / 100, discount: cents.discount / 100, options: cents.options / 100, total: cents.total / 100 };
   };
 
   const updateSummary = () => {
@@ -500,6 +532,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   };
 
   const updatePeriodAvailability = () => {
+    const holiday = holidayForDate(dateField.value, locale);
+    byId('holiday-status').textContent = holiday ? `${holiday.name} — ${b.holidayApplied}` : dateField.value ? b.holidayNone : b.holidayAutomatic;
     const weekend = isWeekendRate();
     periodCards.forEach((card) => {
       const period = card.dataset.period as Period;
@@ -509,6 +543,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       if (disabled && selectedPeriod === period) {
         selectedPeriod = null;
         card.classList.remove('selected');
+        card.setAttribute('aria-pressed', 'false');
       }
     });
     const completePrice = document.querySelector<HTMLElement>('[data-price="complet"]');
@@ -589,7 +624,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       if (missing) return invalidate(step, missing, i18n.required);
       const email = byId<HTMLInputElement>('email-field');
       if (email.value && !email.checkValidity()) return invalidate(step, email, i18n.validEmail);
-      if (!memberField.checked && !clientIbanField.value.trim()) return invalidate(step, clientIbanField, i18n.ibanRequired);
+      if (!isMember() && !clientIbanField.value.trim()) return invalidate(step, clientIbanField, i18n.ibanRequired);
     }
     if (step === 2) {
       if (!conditionsAccept.checked) return invalidate(step, conditionsAccept, i18n.acceptRequired);
@@ -602,8 +637,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
   const optionTexts = () => {
     const options: string[] = [];
-    if (memberField.checked) options.push(i18n.optionMember);
-    if (!memberField.checked) options.push(i18n.optionDeposit);
+    if (isMember()) options.push(i18n.optionMember);
+    if (!isMember()) options.push(i18n.optionDeposit);
     if (pizzaField.checked) options.push(i18n.optionPizza);
     if (woodField.checked) options.push(i18n.optionWood);
     options.push(cleaningField.checked ? i18n.cleaningTenant : i18n.cleaningInvoice);
@@ -626,13 +661,13 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     byId('recap-people').textContent = `${peopleField.value} ${i18n.peopleWord}`;
     byId('recap-name').textContent = `${firstName} ${lastName}`.trim();
     byId('recap-signer').textContent = `${firstName} ${lastName}`.trim();
-    byId('twint-reference').textContent = `${firstName} ${lastName} · ${formatDate(dateField.value)}`.trim();
+    byId('payment-reference').textContent = hold?.id ?? `${firstName} ${lastName} · ${formatDate(dateField.value)}`.trim();
     byId('print-header-date').textContent = formatDate(dateField.value);
     byId('print-created-date').textContent = new Intl.DateTimeFormat(localeCode).format(new Date());
     byId('recap-address').textContent = `${address}, ${postal} ${city}`;
     byId('recap-contact').textContent = [phone, email].filter(Boolean).join(' · ');
     byId('recap-iban').textContent = iban || i18n.notProvided;
-    byId('recap-iban-row').classList.toggle('hidden', memberField.checked && !iban);
+    byId('recap-iban-row').classList.toggle('hidden', isMember() && !iban);
     byId('recap-remarks').textContent = remarks || i18n.noRemarks;
     byId('recap-remarks-row').classList.toggle('hidden', !remarks);
     const optionList = byId<HTMLUListElement>('recap-options');
@@ -655,7 +690,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   };
 
   canvas.addEventListener('pointerdown', (event) => {
-    if (!context) return;
+    if (!context || hold) return;
     drawing = true; signatureStarted = true; signaturePoints = 1; canvas.setPointerCapture(event.pointerId);
     const point = signaturePosition(event); context.beginPath(); context.moveTo(point.x, point.y);
   });
@@ -689,7 +724,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   });
 
   const updateCautionState = () => {
-    const applies = !memberField.checked;
+    const applies = !isMember();
     cautionRow.classList.toggle('applied', applies);
     cautionRow.classList.toggle('waived', !applies);
     cautionStatus.textContent = applies ? i18n.depositApplied : i18n.depositWaived;
@@ -699,15 +734,120 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
       : i18n.ibanMember;
   };
 
+  const api = async (path: string, options: RequestInit = {}) => {
+    const response = await fetch(`${apiUrl}${path}`, { ...options, cache: 'no-store', headers: { 'Content-Type': 'application/json', ...options.headers }, signal: AbortSignal.timeout(20_000) });
+    const value = await response.json();
+    if (!response.ok) throw new Error(value.error ?? 'service_unavailable');
+    return value;
+  };
+  const apiMessage = (error: unknown) => {
+    const code = error instanceof Error ? error.message : '';
+    return code === 'conflict' ? b.conflict : code === 'member_invalid' ? b.memberInvalid : code === 'rate_limited' ? b.rateLimited : b.apiError;
+  };
+
+  document.querySelector<HTMLButtonElement>('#verify-member')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const identity = memberIdentity();
+    const code = memberCodeField?.value.trim() ?? '';
+    verifiedMember = null;
+    updateCautionState(); updateSummary();
+    button.disabled = true;
+    try {
+      const value = await api('/members/verify', { method: 'POST', body: JSON.stringify({ ...identity, code }) });
+      if (value.verified !== true || memberIdentity().email !== identity.email || memberIdentity().name !== identity.name || memberCodeField?.value.trim() !== code) throw new Error('member_invalid');
+      verifiedMember = { ...identity, code };
+      byId('member-feedback').textContent = b.memberVerified;
+    } catch (error) { byId('member-feedback').textContent = apiMessage(error); }
+    finally { button.disabled = false; updateCautionState(); updateSummary(); }
+  });
+  for (const input of [byId<HTMLInputElement>('first-name'), byId<HTMLInputElement>('last-name'), byId<HTMLInputElement>('email-field'), memberCodeField]) {
+    input?.addEventListener('input', () => {
+      if (verifiedMember) byId('member-feedback').textContent = b.memberContactChanged;
+      verifiedMember = null;
+      updateCautionState(); updateSummary();
+    });
+  }
+
+  const updatePayment = () => {
+    const twint = selectedPayment() === 'twint';
+    byId('bank-payment').classList.toggle('hidden', twint);
+    byId('twint-payment').classList.toggle('hidden', !twint);
+    const link = byId<HTMLAnchorElement>('twint-payment-link');
+    const payable = hold?.status === 'held' && hold.expiresAt > new Date().toISOString();
+    link.classList.toggle('hidden', !twint || !twintPaymentUrl || !payable);
+    if (twintPaymentUrl && payable) link.href = twintPaymentUrl;
+    else link.removeAttribute('href');
+  };
+  document.querySelectorAll<HTMLInputElement>('[name="payment-method"]').forEach((input) => input.addEventListener('change', updatePayment));
+
+  const showReceipt = () => {
+    if (!hold) return;
+    byId('hold-receipt').classList.remove('hidden');
+    byId('hold-reference').textContent = hold.id;
+    byId('payment-reference').textContent = hold.id;
+    byId('hold-deadline').textContent = new Intl.DateTimeFormat(localeCode, { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Zurich' }).format(new Date(hold.expiresAt));
+    byId('hold-feedback').textContent = hold.status === 'confirmed' ? b.holdConfirmed : hold.status === 'expired' || hold.expiresAt <= new Date().toISOString() ? b.holdExpired : b.holdSaved;
+    byId('register-hold').classList.add('hidden');
+    byId('refresh-hold').classList.remove('hidden');
+    byId('recap-total').textContent = formatAmount(hold.amountCents / 100);
+    // Keep the displayed/printed contract identical to the one registered on the server.
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>('#booking-form input, #booking-form textarea, .period-card, [data-counter], [data-next-step], [data-prev-step], #clear-signature, #verify-member').forEach((control) => { control.disabled = true; });
+    progressSteps.forEach((control) => { control.disabled = true; });
+    updatePayment();
+  };
+  document.querySelector<HTMLButtonElement>('#register-hold')?.addEventListener('click', async (event) => {
+    for (let step = 0; step <= 2; step++) {
+      if (!validateStep(step)) { showStep(step, true); return; }
+    }
+    const email = byId<HTMLInputElement>('email-field');
+    if (!email.value || !email.checkValidity()) { showStep(1, true); invalidate(1, email, b.emailRequired); return; }
+    if (dateField.value <= localToday()) { showStep(0, true); invalidate(0, dateField, b.nextDay); return; }
+    const button = event.currentTarget as HTMLButtonElement;
+    button.disabled = true;
+    byId('hold-feedback').textContent = b.holdSubmitting;
+    const value = (id: string) => byId<HTMLInputElement>(id).value.trim();
+    try {
+      const result = await api('/reservations', { method: 'POST', body: JSON.stringify({
+        requestId, receiptToken, rental: rental(), paymentMethod: selectedPayment(), accepted: conditionsAccept.checked,
+        memberCode: isMember() ? verifiedMember!.code : undefined,
+        tenant: { firstName: value('first-name'), lastName: value('last-name'), email: value('email-field'), address: value('address-field'), postal: value('postal-field'), city: value('city-field'), phone: value('phone-field'), iban: clientIbanField.value.trim(), remarks: byId<HTMLTextAreaElement>('remarks-field').value.trim() },
+        signatureText: signatureTextField.value.trim(), signatureImage: signatureTextField.value.trim() ? '' : canvas.toDataURL('image/png'),
+      }) });
+      hold = result;
+      renderRecap(); showReceipt();
+      document.dispatchEvent(new CustomEvent('ads:availability-refresh'));
+    } catch (error) { byId('hold-feedback').textContent = apiMessage(error); }
+    finally { button.disabled = false; }
+  });
+  document.querySelector<HTMLButtonElement>('#refresh-hold')?.addEventListener('click', async () => {
+    if (!hold) return;
+    try {
+      hold = await api(`/reservations/${encodeURIComponent(hold.id)}`, { headers: { Authorization: `Bearer ${receiptToken}` } });
+      showReceipt();
+    } catch (error) { byId('hold-feedback').textContent = apiMessage(error); }
+  });
+  window.setInterval(() => {
+    if (hold?.status === 'held' && hold.expiresAt <= new Date().toISOString()) {
+      hold.status = 'expired'; showReceipt();
+    }
+  }, 30_000);
+  document.addEventListener('ads:availability-updated', ((event: CustomEvent<{ available: boolean; bookedDates: string[]; heldDates: string[] }>) => {
+    calendarAvailable = event.detail.available;
+    bookedDates = new Set([...event.detail.bookedDates, ...event.detail.heldDates]);
+    if (!hold) updateDateAvailability();
+  }) as EventListener);
+  if (apiUrl) api('/config').then((config) => {
+    if (typeof config.twintPaymentUrl === 'string' && config.twintPaymentUrl.startsWith('https://')) twintPaymentUrl = config.twintPaymentUrl;
+    updatePayment();
+  }).catch(() => { byId('hold-feedback').textContent = b.apiError; });
+
   document.querySelectorAll<HTMLInputElement>('.option-row input').forEach((input) => {
     input.addEventListener('change', () => {
-      if (input === memberField) updateCautionState();
       updateSummary();
     });
   });
 
   dateField.addEventListener('change', updatePeriodAvailability);
-  holidayField.addEventListener('change', updatePeriodAvailability);
   daysField.addEventListener('input', () => { updateDateAvailability(); updateSummary(); });
   peopleField.addEventListener('input', updateSummary);
   document.querySelectorAll<HTMLButtonElement>('[data-next-step]').forEach((button) => button.addEventListener('click', () => { if (validateStep(currentStep)) showStep(currentStep + 1, true); }));
@@ -738,8 +878,10 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     const period = selectedPeriod ? periodLabels[selectedPeriod] : '';
     const result = calculate();
     const subject = `${i18n.emailSubject} — ${formatDate(dateField.value)} — ${name}`;
-    const paymentReference = `${name} — ${formatDate(dateField.value)}`;
-    const body = [i18n.hello, '', i18n.attachment, '', `${i18n.date} : ${formatDate(dateField.value)}`, `${i18n.period} : ${period}`, `${i18n.people} : ${peopleField.value}`, `${i18n.total} : ${result ? formatAmount(result.total) : i18n.confirm}`, '', `${i18n.payment} :`, i18n.paymentCopy, `${i18n.paymentQr} : https://ads-preles.ch/twint-qr.png`, `${i18n.paymentReference} : ${paymentReference}`, i18n.confirmationRequest, '', i18n.regards, name].join('\n');
+    const paymentReference = hold?.id ?? `${name} — ${formatDate(dateField.value)}`;
+    const method = selectedPayment() === 'twint' ? b.twint : b.ebanking;
+    const paymentDetails = selectedPayment() === 'ebanking' ? `${b.bankAccount}\nIBAN : CH37 0900 0000 1711 4870 5` : `${b.twintHelp}${hold && twintPaymentUrl ? `\n${twintPaymentUrl}` : ''}`;
+    const body = [i18n.hello, '', i18n.attachment, '', `${i18n.date} : ${formatDate(dateField.value)}`, `${i18n.period} : ${period}`, `${i18n.people} : ${peopleField.value}`, `${i18n.total} : ${result ? formatAmount(result.total) : i18n.confirm}`, `${b.paymentEmail} : ${method}`, `${b.reference} : ${paymentReference}`, paymentDetails, '', hold ? `${b.onlineEmail} : ${hold.id}\n${b.holdUntil} : ${new Intl.DateTimeFormat(localeCode, { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Zurich' }).format(new Date(hold.expiresAt))}` : b.manualEmail, '', hold?.status === 'confirmed' ? b.holdConfirmed : i18n.confirmationRequest, '', i18n.regards, name].join('\n');
     window.location.href = `mailto:gerante@ads-preles.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 
@@ -749,6 +891,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     dateField.value = requestedDate;
   }
   updateCautionState();
+  updatePayment();
   showStep(0);
   updatePeriodAvailability();
 </script>
@@ -851,6 +994,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .field-hint { margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
   #days-group { max-width: 220px; margin-top: 22px; }
   .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   .participants-row { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: end; margin-top: 24px; }
   .counter { display: grid; grid-template-columns: 48px 1fr 48px; border: 1px solid var(--line); border-radius: 0; overflow: hidden; background: var(--white); }
   .counter input { min-width: 0; border: 0; border-radius: 0; text-align: center; font-weight: 800; }
@@ -954,18 +1098,37 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .signature-recap p { margin: 0; color: var(--muted); font-size: 14px; }
   #recap-signature { width: 100%; min-height: 90px; max-height: 120px; object-fit: contain; object-position: center; border-left: 1px solid var(--line); }
   .typed-signature { margin: 0; padding: 24px; border-left: 1px solid var(--line); color: var(--forest-900) !important; font-size: 22px !important; font-style: italic; font-weight: 700; text-align: center; }
-  .payment-box { display: grid; grid-template-columns: minmax(0, 1fr) 126px auto; gap: 24px; align-items: center; padding: 22px; border-radius: var(--radius-sm); background: var(--forest-900); color: var(--white); }
+  .payment-box { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: start; padding: 22px; border-radius: var(--radius-sm); background: var(--forest-900); color: var(--white); }
   .recap-payment { grid-column: 1 / -1; }
   .payment-box span, .payment-box strong { display: block; }
   .payment-box span { color: rgba(255,255,255,.62); font-size: 13px; }
   .payment-box strong { margin-top: 4px; font-size: 18px; letter-spacing: .02em; }
-  .twint-payment-copy p { margin: 13px 0 5px; color: rgba(255,255,255,.82); font-size: 13px; line-height: 1.4; }
-  .twint-payment-copy p b, .twint-payment-copy p span { display: inline; color: inherit; font-size: inherit; }
-  .twint-payment-copy small { display: block; max-width: 520px; color: rgba(255,255,255,.62); font-size: 12px; line-height: 1.4; }
-  .twint-qr-card { display: block; padding: 8px; background: var(--white); color: var(--forest-900); text-align: center; text-decoration: none; }
-  .twint-qr-card img { display: block; width: 100%; height: 112px; object-fit: contain; object-position: center top; }
-  .twint-qr-card span { margin-top: 5px; color: var(--forest-900); font-size: 10px; font-weight: 800; }
-  .twint-qr-card:hover, .twint-qr-card:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .payment-copy h3 { margin: 0 0 14px; font-size: 21px; }
+  .payment-copy p { margin: 13px 0 5px; color: rgba(255,255,255,.85); font-size: 13px; line-height: 1.4; }
+  .payment-copy p b, .payment-copy p span { display: inline; color: inherit; font-size: inherit; }
+  .payment-copy small { display: block; color: rgba(255,255,255,.8); font-size: 12px; line-height: 1.4; }
+  .payment-copy a { display: inline-block; margin-top: 8px; color: var(--yellow); font-weight: 800; }
+  .payment-methods { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; }
+  .payment-methods label { display: flex; align-items: center; gap: 10px; min-height: 36px; cursor: pointer; font-size: 14px; }
+  .payment-methods input { width: 20px; height: 20px; min-height: 20px; padding: 0; accent-color: var(--yellow); }
+  .bank-iban { overflow-wrap: anywhere; }
+  .reservation-hold { padding: 20px; border: 1px solid var(--forest-900); background: #edf5f0; }
+  .reservation-hold h3 { margin: 0 0 10px; color: var(--forest-900); font-size: 19px; }
+  .reservation-hold p { margin: 8px 0; font-size: 14px; line-height: 1.5; }
+  .reservation-hold dl { margin: 14px 0; }
+  .reservation-hold dl div { margin-block: 8px; }
+  .reservation-hold dt { font-size: 12px; color: var(--muted); }
+  .reservation-hold dd { margin: 3px 0 0; font-weight: 700; overflow-wrap: anywhere; }
+  .holiday-detected { padding: 16px; border: 1px solid var(--line); background: var(--white); }
+  .holiday-detected p { margin: 7px 0 0; font-size: 13px; line-height: 1.5; }
+  .holiday-list { margin: 0 0 24px; color: var(--forest-900); }
+  .holiday-list summary, .membership-verification summary { padding-block: 10px; cursor: pointer; font-weight: 700; }
+  .holiday-list h3 { font-size: 16px; }
+  .holiday-list ul { margin: 0; padding: 0; list-style: none; }
+  .holiday-list li { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding-block: 5px; font-size: 13px; }
+  .membership-verification { margin-block: 22px; padding: 14px 18px; border: 1px solid var(--line); }
+  .membership-verification p { font-size: 14px; line-height: 1.5; }
+  .membership-verification .action { margin-top: 12px; }
   .payment-total { text-align: right; }
   .payment-total strong { color: var(--yellow); font-size: 24px; }
   .send-note { margin-top: 16px; border: 1px solid #d9c04f; background: #fbf1bd; color: #594b08; }
@@ -1005,8 +1168,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .option-check { grid-column: 3; grid-row: 1 / 3; }
     .print-conditions ol, .signature-recap { grid-template-columns: 1fr; }
     #recap-signature, .typed-signature { border-top: 1px solid var(--line); border-left: 0; }
-    .payment-box { grid-template-columns: 1fr 126px; }
-    .twint-payment-copy { grid-column: 1 / -1; }
+    .payment-box { grid-template-columns: 1fr; }
     .payment-total { text-align: left; }
     .step-actions { position: sticky; bottom: 0; z-index: 20; margin-inline: calc(-1 * clamp(24px, 3vw, 38px)); padding: 14px clamp(24px, 3vw, 38px); border-top: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(12px); }
     .availability-dialog { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; }
@@ -1025,9 +1187,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .recap-actions [data-prev-step] { order: 0; margin-right: 0; }
     .action { width: 100%; }
     .recap-block dl div { grid-template-columns: 1fr; gap: 2px; }
-    .payment-box { grid-template-columns: 112px 1fr; gap: 16px; padding: 16px; }
-    .twint-qr-card img { height: 100px; }
-    .payment-total { text-align: right; }
+    .payment-box { gap: 16px; padding: 16px; }
+    .payment-total { text-align: left; }
     .step-actions { margin-inline: -16px; padding-inline: 16px; }
     .mobile-progress { grid-template-columns: 1fr auto; gap: 10px; }
     .mobile-progress-track { grid-column: 1 / -1; grid-row: 2; }
@@ -1062,14 +1223,18 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .recap-block dl div { grid-template-columns: 28mm 1fr; gap: 3mm; padding: 1.8mm 0; }
     .recap-block dt, .recap-block dd, .recap-block ul { font-size: 9pt; }
     .recap-block ul { gap: 1.5mm; }
-    .payment-box { grid-template-columns: 1fr 31mm auto; gap: 5mm; padding: 4mm; border-radius: 2mm; break-inside: avoid; }
+    .payment-box { grid-template-columns: 1fr auto; gap: 5mm; padding: 4mm; border-radius: 0; break-inside: avoid; }
     .payment-box span { font-size: 8pt; }
     .payment-box strong { font-size: 11pt; }
-    .twint-payment-copy p { margin: 2.5mm 0 1mm; font-size: 8pt; }
-    .twint-payment-copy small { font-size: 7.5pt; }
-    .twint-qr-card { padding: 1.5mm; }
-    .twint-qr-card img { width: 28mm; height: 41mm; object-fit: contain; }
-    .twint-qr-card span { display: none; }
+    .payment-copy h3 { margin-bottom: 2mm; font-size: 11pt; }
+    .payment-copy p { margin: 2mm 0 1mm; font-size: 8pt; }
+    .payment-copy small { font-size: 7.5pt; }
+    .payment-methods label { min-height: 0; font-size: 9pt; }
+    .payment-methods label:has(input:not(:checked)), .payment-methods input { display: none; }
+    .reservation-hold { padding: 3mm; break-inside: avoid; }
+    .reservation-hold h3 { margin-bottom: 2mm; font-size: 10pt; }
+    .reservation-hold p, .reservation-hold dt, .reservation-hold dd { margin-block: 1mm; font-size: 8pt; }
+    #register-hold, #refresh-hold { display: none !important; }
     .payment-total strong { font-size: 16pt; }
 
     .print-conditions { grid-column: 1 / -1; break-before: page; padding: 0; border: 0; background: #fff; }

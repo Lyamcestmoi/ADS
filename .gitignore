@@ -5,3 +5,7 @@ dist/
 .env
 .env.*
 !.env.example
+backend/wrangler.jsonc
+backend/.wrangler/
+backend/.dev.vars
+backend/private/
