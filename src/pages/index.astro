@@ -179,22 +179,14 @@ const availability = await getAvailability();
               <h3>{t.onSite}</h3>
               <span class="panel-index">01</span>
             </header>
-            <ul class="equipment-list equipment-list-primary">
-              {t.equipment.slice(0, 6).map((item) => (
+            <ul class="equipment-list">
+              {t.equipment.map((item) => (
                 <li>
                   <Check size={17} stroke-width={2} aria-hidden="true" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
-            <details class="equipment-more">
-              <summary>{t.moreEquipment}<ArrowRight size={16} aria-hidden="true" /></summary>
-              <ul class="equipment-list equipment-list-extra">
-                {t.equipment.slice(6).map((item) => (
-                  <li><Check size={17} stroke-width={2} aria-hidden="true" /><span>{item}</span></li>
-                ))}
-              </ul>
-            </details>
           </article>
 
           <article id="tarifs" class="detail-panel reveal">
@@ -203,7 +195,12 @@ const availability = await getAvailability();
               <span class="panel-index">02</span>
             </header>
             <dl class="price-list">
-              {t.prices.map(([label, price]) => <div class="price-row"><dt>{label}</dt><dd>{price}</dd></div>)}
+              {t.prices.map(([label, price, hours]) => (
+                <div class="price-row">
+                  <dt><span class="price-name">{label}</span><span class="price-hours">{hours.map((hour) => <span>{hour}</span>)}</span></dt>
+                  <dd>{price}</dd>
+                </div>
+              ))}
             </dl>
             <div class="price-notes">
               <span class="tag">{t.deposit}</span>

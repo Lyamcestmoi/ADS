@@ -660,43 +660,6 @@ a {
   line-height: 1.45;
 }
 
-.equipment-more {
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.equipment-more > summary {
-  display: inline-flex;
-  gap: 9px;
-  align-items: center;
-  color: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  list-style: none;
-}
-
-.equipment-more > summary::-webkit-details-marker {
-  display: none;
-}
-
-.equipment-more > summary {
-  width: 100%;
-  justify-content: space-between;
-  padding: 17px 30px;
-}
-
-.equipment-more > summary svg {
-  transition: transform 180ms ease;
-}
-
-.equipment-more[open] > summary svg {
-  transform: rotate(90deg);
-}
-
-.equipment-list-extra {
-  padding-top: 0;
-}
-
 .equipment-list li:nth-last-child(-n + 2) {
   border-bottom: 0;
 }
@@ -714,10 +677,11 @@ a {
 
 .price-row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
   min-height: 66px;
+  padding-block: 14px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -727,9 +691,24 @@ a {
 }
 
 .price-row dt {
-  color: var(--muted);
+  min-width: 0;
+  color: var(--ink);
   font-size: 16px;
   line-height: 1.4;
+}
+
+.price-name {
+  display: block;
+  font-weight: 600;
+}
+
+.price-hours {
+  display: grid;
+  gap: 3px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .price-row dd {
@@ -1860,6 +1839,15 @@ body.lightbox-open {
 
   .equipment-list li:nth-last-child(2) {
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .price-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .price-row dd {
+    font-size: 18px;
   }
 
   .options-list {
