@@ -1,11 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy maintenance page
 
 on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,32 +13,24 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install, build and upload site
-        env:
-          PUBLIC_BOOKING_API_URL: ${{ vars.PUBLIC_BOOKING_API_URL }}
-        uses: withastro/action@3eafd002e65cc31b4f0eae0bb05450d521562247 # v6
-        with:
-          node-version: 24
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      # Publish only this folder. The complete Astro site stays available for local development.
+      - name: Upload construction page
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: maintenance
+      - name: Deploy construction page
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
