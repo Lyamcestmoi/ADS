@@ -1,8 +1,8 @@
 ---
 import {
-  ArrowLeft, CalendarDays, Check, ChevronLeft, ChevronRight,
-  CircleDollarSign, Flame, Info, KeyRound, Mail, Phone, Pizza,
-  Printer, RotateCcw, Sparkles, UserRound, Users, X,
+  ArrowLeft, Check, ChevronLeft, ChevronRight,
+  Flame, Info, KeyRound, Mail, Phone, Pizza,
+  Printer, RotateCcw, Sparkles, UserRound, X,
 } from '@lucide/astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import AvailabilityCalendar from '../components/AvailabilityCalendar.astro';
@@ -11,14 +11,12 @@ import SiteHeader from '../components/SiteHeader.astro';
 import { getAvailability, googleCalendarUrl } from '../lib/availability';
 import { localeCodes, pagePaths, reservationTranslations, type Locale } from '../lib/i18n';
 import { bookingTranslations } from '../lib/booking-translations';
-import { bernHolidays } from '../lib/booking-rules';
 
 interface Props { locale?: Locale; }
 const { locale = 'fr' } = Astro.props;
 const t = reservationTranslations[locale];
 const b = bookingTranslations[locale];
 const apiUrl = (import.meta.env.PUBLIC_BOOKING_API_URL ?? '').replace(/\/$/, '');
-const holidayYears = [new Date().getFullYear(), new Date().getFullYear() + 1];
 const title = t.title;
 const description = t.description;
 
@@ -45,12 +43,8 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
             <ArrowLeft size={17} stroke-width={1.8} aria-hidden="true" />
             {t.back}
           </a>
-          <p class="booking-eyebrow">{t.formTitle}</p>
           <h1>{t.heroTitle}</h1>
         </div>
-        <p class="booking-lead">
-          {t.heroLead}
-        </p>
       </div>
     </section>
 
@@ -73,52 +67,44 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
         <form id="booking-form" class="form-card" novalidate>
           <section class="form-step active" data-step="0" aria-labelledby="step-title-0">
             <header class="step-header">
-              <span class="step-number">01</span>
               <div><h2 id="step-title-0">{t.step0Title}</h2><p>{t.step0Copy}</p></div>
             </header>
 
-            <div class="field-grid two-cols">
-              <label class="field">
-                <span>{t.startDate}</span>
-                <input id="date-field" name="date" type="date" required aria-describedby="date-availability-feedback" />
-                <div class="date-field-help">
-                  <small id="date-availability-feedback">{t.dateHelp}</small>
-                  <button type="button" data-open-calendar>
-                    <CalendarDays size={16} stroke-width={1.8} aria-hidden="true" />
-                    {t.viewAvailability}
-                  </button>
-                </div>
-              </label>
-              <div class="holiday-card holiday-detected" role="status" aria-live="polite">
-                <strong>{t.holiday}</strong><p id="holiday-status">{b.holidayAutomatic}</p>
+            <div class="booking-date-controls">
+              <div class="field">
+                <label for="date-field">{t.startDate}</label>
+                <input id="date-field" name="date" type="date" required aria-describedby="date-availability-feedback holiday-status" />
               </div>
+              <button class="action secondary" type="button" data-open-calendar>{t.viewAvailability}</button>
             </div>
-            <details class="holiday-list">
-              <summary>{b.holidayTitle}</summary>
-              {holidayYears.map((year) => <section><h3>{year}</h3><ul>{bernHolidays(year, locale).map((holiday) => <li><time datetime={holiday.date}>{new Intl.DateTimeFormat(localeCodes[locale], { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${holiday.date}T12:00:00Z`))}</time><span>{holiday.name}</span></li>)}</ul></section>)}
-            </details>
+            <p id="date-availability-feedback" class="field-hint date-field-feedback" role="status"></p>
+            <p id="holiday-status" class="holiday-notice" role="status" hidden></p>
 
             <fieldset class="plain-fieldset">
               <legend>{t.period}</legend>
               <div class="period-grid">
-                <button class="period-card" type="button" data-period="journee" aria-pressed="false">
-                  <CalendarDays size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>{t.day}</strong><span>{t.dayTime}</span><b data-price="journee">CHF 90.–</b>
-                </button>
-                <button class="period-card" type="button" data-period="soiree" aria-pressed="false">
-                  <Sparkles size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>{t.evening}</strong><span>{t.eveningTime}</span><b data-price="soiree">CHF 90.–</b>
-                </button>
-                <button class="period-card" type="button" data-period="complet" aria-pressed="false">
-                  <CircleDollarSign size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>{t.fullDay}</strong><span>{t.fullDayTime}</span><b data-price="complet">CHF 150.–</b>
-                </button>
-                <button class="period-card" type="button" data-period="consecutif" aria-pressed="false">
-                  <CalendarDays size={22} stroke-width={1.7} aria-hidden="true" />
-                  <strong>{t.consecutive}</strong><span>{t.perDay}</span><b data-price="consecutif">{t.consecutivePrice}</b>
-                </button>
+                <label class="period-card">
+                  <input type="radio" name="rental-period" value="journee" data-period="journee" />
+                  <span class="period-copy"><strong>{t.day}</strong><small>{t.dayTime}</small></span>
+                  <b data-price="journee">CHF 90.–</b>
+                </label>
+                <label class="period-card">
+                  <input type="radio" name="rental-period" value="soiree" data-period="soiree" />
+                  <span class="period-copy"><strong>{t.evening}</strong><small>{t.eveningTime}</small></span>
+                  <b data-price="soiree">CHF 90.–</b>
+                </label>
+                <label class="period-card">
+                  <input type="radio" name="rental-period" value="complet" data-period="complet" />
+                  <span class="period-copy"><strong>{t.fullDay}</strong><small>{t.fullDayTime}</small></span>
+                  <b data-price="complet">CHF 150.–</b>
+                </label>
+                <label class="period-card">
+                  <input type="radio" name="rental-period" value="consecutif" data-period="consecutif" />
+                  <span class="period-copy"><strong>{t.consecutive}</strong><small>{t.perDay}</small></span>
+                  <b data-price="consecutif">{t.consecutivePrice}</b>
+                </label>
               </div>
-              <p id="period-help" class="field-hint">{t.periodHelp}</p>
+              <p id="period-help" class="field-hint" hidden>{t.periodHelp}</p>
             </fieldset>
 
             <div id="days-group" class="field hidden">
@@ -131,11 +117,11 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
                 <label for="people-field">{t.people}</label>
                 <div class="counter">
                   <button type="button" data-counter="-1" aria-label={t.removePerson}>−</button>
-                  <input id="people-field" name="participants" type="number" min="1" max="70" value="20" required />
+                  <input id="people-field" name="participants" type="number" min="1" max="70" value="20" required aria-describedby="capacity-help" />
                   <button type="button" data-counter="1" aria-label={t.addPerson}>+</button>
                 </div>
               </div>
-              <div class="capacity-note"><Users size={22} stroke-width={1.7} aria-hidden="true" /><span><strong>{t.capacity}</strong> · {t.capacityCopy}</span></div>
+              <p id="capacity-help" class="capacity-note">{t.capacityCopy}</p>
             </div>
 
             <p id="error-step-0" class="step-error" data-error-step="0" role="alert"></p>
@@ -144,7 +130,6 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
           <section class="form-step" data-step="1" aria-labelledby="step-title-1">
             <header class="step-header">
-              <span class="step-number">02</span>
               <div><h2 id="step-title-1">{t.step1Title}</h2><p>{t.step1Copy}</p></div>
             </header>
 
@@ -222,7 +207,6 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
           <section class="form-step" data-step="3" aria-labelledby="step-title-3">
             <header class="step-header">
-              <span class="step-number">03</span>
               <div><h2 id="step-title-3">{t.step3Title}</h2><p>{t.step3Copy}</p></div>
             </header>
 
@@ -356,16 +340,17 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
               <div><dt>{t.persons}</dt><dd id="summary-people">20</dd></div>
               <div><dt>{t.baseRental}</dt><dd id="summary-base">–</dd></div>
               <div><dt>{t.options}</dt><dd id="summary-options">CHF 0.–</dd></div>
+              <div id="summary-deposit-row"><dt>{t.deposit}</dt><dd id="summary-deposit">CHF 150.–</dd></div>
               <div id="summary-discount-row" class="discount-row hidden"><dt>{t.memberDiscount}</dt><dd id="summary-discount">–</dd></div>
             </dl>
             <div class="summary-total"><span>{t.indicativeTotal}</span><strong id="summary-total">CHF –</strong></div>
             <p>{t.finalAmount}</p>
           </section>
-          <section class="manager-card">
-            <p class="booking-eyebrow">{t.contact}</p><h3>{t.managerName}</h3>
+          <details class="manager-card">
+            <summary>{t.contact}</summary><h3>{t.managerName}</h3>
             <a href="tel:+41786384791"><Phone size={17} aria-hidden="true" />078 638 47 91</a>
             <a href="mailto:gerante@ads-preles.ch"><Mail size={17} aria-hidden="true" />gerante@ads-preles.ch</a>
-          </section>
+          </details>
         </aside>
       </div>
     </section>
@@ -420,7 +405,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const mobileStep = document.querySelector<HTMLElement>('[data-mobile-step]');
   const mobileStepTitle = document.querySelector<HTMLElement>('[data-mobile-step-title]');
   const mobileProgressBar = document.querySelector<HTMLElement>('[data-mobile-progress-bar]');
-  const periodCards = Array.from(document.querySelectorAll<HTMLButtonElement>('.period-card'));
+  const periodCards = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="rental-period"]'));
   const dateField = byId<HTMLInputElement>('date-field');
   const dateAvailabilityFeedback = byId<HTMLElement>('date-availability-feedback');
   const calendarRoot = document.querySelector<HTMLElement>('[data-availability-calendar]');
@@ -503,7 +488,9 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const updateDateAvailability = () => {
     const conflict = conflictingDate();
     dateField.setCustomValidity(conflict ? i18n.conflict : '');
-    dateAvailabilityFeedback.textContent = conflict
+    dateAvailabilityFeedback.textContent = !dateField.value
+      ? ''
+      : conflict
       ? `${formatDate(conflict)} ${selectedPeriod === 'consecutif' ? i18n.conflictPeriod : i18n.conflictSingle}`
       : calendarAvailable
         ? i18n.available
@@ -514,7 +501,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   const calculate = () => {
     if (!selectedPeriod) return null;
     const cents = rentalPrice(rental(), isMember());
-    return { base: cents.base / 100, discount: cents.discount / 100, options: cents.options / 100, total: cents.total / 100 };
+    return { base: cents.base / 100, discount: cents.discount / 100, options: cents.options / 100, deposit: cents.deposit / 100, total: cents.total / 100 };
   };
 
   const updateSummary = () => {
@@ -523,7 +510,9 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     byId('summary-people').textContent = `${peopleField.value || 1} ${i18n.personShort}`;
     const result = calculate();
     byId('summary-base').textContent = result ? formatAmount(result.base) : '–';
-    byId('summary-options').textContent = result ? formatAmount(result.options) : 'CHF 0.00';
+    byId('summary-options').textContent = result ? formatAmount(result.options - result.deposit) : 'CHF 0.00';
+    byId('summary-deposit').textContent = formatAmount(result?.deposit ?? 150);
+    byId('summary-deposit-row').classList.toggle('hidden', isMember());
     byId('summary-total').textContent = result ? formatAmount(result.total) : 'CHF –';
     byId('mobile-summary-total').textContent = result ? formatAmount(result.total) : 'CHF –';
     const discountRow = byId('summary-discount-row');
@@ -533,17 +522,17 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
   const updatePeriodAvailability = () => {
     const holiday = holidayForDate(dateField.value, locale);
-    byId('holiday-status').textContent = holiday ? `${holiday.name} — ${b.holidayApplied}` : dateField.value ? b.holidayNone : b.holidayAutomatic;
+    byId('holiday-status').textContent = holiday ? `${holiday.name} — ${b.holidayApplied}` : '';
+    byId('holiday-status').hidden = !holiday;
     const weekend = isWeekendRate();
+    byId('period-help').hidden = !weekend || Boolean(holiday);
     periodCards.forEach((card) => {
       const period = card.dataset.period as Period;
       const disabled = weekend && (period === 'journee' || period === 'soiree');
       card.disabled = disabled;
-      card.classList.toggle('disabled', disabled);
       if (disabled && selectedPeriod === period) {
         selectedPeriod = null;
-        card.classList.remove('selected');
-        card.setAttribute('aria-pressed', 'false');
+        card.checked = false;
       }
     });
     const completePrice = document.querySelector<HTMLElement>('[data-price="complet"]');
@@ -568,7 +557,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     if (mobileStepTitle) mobileStepTitle.textContent = progressSteps[currentStep]?.querySelector('strong')?.textContent ?? '';
     if (mobileProgressBar) mobileProgressBar.style.width = `${((currentStep + 1) / stages.length) * 100}%`;
     if (currentStep === 2) renderRecap();
-    document.querySelector('.progress')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (moveFocus) document.querySelector('.progress')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     if (moveFocus) {
       const heading = stages[currentStep]?.[0]?.querySelector<HTMLElement>('h2');
       heading?.setAttribute('tabindex', '-1');
@@ -705,10 +694,9 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   byId('clear-signature').addEventListener('click', () => { context?.clearRect(0, 0, canvas.width, canvas.height); signatureStarted = false; signaturePoints = 0; });
 
   periodCards.forEach((card) => {
-    card.addEventListener('click', () => {
-      if (card.disabled) return;
+    card.addEventListener('change', () => {
+      if (card.disabled || !card.checked) return;
       selectedPeriod = card.dataset.period as Period;
-      periodCards.forEach((item) => { const selected = item === card; item.classList.toggle('selected', selected); item.setAttribute('aria-pressed', String(selected)); });
       daysGroup.classList.toggle('hidden', selectedPeriod !== 'consecutif');
       updateDateAvailability();
       updateSummary();
@@ -791,7 +779,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     byId('refresh-hold').classList.remove('hidden');
     byId('recap-total').textContent = formatAmount(hold.amountCents / 100);
     // Keep the displayed/printed contract identical to the one registered on the server.
-    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>('#booking-form input, #booking-form textarea, .period-card, [data-counter], [data-next-step], [data-prev-step], #clear-signature, #verify-member').forEach((control) => { control.disabled = true; });
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>('#booking-form input, #booking-form textarea, [data-counter], [data-next-step], [data-prev-step], #clear-signature, #verify-member').forEach((control) => { control.disabled = true; });
     progressSteps.forEach((control) => { control.disabled = true; });
     updatePayment();
   };
@@ -897,15 +885,14 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 </script>
 
 <style>
-  .booking-page { background: var(--cream); }
-  .reservation-shell { width: var(--shell); margin-inline: auto; }
-  .booking-hero { padding: 24px 0 26px; background: var(--forest-950); color: var(--white); }
-  .booking-hero-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 48px; align-items: end; }
-  .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; color: rgba(255,255,255,.72); font-size: 14px; font-weight: 700; text-decoration: none; }
-  .back-link:hover { color: var(--yellow); }
+  .booking-page { --muted: #536660; background: #f4f5f2; }
+  .reservation-shell { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
+  .booking-hero { padding: 24px 0 22px; background: var(--white); color: var(--ink); }
+  .booking-hero-grid { display: block; }
+  .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--muted); font-size: 14px; font-weight: 600; text-decoration: none; }
+  .back-link:hover { color: var(--forest-900); text-decoration: underline; }
   .booking-eyebrow { margin: 0 0 8px; color: var(--yellow); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
-  .booking-hero h1 { max-width: 720px; margin: 0; font-size: clamp(36px, 4.2vw, 52px); font-weight: 500; letter-spacing: -.05em; line-height: .98; }
-  .booking-lead { max-width: 520px; margin: 0; color: rgba(255,255,255,.78); font-size: 16px; line-height: 1.45; }
+  .booking-hero h1 { margin: 0; font-size: clamp(27px, 3.2vw, 34px); font-weight: 700; letter-spacing: -.025em; line-height: 1.25; }
 
   .availability-dialog { width: min(760px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; background: var(--paper); color: var(--ink); box-shadow: 0 28px 90px rgba(8, 35, 31, .35); }
   .availability-dialog::backdrop { background: rgba(7, 29, 26, .72); backdrop-filter: blur(5px); }
@@ -928,48 +915,43 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .availability-dialog-footer small { display: block; margin-top: 3px; }
   .availability-dialog-footer a { flex: 0 0 auto; color: var(--blue); font-size: 13px; font-weight: 800; }
 
-  .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(16px); }
-  .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-inline: 1px solid var(--line); }
-  .progress-step { min-height: 64px; padding: 10px 18px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); text-align: left; cursor: pointer; transition: background 160ms ease, color 160ms ease; }
-  .progress-step:first-child { border-left: 0; }
-  .progress-step:last-child { border-right: 0; }
-  .progress-step span, .progress-step strong { display: block; }
-  .progress-step span { margin-bottom: 4px; color: var(--blue); font-size: 11px; font-weight: 800; }
-  .progress-step strong { font-size: 15px; line-height: 1.25; }
-  .progress-step.active { background: var(--forest-900); color: var(--white); }
-  .progress-step.active span { color: var(--yellow); }
+  .progress { position: sticky; top: 82px; z-index: 50; border-bottom: 1px solid var(--line); background: var(--white); }
+  .progress-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .progress-step { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 60px; padding: 12px 0; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); text-align: left; cursor: pointer; }
+  .progress-step span { font-size: 14px; font-weight: 600; }
+  .progress-step strong { font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .progress-step.active { border-bottom-color: var(--forest-900); color: var(--forest-900); }
+  .progress-step.active span { color: var(--forest-900); }
   .progress-step.done { color: var(--forest-900); }
-  .progress-step:disabled { cursor: default; opacity: .72; }
+  .progress-step:disabled { cursor: default; }
   .mobile-progress { display: none; }
 
-  .booking-content { padding: 26px 0 54px; }
-  .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
-  .form-card { min-width: 0; padding: clamp(24px, 3vw, 38px); border: 1px solid var(--line); border-radius: 0; background: var(--paper); box-shadow: none; }
+  .booking-content { padding: 28px 0 64px; }
+  .booking-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+  .form-card { min-width: 0; padding: 30px; border: 1px solid var(--line); border-radius: 0; background: var(--white); box-shadow: none; }
   .included-note, .send-note { display: flex; gap: 12px; align-items: flex-start; padding: 15px 17px; border-radius: var(--radius-sm); }
   .included-note svg, .send-note svg { flex: 0 0 auto; margin-top: 2px; }
 
   .form-step { display: none; }
-  .form-step.active { display: block; animation: step-in 260ms ease both; }
+  .form-step.active { display: block; }
   .form-step.active + .form-step.active { margin-top: 0; }
-  @keyframes step-in { from { opacity: 0; transform: translateY(8px); } }
-  .step-header { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; margin-bottom: 26px; }
-  .step-number { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yellow); color: var(--forest-950); font-size: 12px; font-weight: 900; }
-  .step-header h2 { margin: 0; color: var(--forest-900); font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -.045em; line-height: 1.05; }
+  .step-header { margin-bottom: 24px; }
+  .step-header h2 { margin: 0; color: var(--forest-900); font-size: clamp(23px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.025em; line-height: 1.3; }
   .step-header p { margin: 7px 0 0; color: var(--muted); font-size: 16px; }
-  .subsection-header { grid-template-columns: 1fr; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
-  .subsection-header h2 { font-size: clamp(24px, 3vw, 31px); }
+  .subsection-header { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .subsection-header h2 { font-size: 23px; }
 
   .field-grid { display: grid; gap: 16px; }
   .two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .full { grid-column: 1 / -1; }
   .postal-field { max-width: 220px; }
   .field { display: grid; gap: 8px; }
-  .field > span, .field > label, .plain-fieldset legend { color: var(--ink); font-size: 16px; font-weight: 800; }
+  .field > span, .field > label, .plain-fieldset legend { color: var(--ink); font-size: 16px; font-weight: 600; }
   .field small { color: var(--muted); font-size: 14px; }
-  .field small.date-conflict { color: #a62f28; font-weight: 700; }
-  .date-field-help { display: flex; flex-wrap: wrap; gap: 7px 14px; align-items: center; justify-content: space-between; }
-  .date-field-help button { display: inline-flex; flex: 0 0 auto; gap: 6px; align-items: center; padding: 0; border: 0; background: transparent; color: var(--blue); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
-  .date-field-help button:hover { color: var(--forest-900); text-decoration: underline; }
+  .booking-date-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: end; }
+  .date-field-feedback.date-conflict { color: #a62f28; font-weight: 700; }
+  .date-field-feedback:empty { display: none; }
+  .booking-date-controls .action { min-height: 54px; }
   input, textarea { width: 100%; min-height: 54px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 0; background: var(--white); color: var(--ink); font-size: 16px; }
   textarea { resize: vertical; }
   input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(17,135,178,.12); }
@@ -982,25 +964,29 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
 
   .plain-fieldset { margin: 26px 0 0; padding: 0; border: 0; }
   .plain-fieldset legend { margin-bottom: 14px; }
-  .period-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .period-card { display: grid; grid-template-columns: auto 1fr; gap: 3px 11px; align-items: center; min-height: 96px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); color: var(--ink); text-align: left; cursor: pointer; transition: border-color 150ms ease, background 150ms ease, transform 150ms ease; }
-  .period-card svg { grid-row: 1 / 3; color: var(--blue); }
-  .period-card strong { font-size: 17px; }
-  .period-card span { color: var(--muted); font-size: 15px; }
-  .period-card b { grid-column: 1 / -1; margin-top: 6px; color: var(--forest-900); font-size: 17px; }
-  .period-card:hover:not(:disabled) { border-color: var(--blue); transform: translateY(-1px); }
-  .period-card.selected { border-color: var(--forest-900); background: var(--forest-100); box-shadow: inset 0 0 0 1px var(--forest-900); }
-  .period-card.disabled { opacity: .42; cursor: not-allowed; }
+  .period-grid { display: grid; border: 1px solid var(--line); }
+  .period-card { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 14px; align-items: center; min-height: 72px; padding: 14px 16px; background: var(--white); color: var(--ink); text-align: left; cursor: pointer; }
+  .period-card + .period-card { border-top: 1px solid var(--line); }
+  .period-card input { width: 20px; height: 20px; min-height: 20px; margin: 0; padding: 0; accent-color: var(--forest-900); }
+  .period-copy { min-width: 0; }
+  .period-copy strong, .period-copy small { display: block; }
+  .period-copy strong { font-size: 16px; font-weight: 600; }
+  .period-copy small { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .period-card b { color: var(--forest-900); font-size: 16px; font-weight: 600; white-space: nowrap; }
+  .period-card:hover { background: #f4f7f4; }
+  .period-card:has(input:checked) { background: #eaf2ec; box-shadow: inset 3px 0 0 var(--forest-900); }
+  .period-card:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 3px; z-index: 1; }
+  .period-card:has(input:disabled) { display: none; }
   .field-hint { margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
   #days-group { max-width: 220px; margin-top: 22px; }
   .hidden { display: none !important; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  .participants-row { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: end; margin-top: 24px; }
+  .participants-row { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; margin-top: 24px; }
+  .participants-row .field { flex: 0 1 220px; }
   .counter { display: grid; grid-template-columns: 48px 1fr 48px; border: 1px solid var(--line); border-radius: 0; overflow: hidden; background: var(--white); }
-  .counter input { min-width: 0; border: 0; border-radius: 0; text-align: center; font-weight: 800; }
-  .counter button { border: 0; background: var(--forest-100); color: var(--forest-900); font-size: 21px; font-weight: 800; cursor: pointer; }
-  .capacity-note { display: flex; gap: 12px; align-items: center; min-height: 54px; padding: 12px 16px; border-radius: 0; background: var(--blue-soft); color: #0a6282; font-size: 15px; }
-  .capacity-note svg { flex: 0 0 auto; }
+  .counter input { min-width: 0; border: 0; border-radius: 0; text-align: center; font-weight: 600; }
+  .counter button { border: 0; background: #f1f4f1; color: var(--forest-900); font-size: 21px; font-weight: 600; cursor: pointer; }
+  .capacity-note { margin: 0; padding-bottom: 16px; color: var(--muted); font-size: 14px; }
 
   .option-list { display: grid; gap: 8px; }
   .option-row { display: grid; grid-template-columns: 44px 1fr auto 28px; gap: 12px; align-items: center; min-height: 78px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; transition: border-color 150ms ease, background 150ms ease; }
@@ -1046,34 +1032,38 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   #signature-canvas { display: block; width: 100%; height: 180px; touch-action: none; cursor: crosshair; }
   .signature-alternative { margin-top: 16px; padding: 18px; border: 1px solid var(--line); background: var(--white); }
 
-  .step-error { min-height: 24px; margin: 18px 0 0; color: #a62f28; font-size: 14px; font-weight: 700; }
-  .step-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .step-error { margin: 18px 0 0; color: #a62f28; font-size: 15px; font-weight: 600; }
+  .step-error:empty { display: none; }
+  .step-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
   .step-actions.end { justify-content: flex-end; }
   .action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 12px 21px; border: 1px solid transparent; border-radius: 0; font-size: 15px; font-weight: 800; cursor: pointer; }
   .action.primary { background: var(--forest-900); color: var(--white); }
-  .action.primary:hover { background: var(--blue); }
+  .action.primary:hover { background: var(--forest-800); }
   .action.secondary { border-color: var(--line); background: var(--white); color: var(--forest-900); }
   .action.secondary:hover { border-color: var(--forest-900); }
 
-  .booking-sidebar { position: sticky; top: 164px; display: grid; gap: 12px; }
+  .booking-sidebar { position: sticky; top: 164px; min-width: 0; display: grid; gap: 16px; }
   .summary-card, .manager-card { padding: 24px; border-radius: var(--radius); }
-  .summary-card { background: var(--forest-900); color: var(--white); }
-  .summary-card h2 { margin: 0; font-size: 30px; font-weight: 500; letter-spacing: -.04em; }
-  .summary-card header > span { display: block; margin-top: 8px; color: rgba(255,255,255,.58); font-size: 14px; }
+  .summary-card { border: 1px solid var(--line); border-top: 3px solid var(--forest-900); background: var(--white); color: var(--ink); }
+  .summary-card .booking-eyebrow { color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+  .summary-card h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.025em; }
+  .summary-card header > span { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; }
   .summary-card dl { margin: 18px 0 0; }
-  .summary-card dl div { display: grid; grid-template-columns: 1fr auto; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.13); }
+  .summary-card dl div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto); gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .summary-card dt, .summary-card dd { margin: 0; font-size: 15px; }
-  .summary-card dt { color: rgba(255,255,255,.62); }
-  .summary-card dd { font-weight: 800; text-align: right; }
-  .summary-card .discount-row dd { color: var(--yellow); }
+  .summary-card dt { color: var(--muted); }
+  .summary-card dd { overflow-wrap: anywhere; font-weight: 600; text-align: right; }
+  .summary-card .discount-row dd { color: var(--forest-800); }
   .summary-total { display: flex; justify-content: space-between; gap: 15px; align-items: end; padding: 17px 0 7px; }
-  .summary-total span { color: rgba(255,255,255,.68); font-size: 13px; }
-  .summary-total strong { color: var(--yellow); font-size: 24px; }
-  .summary-card > p { margin: 10px 0 0; color: rgba(255,255,255,.6); font-size: 13px; line-height: 1.5; }
-  .manager-card { border: 1px solid var(--line); background: var(--paper); }
+  .summary-total span { color: var(--ink); font-size: 14px; }
+  .summary-total strong { color: var(--forest-900); font-size: 24px; }
+  .summary-card > p { margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .manager-card { border: 1px solid var(--line); background: transparent; }
+  .manager-card summary { cursor: pointer; color: var(--forest-900); font-size: 16px; font-weight: 600; }
+  .manager-card[open] summary { margin-bottom: 18px; }
   .manager-card .booking-eyebrow { color: var(--blue); }
   .manager-card h3 { margin: 0 0 17px; font-size: 20px; }
-  .manager-card a { display: flex; gap: 9px; align-items: center; padding: 8px 0; color: var(--forest-900); font-size: 15px; font-weight: 700; text-decoration: none; }
+  .manager-card a { display: flex; gap: 9px; align-items: center; overflow-wrap: anywhere; padding: 8px 0; color: var(--forest-900); font-size: 15px; font-weight: 600; text-decoration: none; }
   .manager-card a:hover { color: var(--blue); }
 
   .recap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
@@ -1119,13 +1109,9 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .reservation-hold dl div { margin-block: 8px; }
   .reservation-hold dt { font-size: 12px; color: var(--muted); }
   .reservation-hold dd { margin: 3px 0 0; font-weight: 700; overflow-wrap: anywhere; }
-  .holiday-detected { padding: 16px; border: 1px solid var(--line); background: var(--white); }
-  .holiday-detected p { margin: 7px 0 0; font-size: 13px; line-height: 1.5; }
-  .holiday-list { margin: 0 0 24px; color: var(--forest-900); }
-  .holiday-list summary, .membership-verification summary { padding-block: 10px; cursor: pointer; font-weight: 700; }
-  .holiday-list h3 { font-size: 16px; }
-  .holiday-list ul { margin: 0; padding: 0; list-style: none; }
-  .holiday-list li { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding-block: 5px; font-size: 13px; }
+  .holiday-notice { margin: 12px 0 0; padding: 10px 14px; border-left: 3px solid #9b7519; background: #fbf4df; color: #665019; font-size: 14px; line-height: 1.5; }
+  .holiday-notice[hidden], #period-help[hidden] { display: none; }
+  .membership-verification summary { padding-block: 10px; cursor: pointer; font-weight: 700; }
   .membership-verification { margin-block: 22px; padding: 14px 18px; border: 1px solid var(--line); }
   .membership-verification p { font-size: 14px; line-height: 1.5; }
   .membership-verification .action { margin-top: 12px; }
@@ -1138,26 +1124,26 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   .recap-actions [data-prev-step] { order: -1; margin-right: auto; }
 
   @media (max-width: 1020px) {
-    .booking-hero-grid, .booking-layout { grid-template-columns: 1fr; }
-    .booking-sidebar { position: static; grid-template-columns: 1fr 1fr; }
+    .booking-layout { grid-template-columns: minmax(0, 1fr); }
+    .booking-sidebar { position: static; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
   }
   @media (max-width: 760px) {
-    .booking-hero { padding: 22px 0 24px; }
-    .booking-hero-grid { gap: 14px; }
-    .back-link { margin-bottom: 12px; }
-    .booking-lead { font-size: 15px; }
+    .reservation-shell { width: calc(100% - 32px); }
+    .booking-hero { padding: 18px 0 20px; }
+    .back-link { margin-bottom: 10px; }
     .availability-calendar-panel :global(.calendar-day) { min-height: 46px; }
     .progress { top: 72px; }
     .progress-grid { display: none; }
-    .mobile-progress { display: grid; grid-template-columns: 1fr minmax(92px, .55fr) auto; gap: 16px; align-items: center; min-height: 60px; padding-block: 9px; }
+    .mobile-progress { display: grid; grid-template-columns: minmax(0, 1fr) minmax(70px, .55fr) auto; gap: 16px; align-items: center; min-height: 64px; padding-block: 10px; }
     .mobile-progress span, .mobile-progress strong { display: block; }
-    .mobile-progress span { color: var(--blue); font-size: 11px; font-weight: 900; }
-    .mobile-progress strong { margin-top: 3px; color: var(--forest-900); font-size: 15px; }
+    .mobile-progress [data-mobile-step] { display: inline; }
+    .mobile-progress span { color: var(--muted); font-size: 13px; font-weight: 600; }
+    .mobile-progress strong { margin-top: 3px; color: var(--forest-900); font-size: 16px; }
     .mobile-progress-track { height: 5px; overflow: hidden; background: var(--line); }
-    .mobile-progress-track i { display: block; width: 33.333%; height: 100%; background: var(--blue); transition: width 180ms ease; }
+    .mobile-progress-track i { display: block; width: 33.333%; height: 100%; background: var(--forest-900); }
     .mobile-price { padding-left: 14px; border-left: 1px solid var(--line); text-align: right; }
-    .mobile-price span { color: var(--muted); font-size: 9px; }
-    .mobile-price strong { margin-top: 2px; font-size: 14px; white-space: nowrap; }
+    .mobile-price span { color: var(--muted); font-size: 12px; }
+    .mobile-price strong { margin-top: 2px; font-size: 16px; white-space: nowrap; }
     .booking-content { padding: 16px 0 64px; }
     .two-cols, .period-grid, .participants-row, .recap-grid, .booking-sidebar { grid-template-columns: 1fr; }
     .full { grid-column: auto; }
@@ -1170,7 +1156,7 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     #recap-signature, .typed-signature { border-top: 1px solid var(--line); border-left: 0; }
     .payment-box { grid-template-columns: 1fr; }
     .payment-total { text-align: left; }
-    .step-actions { position: sticky; bottom: 0; z-index: 20; margin-inline: calc(-1 * clamp(24px, 3vw, 38px)); padding: 14px clamp(24px, 3vw, 38px); border-top: 1px solid var(--line); background: rgba(251,250,246,.96); backdrop-filter: blur(12px); }
+    .step-actions { padding-top: 20px; background: var(--white); }
     .availability-dialog { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; }
     .availability-dialog-header { padding: 18px 16px 10px; }
     .availability-dialog-lead { padding: 0 16px 14px; }
@@ -1178,8 +1164,14 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
   }
   @media (max-width: 520px) {
     .form-card { padding: 20px 16px; border-radius: 0; }
-    .step-header { grid-template-columns: 38px 1fr; }
-    .step-number { width: 38px; height: 38px; }
+    .booking-date-controls { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .booking-date-controls .action { justify-self: start; width: auto; min-height: 44px; padding: 8px 0; border: 0; text-decoration: underline; text-underline-offset: 4px; }
+    .period-card { grid-template-columns: 20px minmax(0, 1fr); gap: 4px 12px; padding: 14px; }
+    .period-card input { grid-row: 1 / 3; }
+    .period-card b { grid-column: 2; }
+    .participants-row { display: block; }
+    .participants-row .field { max-width: 220px; }
+    .capacity-note { margin-top: 8px; padding: 0; }
     .option-row { padding: 14px 12px; }
     .signature-head { align-items: flex-start; flex-direction: column; }
     .step-actions, .recap-actions { flex-direction: column-reverse; }
@@ -1189,7 +1181,6 @@ const rentalConditions = t.conditions.map(([conditionTitle, text]) => ({ title: 
     .recap-block dl div { grid-template-columns: 1fr; gap: 2px; }
     .payment-box { gap: 16px; padding: 16px; }
     .payment-total { text-align: left; }
-    .step-actions { margin-inline: -16px; padding-inline: 16px; }
     .mobile-progress { grid-template-columns: 1fr auto; gap: 10px; }
     .mobile-progress-track { grid-column: 1 / -1; grid-row: 2; }
     .mobile-price { grid-column: 2; grid-row: 1; }
